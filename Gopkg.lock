@@ -261,7 +261,7 @@
   ]
   pruneopts = "NUT"
   revision = "c617ca8eb9b323f6fac686a5fe4179ab2dea7d85"
-  source = "github.com/flynn-archive/docker"
+  source = "github.com/drycc-archive/docker"
 
 [[projects]]
   digest = "1:aca1599627d488691bf59544c2fd76a633c26c000617ab03341c451d34464d92"
@@ -300,7 +300,7 @@
 [[projects]]
   branch = "v1"
   digest = "1:54d001d57deb05c1791426b08890f2e973c736353241475369151b9d3fefcfbd"
-  name = "github.com/flynn/go-check"
+  name = "github.com/drycc/go-check"
   packages = ["."]
   pruneopts = "NUT"
   revision = "5921220213810f304c0c78585f88f59287e58492"
@@ -308,7 +308,7 @@
 [[projects]]
   branch = "master"
   digest = "1:f924b2442390ad14a2563d2f33db99f046be3c22efc7f19bbc1e768abd155c79"
-  name = "github.com/flynn/go-docopt"
+  name = "github.com/drycc/go-docopt"
   packages = ["."]
   pruneopts = "NUT"
   revision = "f6dd2ebbb31e9721c860cf1faf5c944aa73e3844"
@@ -316,7 +316,7 @@
 [[projects]]
   branch = "master"
   digest = "1:4fb0a75263fc3a86d113347d38544c5dfb089fee20773a786f287398657763c5"
-  name = "github.com/flynn/go-p9p"
+  name = "github.com/drycc/go-p9p"
   packages = [
     ".",
     "ufs",
@@ -327,7 +327,7 @@
 [[projects]]
   branch = "master"
   digest = "1:cc5038748109842d840bf08834ac8d3429d7933fd335342c4fccd8e8c378afe8"
-  name = "github.com/flynn/go-tuf"
+  name = "github.com/drycc/go-tuf"
   packages = [
     ".",
     "client",
@@ -345,7 +345,7 @@
 [[projects]]
   branch = "master"
   digest = "1:7080afb143833fae35cee339a872d82a956513d3ff985413644b7e62aaffaea7"
-  name = "github.com/flynn/que-go"
+  name = "github.com/drycc/que-go"
   packages = ["."]
   pruneopts = "NUT"
   revision = "737f00726577c26beb71037b273e79a65b354c85"
@@ -353,7 +353,7 @@
 [[projects]]
   branch = "master"
   digest = "1:cf452193c927fc9ea41ad91adb17cd700837def81f73ce007760debef470898c"
-  name = "github.com/flynn/tail"
+  name = "github.com/drycc/tail"
   packages = [
     ".",
     "ratelimiter",
@@ -1076,18 +1076,18 @@
     "github.com/docker/go-units",
     "github.com/docker/libnetwork/ipallocator",
     "github.com/docker/libnetwork/netutils",
-    "github.com/flynn/go-check",
-    "github.com/flynn/go-docopt",
-    "github.com/flynn/go-p9p",
-    "github.com/flynn/go-p9p/ufs",
-    "github.com/flynn/go-tuf",
-    "github.com/flynn/go-tuf/client",
-    "github.com/flynn/go-tuf/cmd/tuf",
-    "github.com/flynn/go-tuf/cmd/tuf-client",
-    "github.com/flynn/go-tuf/data",
-    "github.com/flynn/go-tuf/util",
-    "github.com/flynn/que-go",
-    "github.com/flynn/tail",
+    "github.com/drycc/go-check",
+    "github.com/drycc/go-docopt",
+    "github.com/drycc/go-p9p",
+    "github.com/drycc/go-p9p/ufs",
+    "github.com/drycc/go-tuf",
+    "github.com/drycc/go-tuf/client",
+    "github.com/drycc/go-tuf/cmd/tuf",
+    "github.com/drycc/go-tuf/cmd/tuf-client",
+    "github.com/drycc/go-tuf/data",
+    "github.com/drycc/go-tuf/util",
+    "github.com/drycc/que-go",
+    "github.com/drycc/tail",
     "github.com/garyburd/redigo/redis",
     "github.com/go-sql-driver/mysql",
     "github.com/golang/dep/cmd/dep",

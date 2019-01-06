@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/flynn/flynn/host/volume"
+	"github.com/drycc/drycc/host/volume"
 	"github.com/inconshreveable/log15"
 )
 
@@ -25,7 +25,7 @@ type Manager struct {
 
 	// `map[providerName]provider`
 	//
-	// It's possible to configure multiple volume providers for a flynn-host daemon.
+	// It's possible to configure multiple volume providers for a drycc-host daemon.
 	// This can be used to create volumes using providers backed by different storage resources,
 	// or different volume backends entirely.
 	providers   map[string]volume.Provider

@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/flynn/flynn/blobstore/data"
-	"github.com/flynn/flynn/pkg/postgres"
-	docopt "github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/blobstore/data"
+	"github.com/drycc/drycc/pkg/postgres"
+	docopt "github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("cleanup", runCleanup, `
-usage: flynn-blobstore cleanup [-c <concurrency>]
+usage: drycc-blobstore cleanup [-c <concurrency>]
 
 Delete file blobs that were already moved to a different backend from the default backend. 
 

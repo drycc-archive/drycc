@@ -4,11 +4,11 @@ import (
 	"net"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/cluster"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/cluster"
+	c "github.com/drycc/go-check"
 )
 
 type DiscoverdSuite struct {

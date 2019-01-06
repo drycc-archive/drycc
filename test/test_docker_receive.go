@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	c "github.com/drycc/go-check"
 )
 
 type DockerReceiveSuite struct {
@@ -64,7 +64,7 @@ loop:
 	t.Assert(client.SetAppRelease(app.ID, release.ID), c.IsNil)
 
 	// check running a job uses the image
-	t.Assert(flynn(t, "/", "-a", app.ID, "run", "cat", "/foo.txt"), SuccessfulOutputContains, "foo")
+	t.Assert(drycc(t, "/", "-a", app.ID, "run", "cat", "/foo.txt"), SuccessfulOutputContains, "foo")
 }
 
 // TestConvertWhitouts ensures that AUFS whiteouts are converted to OverlayFS
@@ -84,12 +84,12 @@ func (s *DockerReceiveSuite) TestConvertWhiteouts(t *c.C) {
 	app := &ct.App{Name: repo}
 	t.Assert(client.CreateApp(app), c.IsNil)
 
-	// flynn docker push image
-	t.Assert(flynn(t, "/", "-a", app.Name, "docker", "push", repo), Succeeds)
+	// drycc docker push image
+	t.Assert(drycc(t, "/", "-a", app.Name, "docker", "push", repo), Succeeds)
 
 	// check the whiteouts are effective
-	t.Assert(flynn(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ ! -f /foo.txt ]]"), Succeeds)
-	t.Assert(flynn(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ ! -f /opaque/file.txt ]]"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ ! -f /foo.txt ]]"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ ! -f /opaque/file.txt ]]"), Succeeds)
 }
 
 // TestReleaseDeleteImageLayers ensures that deleting a release which uses an
@@ -102,16 +102,16 @@ func (s *DockerReceiveSuite) TestReleaseDeleteImageLayers(t *c.C) {
 		"RUN echo shared-layer > /shared.txt",
 		"RUN echo app1-layer > /app1.txt",
 	)
-	t.Assert(flynn(t, "/", "create", "--remote", "", app1), Succeeds)
-	t.Assert(flynn(t, "/", "-a", app1, "docker", "push", app1), Succeeds)
+	t.Assert(drycc(t, "/", "create", "--remote", "", app1), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app1, "docker", "push", app1), Succeeds)
 
 	app2 := "docker-receive-test-delete-layers-2"
 	s.buildDockerImage(t, app2,
 		"RUN echo shared-layer > /shared.txt",
 		"RUN echo app2-layer > /app2.txt",
 	)
-	t.Assert(flynn(t, "/", "create", "--remote", "", app2), Succeeds)
-	t.Assert(flynn(t, "/", "-a", app2, "docker", "push", app2), Succeeds)
+	t.Assert(drycc(t, "/", "create", "--remote", "", app2), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app2, "docker", "push", app2), Succeeds)
 
 	// get the two images
 	client := s.controllerClient(t)
@@ -150,7 +150,7 @@ func (s *DockerReceiveSuite) TestReleaseDeleteImageLayers(t *c.C) {
 	// check all the layers exist at the paths we expect in the blobstore
 	getLayer := func(id string) *CmdResult {
 		url := fmt.Sprintf("http://blobstore.discoverd/docker-receive/layers/%s.squashfs", id)
-		return flynn(t, "/", "-a", "blobstore", "run", "curl", "-fsSLo", "/dev/null", "--write-out", "%{http_code}", url)
+		return drycc(t, "/", "-a", "blobstore", "run", "curl", "-fsSLo", "/dev/null", "--write-out", "%{http_code}", url)
 	}
 	assertExist := func(layers map[string]struct{}) {
 		for id := range layers {
@@ -171,17 +171,17 @@ func (s *DockerReceiveSuite) TestReleaseDeleteImageLayers(t *c.C) {
 
 	// delete app1 and check the distinct layers were deleted but the
 	// common layers still exist
-	t.Assert(flynn(t, "/", "-a", app1, "delete", "--yes"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app1, "delete", "--yes"), Succeeds)
 	assertNotExist(distinctLayers)
 	assertExist(commonLayers)
 
 	// delete app2 and check we can push app1's image to a new app and have
 	// the layers regenerated (which checks docker-receive cache invalidation)
-	t.Assert(flynn(t, "/", "-a", app2, "delete", "--yes"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app2, "delete", "--yes"), Succeeds)
 	app3 := "docker-receive-test-delete-layers-3"
-	t.Assert(flynn(t, "/", "create", "--remote", "", app3), Succeeds)
-	t.Assert(flynn(t, "/", "-a", app3, "docker", "push", app1), Succeeds)
-	t.Assert(flynn(t, "/", "-a", app3, "run", "test", "-f", "/app1.txt"), Succeeds)
+	t.Assert(drycc(t, "/", "create", "--remote", "", app3), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app3, "docker", "push", app1), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app3, "run", "test", "-f", "/app1.txt"), Succeeds)
 }
 
 // TestTabsInEnv ensures that a docker container containing tabs
@@ -198,9 +198,9 @@ func (s *DockerReceiveSuite) TestTabsInEnv(t *c.C) {
 	app := &ct.App{Name: repo}
 	t.Assert(client.CreateApp(app), c.IsNil)
 
-	// flynn docker push image
-	t.Assert(flynn(t, "/", "-a", app.Name, "docker", "push", repo), Succeeds)
+	// drycc docker push image
+	t.Assert(drycc(t, "/", "-a", app.Name, "docker", "push", repo), Succeeds)
 
 	// check the environment variable has the correct value
-	t.Assert(flynn(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ \"$TAB\" = \"test\ttest\" ]]"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "run", "sh", "-c", "[[ \"$TAB\" = \"test\ttest\" ]]"), Succeeds)
 }

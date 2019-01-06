@@ -4,7 +4,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/flynn/flynn/host/types"
+	"github.com/drycc/drycc/host/types"
 )
 
 type AttachRequest struct {
@@ -53,7 +53,7 @@ type StateSaver interface {
 	MarshalGlobalState() ([]byte, error)
 }
 
-// MockBackend is used when testing flynn-host without the need to actually run jobs
+// MockBackend is used when testing drycc-host without the need to actually run jobs
 type MockBackend struct{}
 
 func (MockBackend) Run(*host.Job, *RunConfig, *RateLimitBucket) error { return nil }

@@ -15,19 +15,19 @@ import (
 	"sync"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/downloader"
-	"github.com/flynn/flynn/host/logmux"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume/api"
-	"github.com/flynn/flynn/host/volume/manager"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sse"
-	"github.com/flynn/flynn/pkg/tufutil"
-	"github.com/flynn/flynn/pkg/version"
-	tuf "github.com/flynn/go-tuf/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/downloader"
+	"github.com/drycc/drycc/host/logmux"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume/api"
+	"github.com/drycc/drycc/host/volume/manager"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sse"
+	"github.com/drycc/drycc/pkg/tufutil"
+	"github.com/drycc/drycc/pkg/version"
+	tuf "github.com/drycc/go-tuf/client"
 	"github.com/julienschmidt/httprouter"
 	"github.com/inconshreveable/log15"
 )
@@ -555,7 +555,7 @@ func newTufClient(tufDB, repository string) (*tuf.Client, error) {
 		return nil, err
 	}
 	opts := &tuf.HTTPRemoteOptions{
-		UserAgent: fmt.Sprintf("flynn-host/%s %s-%s pull", version.String(), runtime.GOOS, runtime.GOARCH),
+		UserAgent: fmt.Sprintf("drycc-host/%s %s-%s pull", version.String(), runtime.GOOS, runtime.GOARCH),
 		Retries:   tufutil.DefaultHTTPRetries,
 	}
 	remote, err := tuf.HTTPRemoteStore(repository, opts)
@@ -650,7 +650,7 @@ func (h *Host) Close() error {
 }
 
 func newHTTPListener(addr string) (net.Listener, error) {
-	fdEnv := os.Getenv("FLYNN_HTTP_FD")
+	fdEnv := os.Getenv("DRYCC_HTTP_FD")
 	if fdEnv == "" {
 		l, err := net.Listen("tcp", addr)
 		if err != nil {

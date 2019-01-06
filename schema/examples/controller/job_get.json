@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/job_get#",
+  "id": "https://drycc.cc/schema/examples/controller/job_get#",
   "title": "Get job",
   "description": "",
   "allOf": [

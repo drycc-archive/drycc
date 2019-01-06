@@ -8,11 +8,11 @@ case $1 in
     exec sudo \
       -u mongodb \
       -E -H \
-      /bin/flynn-mongodb $*
+      /bin/drycc-mongodb $*
     ;;
   api)
     shift
-    exec /bin/flynn-mongodb-api $*
+    exec /bin/drycc-mongodb-api $*
     ;;
   *)
     echo "Usage: $0 {mongodb|api}"

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/testutil"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/testutil"
+	. "github.com/drycc/go-check"
 )
 
 // Hook gocheck up to the "go test" runner

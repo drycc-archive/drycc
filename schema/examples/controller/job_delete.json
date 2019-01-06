@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/job_delete#",
+  "id": "https://drycc.cc/schema/examples/controller/job_delete#",
   "title": "Delete job",
   "description": "",
   "allOf": [

@@ -5,12 +5,12 @@ import (
 	"io"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
 )
 
 func Run(client controller.Client, out io.Writer, progress ProgressBar) error {
-	tw := NewTarWriter("flynn-backup-"+time.Now().UTC().Format("2006-01-02_150405"), out, progress)
+	tw := NewTarWriter("drycc-backup-"+time.Now().UTC().Format("2006-01-02_150405"), out, progress)
 	defer tw.Close()
 
 	// get app and release details for key apps
@@ -18,7 +18,7 @@ func Run(client controller.Client, out io.Writer, progress ProgressBar) error {
 	if err != nil {
 		return err
 	}
-	if err := tw.WriteJSON("flynn.json", data); err != nil {
+	if err := tw.WriteJSON("drycc.json", data); err != nil {
 		return err
 	}
 

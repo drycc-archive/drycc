@@ -1,12 +1,12 @@
 package cli
 
 import (
-	"github.com/flynn/flynn/host/fixer"
+	"github.com/drycc/drycc/host/fixer"
 )
 
 func init() {
 	Register("fix", (&fixer.ClusterFixer{}).Run, `
-usage: flynn-host fix [options]
+usage: drycc-host fix [options]
 
 Attempts to fix a broken cluster by starting missing jobs.
 

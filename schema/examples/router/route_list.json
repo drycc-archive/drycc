@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/router/route_list#",
+  "id": "https://drycc.cc/schema/examples/router/route_list#",
   "title": "List routes",
   "description": "",
   "allOf": [

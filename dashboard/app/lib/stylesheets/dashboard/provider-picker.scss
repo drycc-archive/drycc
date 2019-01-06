@@ -1,5 +1,5 @@
 @import "./colors";
-@import "flynn-dashboard-web-icons";
+@import "drycc-dashboard-web-icons";
 
 .provider-picker {
   display: -webkit-flex;
@@ -30,10 +30,10 @@
         bottom: 0.5rem;
         left: 0;
         width: 100%;
-        font-family: "flynn-dashboard-web-icons";
+        font-family: "drycc-dashboard-web-icons";
         font-size: 25px;
         color: $greenColor;
-        content: $flynn-dashboard-web-icons-checkmark;
+        content: $drycc-dashboard-web-icons-checkmark;
       }
     }
 

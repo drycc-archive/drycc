@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/manager"
-	"github.com/flynn/flynn/host/volume/zfs"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/testutils"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/manager"
+	"github.com/drycc/drycc/host/volume/zfs"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/testutils"
+	. "github.com/drycc/go-check"
 	gzfs "github.com/mistifyio/go-zfs"
 	"github.com/inconshreveable/log15"
 )
@@ -43,9 +43,9 @@ func assertInfoEqual(c *C, volA, volB volume.Volume) {
 // covers basic volume persistence and named volume persistence
 func (s *PersistenceTests) TestPersistence(c *C) {
 	idString := random.String(12)
-	vmanDBfilePath := fmt.Sprintf("/tmp/flynn-volumes-%s.bolt", idString)
-	zfsDatasetName := fmt.Sprintf("flynn-test-dataset-%s", idString)
-	zfsVdevFilePath := fmt.Sprintf("/tmp/flynn-test-zpool-%s.vdev", idString)
+	vmanDBfilePath := fmt.Sprintf("/tmp/drycc-volumes-%s.bolt", idString)
+	zfsDatasetName := fmt.Sprintf("drycc-test-dataset-%s", idString)
+	zfsVdevFilePath := fmt.Sprintf("/tmp/drycc-test-zpool-%s.vdev", idString)
 	defer os.Remove(vmanDBfilePath)
 	defer os.Remove(zfsVdevFilePath)
 	defer func() {
@@ -136,9 +136,9 @@ func (s *PersistenceTests) TestPersistence(c *C) {
 // covers deletion persistence for a (named) volume
 func (s *PersistenceTests) TestVolumeDeletion(c *C) {
 	idString := random.String(12)
-	vmanDBfilePath := fmt.Sprintf("/tmp/flynn-volumes-%s.bolt", idString)
-	zfsDatasetName := fmt.Sprintf("flynn-test-dataset-%s", idString)
-	zfsVdevFilePath := fmt.Sprintf("/tmp/flynn-test-zpool-%s.vdev", idString)
+	vmanDBfilePath := fmt.Sprintf("/tmp/drycc-volumes-%s.bolt", idString)
+	zfsDatasetName := fmt.Sprintf("drycc-test-dataset-%s", idString)
+	zfsVdevFilePath := fmt.Sprintf("/tmp/drycc-test-zpool-%s.vdev", idString)
 	defer os.Remove(vmanDBfilePath)
 	defer os.Remove(zfsVdevFilePath)
 	defer func() {
@@ -220,9 +220,9 @@ func (s *PersistenceTests) TestVolumeDeletion(c *C) {
 
 func (s *PersistenceTests) TestSnapshotPersistence(c *C) {
 	idString := random.String(12)
-	vmanDBfilePath := fmt.Sprintf("/tmp/flynn-volumes-%s.bolt", idString)
-	zfsDatasetName := fmt.Sprintf("flynn-test-dataset-%s", idString)
-	zfsVdevFilePath := fmt.Sprintf("/tmp/flynn-test-zpool-%s.vdev", idString)
+	vmanDBfilePath := fmt.Sprintf("/tmp/drycc-volumes-%s.bolt", idString)
+	zfsDatasetName := fmt.Sprintf("drycc-test-dataset-%s", idString)
+	zfsVdevFilePath := fmt.Sprintf("/tmp/drycc-test-zpool-%s.vdev", idString)
 	defer os.Remove(vmanDBfilePath)
 	defer os.Remove(zfsVdevFilePath)
 	defer func() {
@@ -316,9 +316,9 @@ func (s *PersistenceTests) TestSnapshotPersistence(c *C) {
 
 func (s *PersistenceTests) TestTransmittedSnapshotPersistence(c *C) {
 	idString := random.String(12)
-	vmanDBfilePath := fmt.Sprintf("/tmp/flynn-volumes-%s.bolt", idString)
-	zfsDatasetName := fmt.Sprintf("flynn-test-dataset-%s", idString)
-	zfsVdevFilePath := fmt.Sprintf("/tmp/flynn-test-zpool-%s.vdev", idString)
+	vmanDBfilePath := fmt.Sprintf("/tmp/drycc-volumes-%s.bolt", idString)
+	zfsDatasetName := fmt.Sprintf("drycc-test-dataset-%s", idString)
+	zfsVdevFilePath := fmt.Sprintf("/tmp/drycc-test-zpool-%s.vdev", idString)
 	defer os.Remove(vmanDBfilePath)
 	defer os.Remove(zfsVdevFilePath)
 	defer func() {

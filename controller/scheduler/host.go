@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/controller/testutils"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/controller/testutils"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/stream"
 	"github.com/inconshreveable/log15"
 )
 
@@ -55,7 +55,7 @@ func (h *Host) TagsEqual(tags map[string]string) bool {
 }
 
 func isAppVolume(info *volume.Info) bool {
-	_, ok := info.Meta["flynn-controller.app"]
+	_, ok := info.Meta["drycc-controller.app"]
 	return ok
 }
 

@@ -10,18 +10,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/controller/schema"
-	tu "github.com/flynn/flynn/controller/testutils"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/pkg/certgen"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/testutils/postgres"
-	"github.com/flynn/flynn/pkg/typeconv"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/controller/schema"
+	tu "github.com/drycc/drycc/controller/testutils"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/pkg/certgen"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/testutils/postgres"
+	"github.com/drycc/drycc/pkg/typeconv"
+	. "github.com/drycc/go-check"
 	"github.com/jackc/pgx"
 	"github.com/tent/canonical-json-go"
 )
@@ -189,14 +189,14 @@ func (s *S) TestCreateAppDefaultGC(c *C) {
 }
 
 func (s *S) TestSystemApp(c *C) {
-	app := s.createTestApp(c, &ct.App{Meta: map[string]string{"flynn-system-app": "true"}})
+	app := s.createTestApp(c, &ct.App{Meta: map[string]string{"drycc-system-app": "true"}})
 	c.Assert(app.System(), Equals, true)
 
-	app.Meta["flynn-system-app"] = "false"
+	app.Meta["drycc-system-app"] = "false"
 	c.Assert(s.c.UpdateApp(app), IsNil)
 	c.Assert(app.System(), Equals, false)
 
-	delete(app.Meta, "flynn-system-app")
+	delete(app.Meta, "drycc-system-app")
 	c.Assert(s.c.UpdateApp(app), IsNil)
 	c.Assert(app.System(), Equals, false)
 }
@@ -269,7 +269,7 @@ func (s *S) TestUpdateAppMeta(c *C) {
 
 func (s *S) createTestArtifact(c *C, in *ct.Artifact) *ct.Artifact {
 	if in.Type == "" {
-		in.Type = ct.ArtifactTypeFlynn
+		in.Type = ct.ArtifactTypeDrycc
 		in.RawManifest = ct.ImageManifest{
 			Type: ct.ImageManifestTypeV1,
 		}.RawManifest()
@@ -285,7 +285,7 @@ func (s *S) TestCreateArtifact(c *C) {
 	for i, id := range []string{"", random.UUID()} {
 		in := &ct.Artifact{
 			ID:   id,
-			Type: ct.ArtifactTypeFlynn,
+			Type: ct.ArtifactTypeDrycc,
 			RawManifest: ct.ImageManifest{
 				Type: ct.ImageManifestTypeV1,
 			}.RawManifest(),
@@ -434,7 +434,7 @@ func (s *S) TestReleaseList(c *C) {
 	c.Assert(list[0].ID, Not(Equals), "")
 }
 
-func (s *S) TestFlynnArtifact(c *C) {
+func (s *S) TestDryccArtifact(c *C) {
 	manifest := &ct.ImageManifest{Type: ct.ImageManifestTypeV1}
 
 	type test struct {
@@ -542,7 +542,7 @@ func (s *S) TestFlynnArtifact(c *C) {
 	} {
 		c.Logf("testing %s", t.desc)
 		t.artifact = &ct.Artifact{
-			Type:   ct.ArtifactTypeFlynn,
+			Type:   ct.ArtifactTypeDrycc,
 			URI:    srv.URL,
 			Hashes: t.hashes,
 		}

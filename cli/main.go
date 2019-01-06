@@ -13,15 +13,15 @@ import (
 	"unicode"
 
 	"github.com/docker/go-units"
-	cfg "github.com/flynn/flynn/cli/config"
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
+	cfg "github.com/drycc/drycc/cli/config"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
 )
 
 var (
-	flagCluster = os.Getenv("FLYNN_CLUSTER")
+	flagCluster = os.Getenv("DRYCC_CLUSTER")
 	flagApp     string
 )
 
@@ -31,7 +31,7 @@ func main() {
 	log.SetFlags(0)
 
 	usage := `
-usage: flynn [-a <app>] [-c <cluster>] <command> [<args>...]
+usage: drycc [-a <app>] [-c <cluster>] <command> [<args>...]
 
 Options:
 	-a <app>
@@ -59,7 +59,7 @@ Commands:
 	mongodb     manage mongodb database
 	redis       manage redis database
 	provider    manage resource providers
-	docker      deploy Docker images to a Flynn cluster
+	docker      deploy Docker images to a Drycc cluster
 	remote      manage git remotes
 	resource    provision a new resource
 	release     manage app releases
@@ -67,9 +67,9 @@ Commands:
 	volume      manage volumes
 	export      export app data
 	import      create app from exported data
-	version     show flynn version
+	version     show drycc version
 
-See 'flynn help <command>' for more information on a specific command.
+See 'drycc help <command>' for more information on a specific command.
 `[1:]
 	args, _ := docopt.Parse(usage, nil, true, version.String(), true)
 
@@ -77,7 +77,7 @@ See 'flynn help <command>' for more information on a specific command.
 	cmdArgs := args.All["<args>"].([]string)
 
 	if cmd == "help" {
-		if len(cmdArgs) == 0 { // `flynn help`
+		if len(cmdArgs) == 0 { // `drycc help`
 			fmt.Println(usage)
 			return
 		} else if cmdArgs[0] == "--json" {
@@ -91,7 +91,7 @@ See 'flynn help <command>' for more information on a specific command.
 			}
 			fmt.Println(string(out))
 			return
-		} else { // `flynn help <command>`
+		} else { // `drycc help <command>`
 			cmd = cmdArgs[0]
 			cmdArgs = make([]string, 1)
 			cmdArgs[0] = "--help"
@@ -158,7 +158,7 @@ func runCommand(name string, args []string) (err error) {
 
 	cmd, ok := commands[name]
 	if !ok {
-		return fmt.Errorf("%s is not a flynn command. See 'flynn help'", name)
+		return fmt.Errorf("%s is not a drycc command. See 'drycc help'", name)
 	}
 	parsedArgs, err := docopt.Parse(cmd.usage, argv, true, "", cmd.optsFirst)
 	if err != nil {
@@ -253,7 +253,7 @@ func app() (string, error) {
 	if flagApp != "" {
 		return flagApp, nil
 	}
-	if app := os.Getenv("FLYNN_APP"); app != "" {
+	if app := os.Getenv("DRYCC_APP"); app != "" {
 		flagApp = app
 		return app, nil
 	}
@@ -266,7 +266,7 @@ func app() (string, error) {
 		return "", err
 	}
 	if ra == nil {
-		return "", errors.New("no app found, run from a repo with a flynn remote or specify one with -a")
+		return "", errors.New("no app found, run from a repo with a drycc remote or specify one with -a")
 	}
 	clusterConf = ra.Cluster
 	flagApp = ra.Name

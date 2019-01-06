@@ -3,9 +3,9 @@
 set -e
 
 main() {
-  local dir="/opt/flynn-test"
+  local dir="/opt/drycc-test"
   if ! [[ -d "${dir}" ]]; then
-    fail "missing /opt/flynn-test directory"
+    fail "missing /opt/drycc-test directory"
   fi
 
   mkdir -p "${dir}/build" "${dir}/backups"
@@ -16,7 +16,7 @@ main() {
   export TMPDIR="${dir}/build"
 
   cd "${dir}"
-  exec /bin/flynn-test-runner \
+  exec /bin/drycc-test-runner \
     --rootfs   "${dir}/build/rootfs.img" \
     --kernel   "${dir}/build/vmlinuz" \
     --assets   "/test/assets" \

@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/httpclient"
-	tc "github.com/flynn/flynn/test/cluster"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/httpclient"
+	tc "github.com/drycc/drycc/test/cluster"
 )
 
 type Client struct {
@@ -26,7 +26,7 @@ func NewClient(endpoint string) (*Client, error) {
 		return nil, errors.New("missing TEST_RUNNER_AUTH_KEY environment variable")
 	}
 
-	httpClient := &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{ServerName: "ci.flynn.io"}}}
+	httpClient := &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{ServerName: "ci.drycc.cc"}}}
 	client := &Client{
 		Client: &httpclient.Client{
 			ErrNotFound: ErrNotFound,

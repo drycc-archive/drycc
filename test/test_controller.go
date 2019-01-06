@@ -15,12 +15,12 @@ import (
 	"time"
 
 	"github.com/cupcake/jsonschema"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/random"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/random"
+	c "github.com/drycc/go-check"
 )
 
 type ControllerSuite struct {
@@ -49,7 +49,7 @@ func (s *ControllerSuite) SetUpSuite(t *c.C) {
 		schema := &jsonschema.Schema{Cache: s.schemaCache}
 		err = schema.ParseWithoutRefs(file)
 		t.Assert(err, c.IsNil)
-		cacheKey := "https://flynn.io/schema" + strings.TrimSuffix(strings.TrimPrefix(path, schemaRoot), ".json")
+		cacheKey := "https://drycc.cc/schema" + strings.TrimSuffix(strings.TrimPrefix(path, schemaRoot), ".json")
 		s.schemaCache[cacheKey] = schema
 		file.Close()
 	}
@@ -116,7 +116,7 @@ func (s *ControllerSuite) generateControllerExamples(t *c.C) map[string]interfac
 	cmd := exec.CommandUsingCluster(
 		s.clusterClient(t),
 		s.createArtifact(t, "controller-examples"),
-		"/bin/flynn-controller-examples",
+		"/bin/drycc-controller-examples",
 	)
 	cmd.Env = map[string]string{
 		"CONTROLLER_KEY":      s.clusterConf(t).Key,
@@ -159,7 +159,7 @@ examplesLoop:
 	}
 	sort.Strings(exampleKeys)
 	for _, key := range exampleKeys {
-		cacheKey := "https://flynn.io/schema/examples/controller/" + key
+		cacheKey := "https://drycc.cc/schema/examples/controller/" + key
 		schema := s.schemaCache[cacheKey]
 		if schema == nil {
 			continue
@@ -182,24 +182,24 @@ func (s *ControllerSuite) TestKeyRotation(t *c.C) {
 	newKey := random.Hex(16)
 
 	// allow auth to API with old and new keys
-	set := x.flynn("/", "-a", "controller", "env", "set", "-t", "web", fmt.Sprintf("AUTH_KEY=%s,%s", newKey, oldKey))
+	set := x.drycc("/", "-a", "controller", "env", "set", "-t", "web", fmt.Sprintf("AUTH_KEY=%s,%s", newKey, oldKey))
 	t.Assert(set, Succeeds)
 
 	// reconfigure components to use new key
 	for _, app := range []string{"gitreceive", "docker-receive", "taffy", "dashboard"} {
-		set := x.flynn("/", "-a", app, "env", "set", "CONTROLLER_KEY="+newKey)
+		set := x.drycc("/", "-a", app, "env", "set", "CONTROLLER_KEY="+newKey)
 		t.Assert(set, Succeeds)
 	}
 
-	// write a new flynnrc
+	// write a new dryccrc
 	x.setKey(newKey)
 
 	// use new key for deployer+controller
-	set = x.flynn("/", "-a", "controller", "env", "set", "AUTH_KEY="+newKey)
+	set = x.drycc("/", "-a", "controller", "env", "set", "AUTH_KEY="+newKey)
 	t.Assert(set, Succeeds)
 
 	// remove old key from API
-	set = x.flynn("/", "-a", "controller", "env", "unset", "-t", "web", "AUTH_KEY")
+	set = x.drycc("/", "-a", "controller", "env", "unset", "-t", "web", "AUTH_KEY")
 	t.Assert(set, Succeeds)
 }
 
@@ -240,7 +240,7 @@ func (s *ControllerSuite) TestResourceLimitsReleaseJob(t *c.C) {
 		return nil
 	})
 	t.Assert(err, c.IsNil)
-	log := flynn(t, "/", "-a", app.Name, "log", "--job", jobID, "--raw-output")
+	log := drycc(t, "/", "-a", app.Name, "log", "--job", jobID, "--raw-output")
 
 	assertResourceLimits(t, log.Output)
 }
@@ -328,15 +328,15 @@ func (s *ControllerSuite) TestAppDeleteCleanup(t *c.C) {
 
 	// create and push app
 	r := s.newGitRepo(t, "http")
-	t.Assert(r.flynn("create", app), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
 	// wait for it to start
 	service := app + "-web"
 	_, err := s.discoverdClient(t).Instances(service, 10*time.Second)
 	t.Assert(err, c.IsNil)
 
-	t.Assert(r.flynn("scale", "another-web=1"), Succeeds)
+	t.Assert(r.drycc("scale", "another-web=1"), Succeeds)
 	_, err = s.discoverdClient(t).Instances(app+"-another-web", 10*time.Second)
 	t.Assert(err, c.IsNil)
 
@@ -344,9 +344,9 @@ func (s *ControllerSuite) TestAppDeleteCleanup(t *c.C) {
 	routes := []string{"foo.example.com", "bar.example.com", "another.example.com"}
 	for _, route := range routes {
 		if route == "another.example.com" {
-			t.Assert(r.flynn("route", "add", "http", "-s", app+"-another-web", route), Succeeds)
+			t.Assert(r.drycc("route", "add", "http", "-s", app+"-another-web", route), Succeeds)
 		} else {
-			t.Assert(r.flynn("route", "add", "http", route), Succeeds)
+			t.Assert(r.drycc("route", "add", "http", route), Succeeds)
 		}
 	}
 	routeList, err := client.RouteList(app)
@@ -367,7 +367,7 @@ func (s *ControllerSuite) TestAppDeleteCleanup(t *c.C) {
 	}
 
 	// provision resources
-	t.Assert(r.flynn("resource", "add", "postgres"), Succeeds)
+	t.Assert(r.drycc("resource", "add", "postgres"), Succeeds)
 	resources, err := client.AppResourceList(app)
 	t.Assert(err, c.IsNil)
 	numResources := 1
@@ -375,12 +375,12 @@ func (s *ControllerSuite) TestAppDeleteCleanup(t *c.C) {
 
 	// create another release
 	t.Assert(r.git("commit", "--allow-empty", "--message", "deploy"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 	releases, err := client.AppReleaseList(app)
 	t.Assert(err, c.IsNil)
 
 	// delete app
-	cmd := r.flynn("delete", "--yes")
+	cmd := r.drycc("delete", "--yes")
 	t.Assert(cmd, Succeeds)
 
 	// check route cleanup
@@ -402,23 +402,23 @@ func (s *ControllerSuite) TestAppDeleteCleanup(t *c.C) {
 	// check creating and pushing same app name succeeds
 	t.Assert(os.RemoveAll(r.dir), c.IsNil)
 	r = s.newGitRepo(t, "http")
-	t.Assert(r.flynn("create", app), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 }
 
-// https://github.com/flynn/flynn/issues/2257
+// https://github.com/drycc/drycc/issues/2257
 func (s *ControllerSuite) TestResourceProvisionRecreatedApp(t *c.C) {
 	app := "app-recreate-" + random.String(8)
 	client := s.controllerClient(t)
 
 	// create, delete, and recreate app
 	r := s.newGitRepo(t, "http")
-	t.Assert(r.flynn("create", app), Succeeds)
-	t.Assert(r.flynn("delete", "--yes"), Succeeds)
-	t.Assert(r.flynn("create", app), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
+	t.Assert(r.drycc("delete", "--yes"), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
 
 	// provision resource
-	t.Assert(r.flynn("resource", "add", "postgres"), Succeeds)
+	t.Assert(r.drycc("resource", "add", "postgres"), Succeeds)
 	resources, err := client.AppResourceList(app)
 	t.Assert(err, c.IsNil)
 	t.Assert(resources, c.HasLen, 1)
@@ -430,8 +430,8 @@ func (s *ControllerSuite) TestRouteEvents(t *c.C) {
 
 	// create and push app
 	r := s.newGitRepo(t, "http")
-	t.Assert(r.flynn("create", app), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
 	// wait for it to start
 	service := app + "-web"
@@ -464,7 +464,7 @@ func (s *ControllerSuite) TestRouteEvents(t *c.C) {
 	// create some routes
 	routes := []string{"baz.example.com"}
 	for _, route := range routes {
-		t.Assert(r.flynn("route", "add", "http", route), Succeeds)
+		t.Assert(r.drycc("route", "add", "http", route), Succeeds)
 		assertEventType(ct.EventTypeRoute)
 	}
 	routeList, err := client.RouteList(app)
@@ -473,7 +473,7 @@ func (s *ControllerSuite) TestRouteEvents(t *c.C) {
 	t.Assert(routeList, c.HasLen, numRoutes)
 
 	// delete app
-	cmd := r.flynn("delete", "--yes")
+	cmd := r.drycc("delete", "--yes")
 	t.Assert(cmd, Succeeds)
 
 	// check route deletion event
@@ -562,10 +562,10 @@ func (s *ControllerSuite) TestBackup(t *c.C) {
 	sql, ok := data["postgres.sql.gz"]
 	t.Assert(ok, c.Equals, true)
 	t.Assert(len(sql) > 0, c.Equals, true)
-	flynn, ok := data["flynn.json"]
+	drycc, ok := data["drycc.json"]
 	t.Assert(ok, c.Equals, true)
 	var apps map[string]*ct.ExpandedFormation
-	t.Assert(json.Unmarshal(flynn, &apps), c.IsNil)
+	t.Assert(json.Unmarshal(drycc, &apps), c.IsNil)
 	for _, name := range []string{"postgres", "discoverd", "flannel", "controller"} {
 		ef, ok := apps[name]
 		t.Assert(ok, c.Equals, true)

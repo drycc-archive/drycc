@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 type WatchState string

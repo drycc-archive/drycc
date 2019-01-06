@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/httpclient"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/pkg/httpclient"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/router/types"
 )
 
 // ErrNotFound is returned when no route was found.

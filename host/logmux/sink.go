@@ -17,17 +17,17 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/logaggregator/client"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/dialer"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/lru"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	"github.com/flynn/flynn/pkg/syslog/rfc6587"
-	"github.com/flynn/flynn/pkg/tlsconfig"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/logaggregator/client"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/dialer"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/lru"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/syslog/rfc6587"
+	"github.com/drycc/drycc/pkg/tlsconfig"
 	"github.com/inconshreveable/log15"
 	"github.com/julienschmidt/httprouter"
 )
@@ -601,7 +601,7 @@ func (s *SyslogSink) Write(m message) error {
 		jobID, _ := parseProcID(m.Message.ProcID)
 		job = s.sm.state.GetJob(jobID)
 		if job != nil && job.Job != nil {
-			appName = job.Job.Metadata["flynn-controller.app_name"]
+			appName = job.Job.Metadata["drycc-controller.app_name"]
 			updateCache = true
 		}
 	}

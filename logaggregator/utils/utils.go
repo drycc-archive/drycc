@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 )
 
 func ParseMessage(data []byte) (*rfc5424.Message, *HostCursor, error) {
@@ -25,7 +25,7 @@ func ParseHostCursor(msg *rfc5424.Message) (*HostCursor, error) {
 	if err != nil {
 		return nil, err
 	}
-	if sd == nil || !bytes.Equal(sd.ID, []byte("flynn")) || len(sd.Params) == 0 {
+	if sd == nil || !bytes.Equal(sd.ID, []byte("drycc")) || len(sd.Params) == 0 {
 		return nil, errors.New("missing structured data")
 	}
 	var c *HostCursor

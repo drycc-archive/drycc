@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/logaggregator/client"
-	"github.com/flynn/flynn/logaggregator/snapshot"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/logaggregator/client"
+	"github.com/drycc/drycc/logaggregator/snapshot"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
@@ -113,7 +113,7 @@ func (a *aggregatorAPI) GetLog(ctx context.Context, w http.ResponseWriter, req *
 }
 
 func (a *aggregatorAPI) GetSnapshot(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "application/vnd.flynn.logaggregator-snapshot")
+	w.Header().Set("Content-Type", "application/vnd.drycc.logaggregator-snapshot")
 	snapshot.WriteTo(a.agg.ReadAll(), w)
 }
 

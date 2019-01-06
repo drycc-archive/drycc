@@ -7,33 +7,33 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("redis", runRedis, `
-usage: flynn redis redis-cli [--] [<argument>...]
-       flynn redis dump [-q] [-f <file>]
-       flynn redis restore [-q] [-f <file>]
+usage: drycc redis redis-cli [--] [<argument>...]
+       drycc redis dump [-q] [-f <file>]
+       drycc redis restore [-q] [-f <file>]
 
 Options:
 	-f, --file=<file>  name of dump file
 	-q, --quiet        don't print progress
 
 Commands:
-	redis-cli  Open a console to a Flynn redis instance. Any valid arguments to redis-cli may be provided.
+	redis-cli  Open a console to a Drycc redis instance. Any valid arguments to redis-cli may be provided.
 	dump     Dump a redis instance. If file is not specified, will dump to stdout.
 	restore  Restore a dump. If file is not specified, will restore from stdin.
 
 Examples:
 
-    $ flynn redis redis-cli
+    $ drycc redis redis-cli
 
-    $ flynn redis dump -f db.dump
+    $ drycc redis dump -f db.dump
 
-    $ flynn redis restore -f db.dump
+    $ drycc redis restore -f db.dump
 `)
 }
 
@@ -62,9 +62,9 @@ func getAppRedisRunConfig(client controller.Client) (*runConfig, error) {
 }
 
 func getRedisRunConfig(client controller.Client, app string, appRelease *ct.Release) (*runConfig, error) {
-	redisApp := appRelease.Env["FLYNN_REDIS"]
+	redisApp := appRelease.Env["DRYCC_REDIS"]
 	if redisApp == "" {
-		return nil, fmt.Errorf("No redis server found. Provision one with `flynn resource add redis`")
+		return nil, fmt.Errorf("No redis server found. Provision one with `drycc resource add redis`")
 	}
 
 	redisRelease, err := client.GetAppRelease(redisApp)
@@ -113,7 +113,7 @@ func runRedisDump(args *docopt.Args, client controller.Client, config *runConfig
 		config.Stdout = io.MultiWriter(config.Stdout, bar)
 	}
 
-	config.Args[0] = "/bin/dump-flynn-redis"
+	config.Args[0] = "/bin/dump-drycc-redis"
 	return runJob(client, *config)
 }
 
@@ -149,6 +149,6 @@ func runRedisRestore(args *docopt.Args, client controller.Client, config *runCon
 		config.Stdin = bar.NewProxyReader(config.Stdin)
 	}
 
-	config.Args[0] = "/bin/restore-flynn-redis"
+	config.Args[0] = "/bin/restore-drycc-redis"
 	return runJob(client, *config)
 }

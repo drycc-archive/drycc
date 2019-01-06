@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/router/types"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/router/types"
 	log "github.com/inconshreveable/log15"
 )
 
@@ -111,5 +111,5 @@ func auditLoggerFn(handler http.Handler, logger log.Logger, clientIP string, rw 
 	start := time.Now()
 	logger.Info("request started", "method", req.Method, "path", req.URL.Path, "client_ip", clientIP)
 	bodyBuf := handleRequestWithAuditBodyBuffer(handler, rw, req)
-	logger.Info("request completed", "status", rw.Status(), "duration", time.Since(start), "method", req.Method, "path", req.URL.Path, "client_ip", clientIP, "key_id", req.Header.Get("Flynn-Auth-Key-ID"), "user_agent", req.Header.Get("User-Agent"), "body", bodyBuf.String())
+	logger.Info("request completed", "status", rw.Status(), "duration", time.Since(start), "method", req.Method, "path", req.URL.Path, "client_ip", clientIP, "key_id", req.Header.Get("Drycc-Auth-Key-ID"), "user_agent", req.Header.Get("User-Agent"), "body", bodyBuf.String())
 }

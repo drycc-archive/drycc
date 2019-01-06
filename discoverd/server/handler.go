@@ -12,12 +12,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	dt "github.com/flynn/flynn/discoverd/types"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/sse"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/discoverd/client"
+	dt "github.com/drycc/drycc/discoverd/types"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/sse"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/stream"
 	log "github.com/inconshreveable/log15"
 	"github.com/julienschmidt/httprouter"
 )
@@ -205,7 +205,7 @@ func (h *Handler) serveGetService(w http.ResponseWriter, r *http.Request, params
 	// always return a stream due to Go's http.Client not
 	// maintaining headers through a redirect.
 	//
-	// See https://github.com/flynn/flynn/issues/1880
+	// See https://github.com/drycc/drycc/issues/1880
 	h.serveStream(w, params, discoverd.EventKindAll)
 }
 

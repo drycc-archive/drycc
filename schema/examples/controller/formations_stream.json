@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/formations_stream#",
+  "id": "https://drycc.cc/schema/examples/controller/formations_stream#",
   "title": "Stream formations",
   "description": "",
   "definitions": {

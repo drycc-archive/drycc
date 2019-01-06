@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/flynn/flynn/test/apps/http",
+	"ImportPath": "github.com/drycc/drycc/test/apps/http",
 	"GoVersion": "go1.6",
 	"Deps": []
 }

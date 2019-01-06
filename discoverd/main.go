@@ -15,15 +15,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	dd "github.com/flynn/flynn/discoverd/deployment"
-	"github.com/flynn/flynn/discoverd/server"
-	dt "github.com/flynn/flynn/discoverd/types"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/mux"
-	"github.com/flynn/flynn/pkg/shutdown"
+	"github.com/drycc/drycc/discoverd/client"
+	dd "github.com/drycc/drycc/discoverd/deployment"
+	"github.com/drycc/drycc/discoverd/server"
+	dt "github.com/drycc/drycc/discoverd/types"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/mux"
+	"github.com/drycc/drycc/pkg/shutdown"
 )
 
 const (
@@ -71,7 +71,7 @@ type Main struct {
 // NewMain returns a new instance of Main.
 func NewMain() *Main {
 	return &Main{
-		status: host.DiscoverdConfig{JobID: os.Getenv("FLYNN_JOB_ID")},
+		status: host.DiscoverdConfig{JobID: os.Getenv("DRYCC_JOB_ID")},
 
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,

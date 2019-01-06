@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/flynn/flynn/pkg/attempt"
+	"github.com/drycc/drycc/pkg/attempt"
 )
 
 type DialFunc func(network, addr string) (net.Conn, error)

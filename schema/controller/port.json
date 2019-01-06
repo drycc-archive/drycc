@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/port#",
+  "id": "https://drycc.cc/schema/controller/port#",
   "title": "Port",
   "description": "",
   "sortIndex": 8,

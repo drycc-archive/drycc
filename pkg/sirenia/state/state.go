@@ -20,8 +20,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/sirenia/xlog"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/sirenia/xlog"
 	"github.com/inconshreveable/log15"
 )
 

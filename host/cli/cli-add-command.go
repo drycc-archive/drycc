@@ -8,16 +8,16 @@ import (
 	"fmt"
 	"time"
 
-	host "github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	host "github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("cli-add-command", runCliAddCommand, `
-usage: flynn-host cli-add-command
+usage: drycc-host cli-add-command
 
-Get the 'flynn cluster add' command to manage this cluster.`)
+Get the 'drycc cluster add' command to manage this cluster.`)
 }
 
 func runCliAddCommand(args *docopt.Args, client *cluster.Client) error {
@@ -94,8 +94,8 @@ func runCliAddCommand(args *docopt.Args, client *cluster.Client) error {
 		return err
 	}
 
-	fmt.Printf("Install the Flynn CLI (see https://flynn.io/docs/cli for instructions) and paste the line below into a terminal window:\n\n")
-	fmt.Printf("flynn cluster add -p %v default %v %v\n", pin, domain, key)
+	fmt.Printf("Install the Drycc CLI (see https://drycc.cc/docs/cli for instructions) and paste the line below into a terminal window:\n\n")
+	fmt.Printf("drycc cluster add -p %v default %v %v\n", pin, domain, key)
 	fmt.Printf("\nThe built-in dashboard can be accessed at http://%v.%v and your login token is %v\n", dashboardAppName, dashboardDomain, dashboardToken)
 
 	return nil
@@ -110,8 +110,8 @@ type mostRecentJob struct {
 }
 
 func (j *mostRecentJob) offer(job *host.ActiveJob) {
-	app := job.Job.Metadata["flynn-controller.app_name"]
-	typ := job.Job.Metadata["flynn-controller.type"]
+	app := job.Job.Metadata["drycc-controller.app_name"]
+	typ := job.Job.Metadata["drycc-controller.type"]
 	if app != j.app || typ != j.typ {
 		return
 	}

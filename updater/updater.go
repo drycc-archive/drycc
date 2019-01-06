@@ -8,12 +8,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/flynn/updater/types"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/drycc/updater/types"
 	"github.com/mattn/go-colorable"
 	"github.com/inconshreveable/log15"
 )
@@ -213,7 +213,7 @@ func deployApp(client controller.Client, app *ct.App, image *ct.Artifact, update
 		return err
 	}
 	if !app.System() && release.IsGitDeploy() {
-		if artifact.Meta["flynn.component"] != "slugrunner" {
+		if artifact.Meta["drycc.component"] != "slugrunner" {
 			return errDeploySkipped{"app not using slugrunner image"}
 		}
 	}

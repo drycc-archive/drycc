@@ -3,7 +3,7 @@ package health
 import (
 	"time"
 
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/pkg/stream"
 	"github.com/inconshreveable/log15"
 )
 

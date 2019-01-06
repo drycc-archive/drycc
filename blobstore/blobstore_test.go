@@ -16,11 +16,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/flynn/flynn/blobstore/backend"
-	"github.com/flynn/flynn/blobstore/data"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/testutils/postgres"
+	"github.com/drycc/drycc/blobstore/backend"
+	"github.com/drycc/drycc/blobstore/data"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/testutils/postgres"
 	"github.com/jackc/pgx"
 )
 

@@ -1,13 +1,13 @@
 GO_ENV=GOROOT=`readlink -f build/_go`
 
 build:
-	script/build-flynn
+	script/build-drycc
 
 release:
-	script/build-flynn --git-version
+	script/build-drycc --git-version
 
 clean:
-	script/clean-flynn
+	script/clean-drycc
 
 test: test-unit test-integration
 

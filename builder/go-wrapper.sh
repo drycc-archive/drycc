@@ -11,14 +11,14 @@ if [[ $(basename $0) != "cgo" ]]; then
   export CGO_ENABLED=0
 fi
 
-GO_LDFLAGS="-X github.com/flynn/flynn/pkg/version.version=${FLYNN_VERSION}"
+GO_LDFLAGS="-X github.com/drycc/drycc/pkg/version.version=${DRYCC_VERSION}"
 
 if [[ -n "${TUF_ROOT_KEYS}" ]]; then
-  GO_LDFLAGS="${GO_LDFLAGS} -X github.com/flynn/flynn/pkg/tufconfig.RootKeysJSON=${TUF_ROOT_KEYS}"
+  GO_LDFLAGS="${GO_LDFLAGS} -X github.com/drycc/drycc/pkg/tufconfig.RootKeysJSON=${TUF_ROOT_KEYS}"
 fi
 
 if [[ -n "${TUF_REPOSITORY}" ]]; then
-  GO_LDFLAGS="${GO_LDFLAGS} -X github.com/flynn/flynn/pkg/tufconfig.Repository=${TUF_REPOSITORY}"
+  GO_LDFLAGS="${GO_LDFLAGS} -X github.com/drycc/drycc/pkg/tufconfig.Repository=${TUF_REPOSITORY}"
 fi
 
 ${GOROOT}/bin/go $1 -ldflags "${GO_LDFLAGS}" ${@:2}

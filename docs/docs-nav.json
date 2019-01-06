@@ -2,7 +2,7 @@
   { "title": "Installation", "path": "/docs/installation", "children": [
     { "title": "Instructions", "path": "/docs/installation/manual" },
     { "title": "Vagrant", "path": "/docs/installation/vagrant" },
-    { "title": "Releases", "path": "https://releases.flynn.io" }
+    { "title": "Releases", "path": "https://releases.drycc.cc" }
   ] },
   { "title": "Using", "children": [
     { "title": "Basics", "path": "/docs/basics" },

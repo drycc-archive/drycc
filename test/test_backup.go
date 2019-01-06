@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/flynn/flynn/pkg/attempt"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/pkg/attempt"
+	c "github.com/drycc/go-check"
 )
 
 type BackupSuite struct {
@@ -98,16 +98,16 @@ func (s *BackupSuite) testClusterBackup(t *c.C, name string) {
 	release, err := x.controller.GetAppRelease("nodejs")
 	t.Assert(err, c.IsNil)
 
-	flynn := func(cmdArgs ...string) *CmdResult {
-		return x.flynn("/", append([]string{"-a", "nodejs"}, cmdArgs...)...)
+	drycc := func(cmdArgs ...string) *CmdResult {
+		return x.drycc("/", append([]string{"-a", "nodejs"}, cmdArgs...)...)
 	}
 
-	if _, ok := release.Env["FLYNN_REDIS"]; ok {
+	if _, ok := release.Env["DRYCC_REDIS"]; ok {
 		debug(t, "checking redis resource")
 		// try multiple times as the Redis resource is not guaranteed to be up yet
 		var redisResult *CmdResult
 		err = attempt.Strategy{Total: 10 * time.Second, Delay: 100 * time.Millisecond}.Run(func() error {
-			redisResult = flynn("redis", "redis-cli", "--", "PING")
+			redisResult = drycc("redis", "redis-cli", "--", "PING")
 			return redisResult.Err
 		})
 		t.Assert(err, c.IsNil)
@@ -115,23 +115,23 @@ func (s *BackupSuite) testClusterBackup(t *c.C, name string) {
 	}
 
 	debug(t, "checking mysql resource")
-	if _, ok := release.Env["FLYNN_MYSQL"]; ok {
-		t.Assert(flynn("mysql", "console", "--", "-e", "SELECT * FROM foos"), SuccessfulOutputContains, "foobar")
+	if _, ok := release.Env["DRYCC_MYSQL"]; ok {
+		t.Assert(drycc("mysql", "console", "--", "-e", "SELECT * FROM foos"), SuccessfulOutputContains, "foobar")
 	} else {
-		t.Assert(flynn("resource", "add", "mysql"), Succeeds)
+		t.Assert(drycc("resource", "add", "mysql"), Succeeds)
 	}
 
 	debug(t, "checking mongodb resource")
-	if _, ok := release.Env["FLYNN_MONGO"]; ok {
-		t.Assert(flynn("mongodb", "mongo", "--", "--eval", "db.foos.find()"), SuccessfulOutputContains, "foobar")
+	if _, ok := release.Env["DRYCC_MONGO"]; ok {
+		t.Assert(drycc("mongodb", "mongo", "--", "--eval", "db.foos.find()"), SuccessfulOutputContains, "foobar")
 	} else {
-		t.Assert(flynn("resource", "add", "mongodb"), Succeeds)
+		t.Assert(drycc("resource", "add", "mongodb"), Succeeds)
 	}
 
 	debug(t, "checking dashboard STATUS_KEY matches status AUTH_KEY")
-	dashboardStatusKeyResult := x.flynn("/", "-a", "dashboard", "env", "get", "STATUS_KEY")
+	dashboardStatusKeyResult := x.drycc("/", "-a", "dashboard", "env", "get", "STATUS_KEY")
 	t.Assert(dashboardStatusKeyResult, Succeeds)
-	statusAuthKeyResult := x.flynn("/", "-a", "status", "env", "get", "AUTH_KEY")
+	statusAuthKeyResult := x.drycc("/", "-a", "status", "env", "get", "AUTH_KEY")
 	t.Assert(statusAuthKeyResult, Succeeds)
 	t.Assert(dashboardStatusKeyResult.Output, c.Equals, statusAuthKeyResult.Output)
 }

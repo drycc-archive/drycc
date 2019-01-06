@@ -64,10 +64,10 @@ StaticConfig.PROVIDER_ATTRS = {
 		route: {
 		  mode: 'resource',
 		  appNameFromResource: function (resource) {
-		    return resource.env['FLYNN_REDIS'];
+		    return resource.env['DRYCC_REDIS'];
 		  },
 		  serviceNameFromResource: function (resource) {
-		    return resource.env['FLYNN_REDIS'];
+		    return resource.env['DRYCC_REDIS'];
 		  }
 		},
 		uri: {

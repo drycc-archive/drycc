@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 var (
@@ -267,7 +267,7 @@ func buildTestData(n int, hdr *rfc5424.Header) []*rfc5424.Message {
 	for i := range data {
 		line := []byte(fmt.Sprintf("line %d\n", i))
 		msg := rfc5424.NewMessage(hdr, line)
-		msg.StructuredData = []byte(fmt.Sprintf(`[flynn seq="%d"]`, msgIdx))
+		msg.StructuredData = []byte(fmt.Sprintf(`[drycc seq="%d"]`, msgIdx))
 		msgIdx++
 		msg.Timestamp = timeNow
 

@@ -17,19 +17,19 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/backup"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/router/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/backup"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/router/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("export", runExport, `
-usage: flynn export [options]
+usage: drycc export [options]
 
 Export application configuration and data.
 
@@ -42,7 +42,7 @@ Options:
 `)
 
 	register("import", runImport, `
-usage: flynn import [options]
+usage: drycc import [options]
 
 Create a new application using exported configuration and data.
 
@@ -185,9 +185,9 @@ func runExport(args *docopt.Args, client controller.Client) error {
 			return fmt.Errorf("error exporting artifacts: %s", err)
 		}
 	}
-	// save layers of any Flynn artifacts stored in the blobstore
+	// save layers of any Drycc artifacts stored in the blobstore
 	for _, artifact := range artifacts {
-		if artifact.Type != ct.ArtifactTypeFlynn {
+		if artifact.Type != ct.ArtifactTypeDrycc {
 			continue
 		}
 		if !artifact.Blobstore() {
@@ -235,7 +235,7 @@ func runExport(args *docopt.Args, client controller.Client) error {
 
 		// pull the Docker image
 		cmd := exec.Command("docker", "pull", ref)
-		log.Printf("flynn: pulling Docker image with %q", strings.Join(cmd.Args, " "))
+		log.Printf("drycc: pulling Docker image with %q", strings.Join(cmd.Args, " "))
 		// forward stdout to stderr in case we are writing the backup to stdout
 		cmd.Stdout = os.Stderr
 		cmd.Stderr = os.Stderr
@@ -247,7 +247,7 @@ func runExport(args *docopt.Args, client controller.Client) error {
 		// will export an image that we can reference on import (just
 		// using the digest is not enough as "docker inspect" only
 		// works with tags)
-		tag := fmt.Sprintf("%s:flynn-export-%s", repo, random.String(8))
+		tag := fmt.Sprintf("%s:drycc-export-%s", repo, random.String(8))
 		if out, err := exec.Command("docker", "tag", ref, tag).CombinedOutput(); err != nil {
 			return fmt.Errorf("error tagging docker image: %s: %q", err, out)
 		}
@@ -355,7 +355,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 
 		filename := path.Base(header.Name)
 		if strings.HasSuffix(filename, ".layer") {
-			f, err := ioutil.TempFile("", "flynn-layer-")
+			f, err := ioutil.TempFile("", "drycc-layer-")
 			if err != nil {
 				return fmt.Errorf("error creating layer tempfile: %s", err)
 			}
@@ -556,7 +556,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 		}
 	}
 
-	if release != nil && release.Env["FLYNN_REDIS"] != "" {
+	if release != nil && release.Env["DRYCC_REDIS"] != "" {
 		res, err := client.ProvisionResource(&ct.ResourceReq{
 			ProviderID: "redis",
 			Apps:       []string{app.ID},
@@ -618,7 +618,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 			}
 
 			// Use slugbuilder to convert the legacy slug to a
-			// Flynn squashfs image
+			// Drycc squashfs image
 			slugImageID := random.UUID()
 			config := runConfig{
 				App:        app.ID,
@@ -666,7 +666,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 		if err != nil {
 			return err
 		}
-		tag := fmt.Sprintf("%s/%s:flynn-import-%s", host, app.Name, random.String(8))
+		tag := fmt.Sprintf("%s/%s:drycc-import-%s", host, app.Name, random.String(8))
 		if out, err := exec.Command("docker", "tag", dockerImage.config.Tag, tag).CombinedOutput(); err != nil {
 			return fmt.Errorf("error tagging docker image: %s: %q", err, out)
 		}
@@ -678,7 +678,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 
 		release.ArtifactIDs = []string{artifact.ID}
 	} else if len(artifacts) > 0 {
-		// import blobstore Flynn artifacts
+		// import blobstore Drycc artifacts
 		blobstoreRelease, err := client.GetAppRelease("blobstore")
 		if err != nil {
 			return fmt.Errorf("unable to retrieve blobstore release: %s", err)
@@ -708,7 +708,7 @@ func runImport(args *docopt.Args, client controller.Client) error {
 
 		release.ArtifactIDs = make([]string, len(artifacts))
 		for i, artifact := range artifacts {
-			if artifact.Type != ct.ArtifactTypeFlynn {
+			if artifact.Type != ct.ArtifactTypeDrycc {
 				continue
 			}
 			if !artifact.Blobstore() {

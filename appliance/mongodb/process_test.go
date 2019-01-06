@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	. "github.com/drycc/go-check"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -89,7 +89,7 @@ func instance(p *Process) *discoverd.Instance {
 
 func connect(c *C, p *Process) *mgo.Session {
 	session, err := mgo.DialWithInfo(&mgo.DialInfo{
-		Username: "flynn",
+		Username: "drycc",
 		Password: "password",
 		Addrs:    []string{fmt.Sprintf("127.0.0.1:%d", MustAtoi(p.Port))},
 		Database: "admin",

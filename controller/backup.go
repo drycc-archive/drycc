@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/backup"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/backup"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
 	"github.com/jackc/pgx"
 	"golang.org/x/net/context"
 )
@@ -120,7 +120,7 @@ func newSizeWriter(w io.Writer) *sizeWriter {
 
 func (c *controllerAPI) createAndStreamBackup(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/tar")
-	filename := "flynn-backup-" + time.Now().UTC().Format("2006-01-02_150405") + ".tar"
+	filename := "drycc-backup-" + time.Now().UTC().Format("2006-01-02_150405") + ".tar"
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%q", filename))
 
 	handleError := func(err error) {

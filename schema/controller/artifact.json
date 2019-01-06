@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/artifact#",
+  "id": "https://drycc.cc/schema/controller/artifact#",
   "title": "Artifact",
   "description": "An artifact is an immutable reference to a image used by a job.",
   "sortIndex": 1,
@@ -18,7 +18,7 @@
     "type": {
       "description": "artifact type",
       "type": "string",
-      "enum": ["docker", "file", "flynn"]
+      "enum": ["docker", "file", "drycc"]
     },
     "uri": {
       "description": "URI used to retrieve the artifact",

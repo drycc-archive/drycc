@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/random"
-	. "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/random"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) TestEvents(c *C) {

@@ -5,13 +5,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/stream"
-	routerc "github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/stream"
+	routerc "github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
+	. "github.com/drycc/go-check"
 )
 
 func newFakeRouter() routerc.Client {

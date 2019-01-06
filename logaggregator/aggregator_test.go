@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	. "github.com/drycc/go-check"
 )
 
 func (s *LogAggregatorTestSuite) TestAggregator(c *C) {

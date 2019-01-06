@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/random"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/random"
+	. "github.com/drycc/go-check"
 	gzfs "github.com/mistifyio/go-zfs"
 )
 
@@ -30,8 +30,8 @@ func (s *TempZpool) SetUpTest(c *C) {
 	}
 
 	// Set up a new provider with a zpool that will be destroyed on teardown
-	s.ZpoolVdevFilePath = fmt.Sprintf("/tmp/flynn-test-zpool-%s.vdev", s.IDstring)
-	s.ZpoolName = fmt.Sprintf("flynn-test-zpool-%s", s.IDstring)
+	s.ZpoolVdevFilePath = fmt.Sprintf("/tmp/drycc-test-zpool-%s.vdev", s.IDstring)
+	s.ZpoolName = fmt.Sprintf("drycc-test-zpool-%s", s.IDstring)
 	var err error
 	s.VolProv, err = NewProvider(&ProviderConfig{
 		DatasetName: s.ZpoolName,

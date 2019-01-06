@@ -14,15 +14,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/cache"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/pkg/tlsconfig"
-	"github.com/flynn/flynn/router/proxy"
-	"github.com/flynn/flynn/router/proxyproto"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/discoverd/cache"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/pkg/tlsconfig"
+	"github.com/drycc/drycc/router/proxy"
+	"github.com/drycc/drycc/router/proxyproto"
+	"github.com/drycc/drycc/router/types"
 	"golang.org/x/net/context"
 	"golang.org/x/net/http2"
 )
@@ -630,8 +630,8 @@ func (s *service) handleBackendEvent(event *discoverd.Event) {
 	backend := &router.Backend{
 		Service: s.name,
 		Addr:    event.Instance.Addr,
-		App:     event.Instance.Meta["FLYNN_APP_NAME"],
-		JobID:   event.Instance.Meta["FLYNN_JOB_ID"],
+		App:     event.Instance.Meta["DRYCC_APP_NAME"],
+		JobID:   event.Instance.Meta["DRYCC_JOB_ID"],
 	}
 	switch event.Kind {
 	case discoverd.EventKindUp:
@@ -692,8 +692,8 @@ func backendFunc(service string, f func() []*discoverd.Instance) proxy.BackendLi
 			backends[i] = &router.Backend{
 				Service: service,
 				Addr:    inst.Addr,
-				App:     inst.Meta["FLYNN_APP_NAME"],
-				JobID:   inst.Meta["FLYNN_JOB_ID"],
+				App:     inst.Meta["DRYCC_APP_NAME"],
+				JobID:   inst.Meta["DRYCC_JOB_ID"],
 			}
 		}
 		return backends

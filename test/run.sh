@@ -17,11 +17,11 @@ main() {
       >> /etc/hosts
   fi
 
-  flynn cluster add --docker ${CLUSTER_ADD_ARGS}
+  drycc cluster add --docker ${CLUSTER_ADD_ARGS}
 
   cd "${ROOT}/test"
 
-  exec /bin/flynn-test $@
+  exec /bin/drycc-test $@
 }
 
 main "$@"

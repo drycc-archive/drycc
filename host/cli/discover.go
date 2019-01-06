@@ -6,14 +6,14 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("discover", runDiscover, `
-usage: flynn-host discover [options] <service>...
+usage: drycc-host discover [options] <service>...
 
 Return low-level information about a service.
 
@@ -22,13 +22,13 @@ Options:
 
 Examples:  
 
-  Show information for service 'flynn-host'.
+  Show information for service 'drycc-host'.
 
-  $ flynn-host discover flynn-host
+  $ drycc-host discover drycc-host
   SERVICE     ID                                ADDR
-  flynn-host  8d0d15d0b14d9efe6316493a658e6b3f  10.0.2.15:1113
+  drycc-host  8d0d15d0b14d9efe6316493a658e6b3f  10.0.2.15:1113
   
-  $ flynn-host discover --json controller
+  $ drycc-host discover --json controller
   [
     {
       "Name": "controller",
@@ -38,10 +38,10 @@ Examples:
         "proto": "http",
         "meta": {
           "AUTH_KEY": "9b7b3b382f13425da3a8cb390f0937b8",
-          "FLYNN_APP_ID": "2169984c-c15f-499d-be77-636612425330",
-          "FLYNN_JOB_ID": "host-b773161b-3e50-43ec-bb38-5c492c2ba2fa",
-          "FLYNN_PROCESS_TYPE": "web",
-          "FLYNN_RELEASE_ID": "305a5c6b-7f01-4232-bc1c-74b6a408960d"
+          "DRYCC_APP_ID": "2169984c-c15f-499d-be77-636612425330",
+          "DRYCC_JOB_ID": "host-b773161b-3e50-43ec-bb38-5c492c2ba2fa",
+          "DRYCC_PROCESS_TYPE": "web",
+          "DRYCC_RELEASE_ID": "305a5c6b-7f01-4232-bc1c-74b6a408960d"
         },
         "index": 22
       },
@@ -52,10 +52,10 @@ Examples:
           "proto": "http",
           "meta": {
             "AUTH_KEY": "9b7b3b382f13425da3a8cb390f0937b8",
-            "FLYNN_APP_ID": "2169984c-c15f-499d-be77-636612425330",
-            "FLYNN_JOB_ID": "host-b773161b-3e50-43ec-bb38-5c492c2ba2fa",
-            "FLYNN_PROCESS_TYPE": "web",
-            "FLYNN_RELEASE_ID": "305a5c6b-7f01-4232-bc1c-74b6a408960d"
+            "DRYCC_APP_ID": "2169984c-c15f-499d-be77-636612425330",
+            "DRYCC_JOB_ID": "host-b773161b-3e50-43ec-bb38-5c492c2ba2fa",
+            "DRYCC_PROCESS_TYPE": "web",
+            "DRYCC_RELEASE_ID": "305a5c6b-7f01-4232-bc1c-74b6a408960d"
           },
           "index": 22
         }

@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
 )
 
 func main() {

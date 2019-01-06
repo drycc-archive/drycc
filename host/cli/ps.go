@@ -11,14 +11,14 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("ps", runPs, `
-usage: flynn-host ps [-a|--all] [-q|--quiet] [-f <format>]
+usage: drycc-host ps [-a|--all] [-q|--quiet] [-f <format>]
 
 List jobs`)
 }
@@ -113,8 +113,8 @@ func printJobs(jobs sortJobs, out io.Writer) {
 			job.Job.ID,
 			job.Status,
 			created,
-			job.Job.Metadata["flynn-controller.app_name"],
-			job.Job.Metadata["flynn-controller.type"],
+			job.Job.Metadata["drycc-controller.app_name"],
+			job.Job.Metadata["drycc-controller.type"],
 			jobError,
 		)
 	}

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"log"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("kill", runKill, `
-usage: flynn kill <job>...
+usage: drycc kill <job>...
 
 Kill running jobs.`)
 }

@@ -6,12 +6,12 @@ import (
 	"sync"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/stream"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 func NewFakeHostClient(hostID string, sync bool) *FakeHostClient {

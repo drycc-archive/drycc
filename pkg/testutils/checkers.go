@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"sort"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 type dirContainsChecker struct {

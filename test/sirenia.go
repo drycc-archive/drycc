@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	sc "github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	sc "github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	c "github.com/drycc/go-check"
 )
 
 type sireniaHookFunc func(t *c.C, r *ct.Release, d *sireniaDeploy)
@@ -248,7 +248,7 @@ func testSireniaDeploy(client controller.Client, disc *discoverd.Client, t *c.C,
 		}
 	outer:
 		for i, expected := range remaining {
-			if state.Primary.Meta["FLYNN_RELEASE_ID"] != expected.Primary {
+			if state.Primary.Meta["DRYCC_RELEASE_ID"] != expected.Primary {
 				logf("primary has incorrect release")
 				continue
 			}
@@ -259,7 +259,7 @@ func testSireniaDeploy(client controller.Client, disc *discoverd.Client, t *c.C,
 				logf("state has no sync node")
 				continue
 			}
-			if state.Sync.Meta["FLYNN_RELEASE_ID"] != expected.Sync {
+			if state.Sync.Meta["DRYCC_RELEASE_ID"] != expected.Sync {
 				logf("sync has incorrect release")
 				continue
 			}
@@ -275,7 +275,7 @@ func testSireniaDeploy(client controller.Client, disc *discoverd.Client, t *c.C,
 				continue
 			}
 			for i, release := range expected.Async {
-				if state.Async[i].Meta["FLYNN_RELEASE_ID"] != release {
+				if state.Async[i].Meta["DRYCC_RELEASE_ID"] != release {
 					logf("async[%d] has incorrect release", i)
 					continue outer
 				}

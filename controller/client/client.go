@@ -9,15 +9,15 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/flynn/flynn/controller/client/v1"
-	ct "github.com/flynn/flynn/controller/types"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/httpclient"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/pinned"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/controller/client/v1"
+	ct "github.com/drycc/drycc/controller/types"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/httpclient"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/pinned"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/router/types"
 )
 
 type Client interface {

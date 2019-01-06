@@ -8,8 +8,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/shutdown"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/shutdown"
 )
 
 /*

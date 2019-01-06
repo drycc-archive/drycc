@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 	"github.com/inconshreveable/log15"
 )
 
@@ -181,7 +181,7 @@ func (f *ClusterFixer) StartAppJob(app, typ, service string) ([]*discoverd.Insta
 	// provision new temporary volumes
 	for i, v := range job.Config.Volumes {
 		if v.DeleteOnStop {
-			f.l.Info(fmt.Sprintf("provisioning volume for %s %s job", app, typ), "job.id", job.ID, "release", job.Metadata["flynn-controller.release"])
+			f.l.Info(fmt.Sprintf("provisioning volume for %s %s job", app, typ), "job.id", job.ID, "release", job.Metadata["drycc-controller.release"])
 			vol := &volume.Info{}
 			if err := host.CreateVolume("default", vol); err != nil {
 				return nil, fmt.Errorf("error provisioning volume for %s %s job: %s", app, typ, err)
@@ -191,7 +191,7 @@ func (f *ClusterFixer) StartAppJob(app, typ, service string) ([]*discoverd.Insta
 	}
 	f.FixJobEnv(job)
 	// run it on the host
-	f.l.Info(fmt.Sprintf("starting %s %s job", app, typ), "job.id", job.ID, "release", job.Metadata["flynn-controller.release"])
+	f.l.Info(fmt.Sprintf("starting %s %s job", app, typ), "job.id", job.ID, "release", job.Metadata["drycc-controller.release"])
 	if err := host.AddJob(job); err != nil {
 		return nil, fmt.Errorf("error starting %s %s job: %s", app, typ, err)
 	}
@@ -228,10 +228,10 @@ func (f *ClusterFixer) FindAppReleaseJobs(app, typ string) []map[string]*host.Jo
 			continue
 		}
 		for _, j := range jobs {
-			if j.Job.Metadata["flynn-controller.app_name"] != app || j.Job.Metadata["flynn-controller.type"] != typ {
+			if j.Job.Metadata["drycc-controller.app_name"] != app || j.Job.Metadata["drycc-controller.type"] != typ {
 				continue
 			}
-			id := j.Job.Metadata["flynn-controller.release"]
+			id := j.Job.Metadata["drycc-controller.release"]
 			if id == "" {
 				continue
 			}
@@ -260,7 +260,7 @@ func (f *ClusterFixer) FindAppReleaseJobs(app, typ string) []map[string]*host.Jo
 }
 
 func (f *ClusterFixer) FixJobEnv(job *host.Job) {
-	job.Config.Env["FLYNN_JOB_ID"] = job.ID
+	job.Config.Env["DRYCC_JOB_ID"] = job.ID
 }
 
 type SortableRelease struct {

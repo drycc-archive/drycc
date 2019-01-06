@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/sse"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/sse"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 /*

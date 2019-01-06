@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 type MonitorSuite struct{}

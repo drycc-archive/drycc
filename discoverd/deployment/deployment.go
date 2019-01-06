@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/stream"
 	"github.com/inconshreveable/log15"
 )
 

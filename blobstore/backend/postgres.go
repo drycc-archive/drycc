@@ -3,7 +3,7 @@ package backend
 import (
 	"io"
 
-	"github.com/flynn/flynn/pkg/postgres"
+	"github.com/drycc/drycc/pkg/postgres"
 	"github.com/jackc/pgx"
 )
 

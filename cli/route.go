@@ -11,18 +11,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/router/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/router/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("route", runRoute, `
-usage: flynn route
-       flynn route add http [-s <service>] [-p <port>] [-c <tls-cert> -k <tls-key>] [--sticky] [--leader] [--no-leader] [--no-drain-backends] <domain>
-       flynn route add tcp [-s <service>] [-p <port>] [--leader] [--no-drain-backends]
-       flynn route update <id> [-s <service>] [-c <tls-cert> -k <tls-key>] [--sticky] [--no-sticky] [--leader] [--no-leader]
-       flynn route remove <id>
+usage: drycc route
+       drycc route add http [-s <service>] [-p <port>] [-c <tls-cert> -k <tls-key>] [--sticky] [--leader] [--no-leader] [--no-drain-backends] <domain>
+       drycc route add tcp [-s <service>] [-p <port>] [--leader] [--no-drain-backends]
+       drycc route update <id> [-s <service>] [-c <tls-cert> -k <tls-key>] [--sticky] [--no-sticky] [--leader] [--no-leader]
+       drycc route remove <id>
 
 Manage routes for application.
 
@@ -45,13 +45,13 @@ Commands:
 
 Examples:
 
-	$ flynn route add http example.com
+	$ drycc route add http example.com
 
-	$ flynn route add http example.com/path/
+	$ drycc route add http example.com/path/
 
-	$ flynn route add tcp
+	$ drycc route add tcp
 
-	$ flynn route add tcp --leader
+	$ drycc route add tcp --leader
 `)
 }
 

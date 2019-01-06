@@ -8,11 +8,11 @@ case $1 in
     exec sudo \
       -u mysql \
       -E -H \
-      /bin/flynn-mariadb $*
+      /bin/drycc-mariadb $*
     ;;
   api)
     shift
-    exec /bin/flynn-mariadb-api $*
+    exec /bin/drycc-mariadb-api $*
     ;;
   *)
     echo "Usage: $0 {mariadb|api}"

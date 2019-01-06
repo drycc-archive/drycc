@@ -9,11 +9,11 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	"github.com/flynn/flynn/pkg/typeconv"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/typeconv"
+	. "github.com/drycc/go-check"
 )
 
 func (s *LogAggregatorTestSuite) TestAPIGetLogWithNoResults(c *C) {
@@ -191,16 +191,16 @@ func (s *LogAggregatorTestSuite) TestNewMessageFromSyslog(c *C) {
 	c.Assert(err, IsNil)
 	m := NewMessageFromSyslog(rfc5424.NewMessage(
 		&rfc5424.Header{
-			Hostname:  []byte("a.b.flynn.local"),
-			ProcID:    []byte("web.flynn-abcd1234"),
+			Hostname:  []byte("a.b.drycc.local"),
+			ProcID:    []byte("web.drycc-abcd1234"),
 			MsgID:     []byte("ID1"),
 			Timestamp: timestamp,
 		},
 		[]byte("testing message"),
 	))
 
-	c.Assert(m.HostID, Equals, "a.b.flynn.local")
-	c.Assert(m.JobID, Equals, "flynn-abcd1234")
+	c.Assert(m.HostID, Equals, "a.b.drycc.local")
+	c.Assert(m.JobID, Equals, "drycc-abcd1234")
 	c.Assert(m.ProcessType, Equals, "web")
 	c.Assert(m.Source, Equals, "app")
 	c.Assert(m.Stream, Equals, logagg.StreamTypeStdout)
@@ -212,7 +212,7 @@ func (s *LogAggregatorTestSuite) TestMessageMarshalJSON(c *C) {
 	c.Assert(err, IsNil)
 
 	m := client.Message{
-		HostID:      "my.flynn.local",
+		HostID:      "my.drycc.local",
 		JobID:       "deadbeef1234",
 		Msg:         "a log message",
 		ProcessType: "web",
@@ -220,7 +220,7 @@ func (s *LogAggregatorTestSuite) TestMessageMarshalJSON(c *C) {
 		Stream:      "stderr",
 		Timestamp:   timestamp,
 	}
-	expected := `{"host_id":"my.flynn.local","job_id":"deadbeef1234","msg":"a log message","process_type":"web","source":"app","stream":"stderr","timestamp":"2009-11-10T23:00:00.123456Z"}`
+	expected := `{"host_id":"my.drycc.local","job_id":"deadbeef1234","msg":"a log message","process_type":"web","source":"app","stream":"stderr","timestamp":"2009-11-10T23:00:00.123456Z"}`
 
 	b, err := json.Marshal(m)
 	c.Assert(err, IsNil)
@@ -254,7 +254,7 @@ func newMessageForApp(appname, procID, msg string) *rfc5424.Message {
 		},
 		[]byte(msg),
 	)
-	m.StructuredData = []byte(`[flynn seq="1"]`)
+	m.StructuredData = []byte(`[drycc seq="1"]`)
 	return m
 }
 

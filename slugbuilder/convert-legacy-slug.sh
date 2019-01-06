@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to convert a legacy slug tarball to a Flynn squashfs image
+# A script to convert a legacy slug tarball to a Drycc squashfs image
 
 # exit on failure
 set -eo pipefail
@@ -13,7 +13,7 @@ trap "rm -rf ${tmp}" EXIT
 mkdir "${tmp}/app"
 cat | tar xz -C "${tmp}/app"
 
-# create the "flynn" user
+# create the "drycc" user
 source "/builder/create-user.sh"
 
 # update file ownership

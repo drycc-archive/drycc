@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/flynn/flynn/host/types"
+	"github.com/drycc/drycc/host/types"
 )
 
 // ErrWouldWait is returned when the Attach should not wait, but the job is not
@@ -22,7 +22,7 @@ var ErrWouldWait = errors.New("cluster: attach would wait")
 // first bytes. If wait is false and the job is not running, ErrWouldWait is
 // returned.
 func (c *Host) Attach(req *host.AttachReq, wait bool) (AttachClient, error) {
-	rwc, err := c.c.Hijack("POST", "/attach", http.Header{"Upgrade": {"flynn-attach/0"}}, req)
+	rwc, err := c.c.Hijack("POST", "/attach", http.Header{"Upgrade": {"drycc-attach/0"}}, req)
 	if err != nil {
 		return nil, err
 	}

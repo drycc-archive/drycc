@@ -7,13 +7,13 @@ import (
 	"strings"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/stream"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 func JobConfig(f *ct.ExpandedFormation, name, hostID string, uuid string) *host.Job {
@@ -35,20 +35,20 @@ func JobConfig(f *ct.ExpandedFormation, name, hostID string, uuid string) *host.
 		env[k] = v
 	}
 	id := cluster.GenerateJobID(hostID, uuid)
-	env["FLYNN_APP_ID"] = f.App.ID
-	env["FLYNN_APP_NAME"] = f.App.Name
-	env["FLYNN_RELEASE_ID"] = f.Release.ID
-	env["FLYNN_PROCESS_TYPE"] = name
-	env["FLYNN_JOB_ID"] = id
+	env["DRYCC_APP_ID"] = f.App.ID
+	env["DRYCC_APP_NAME"] = f.App.Name
+	env["DRYCC_RELEASE_ID"] = f.Release.ID
+	env["DRYCC_PROCESS_TYPE"] = name
+	env["DRYCC_JOB_ID"] = id
 	metadata := make(map[string]string, len(f.App.Meta)+5)
 	for k, v := range f.App.Meta {
 		metadata[k] = v
 	}
-	metadata["flynn-controller.app"] = f.App.ID
-	metadata["flynn-controller.app_name"] = f.App.Name
-	metadata["flynn-controller.release"] = f.Release.ID
-	metadata["flynn-controller.formation"] = "true"
-	metadata["flynn-controller.type"] = name
+	metadata["drycc-controller.app"] = f.App.ID
+	metadata["drycc-controller.app_name"] = f.App.Name
+	metadata["drycc-controller.release"] = f.Release.ID
+	metadata["drycc-controller.formation"] = "true"
+	metadata["drycc-controller.type"] = name
 	job := &host.Job{
 		ID:       id,
 		Metadata: metadata,
@@ -84,7 +84,7 @@ func JobConfig(f *ct.ExpandedFormation, name, hostID string, uuid string) *host.
 	}
 
 	SetupMountspecs(job, f.Artifacts)
-	if f.App.Meta["flynn-system-app"] == "true" {
+	if f.App.Meta["drycc-system-app"] == "true" {
 		job.Partition = "system"
 	}
 	job.Config.Ports = make([]host.Port, len(t.Ports))
@@ -106,7 +106,7 @@ func JobConfig(f *ct.ExpandedFormation, name, hostID string, uuid string) *host.
 func GetEntrypoint(artifacts []*ct.Artifact, typ string) *ct.ImageEntrypoint {
 	for i := len(artifacts) - 1; i >= 0; i-- {
 		artifact := artifacts[i]
-		if artifact.Type != ct.ArtifactTypeFlynn {
+		if artifact.Type != ct.ArtifactTypeDrycc {
 			continue
 		}
 		if e, ok := artifact.Manifest().Entrypoints[typ]; ok {
@@ -115,7 +115,7 @@ func GetEntrypoint(artifacts []*ct.Artifact, typ string) *ct.ImageEntrypoint {
 	}
 	for i := len(artifacts) - 1; i >= 0; i-- {
 		artifact := artifacts[i]
-		if artifact.Type != ct.ArtifactTypeFlynn {
+		if artifact.Type != ct.ArtifactTypeDrycc {
 			continue
 		}
 		if e := artifact.Manifest().DefaultEntrypoint(); e != nil {
@@ -126,11 +126,11 @@ func GetEntrypoint(artifacts []*ct.Artifact, typ string) *ct.ImageEntrypoint {
 }
 
 // SetupMountspecs populates job.Mountspecs using the layers from a list of
-// Flynn image artifacts, expecting each artifact to have a single rootfs entry
+// Drycc image artifacts, expecting each artifact to have a single rootfs entry
 // containing squashfs layers
 func SetupMountspecs(job *host.Job, artifacts []*ct.Artifact) {
 	for _, artifact := range artifacts {
-		if artifact.Type != ct.ArtifactTypeFlynn {
+		if artifact.Type != ct.ArtifactTypeDrycc {
 			continue
 		}
 		if len(artifact.Manifest().Rootfs) != 1 {
@@ -165,11 +165,11 @@ var provisionVolumeAttempts = attempt.Strategy{
 func ProvisionVolume(req *ct.VolumeReq, h VolumeCreator, job *host.Job) (*volume.Info, error) {
 	vol := &volume.Info{
 		Meta: map[string]string{
-			"flynn-controller.app":            job.Metadata["flynn-controller.app"],
-			"flynn-controller.release":        job.Metadata["flynn-controller.release"],
-			"flynn-controller.type":           job.Metadata["flynn-controller.type"],
-			"flynn-controller.path":           req.Path,
-			"flynn-controller.delete_on_stop": strconv.FormatBool(req.DeleteOnStop),
+			"drycc-controller.app":            job.Metadata["drycc-controller.app"],
+			"drycc-controller.release":        job.Metadata["drycc-controller.release"],
+			"drycc-controller.type":           job.Metadata["drycc-controller.type"],
+			"drycc-controller.path":           req.Path,
+			"drycc-controller.delete_on_stop": strconv.FormatBool(req.DeleteOnStop),
 		},
 	}
 	// this potentially leaks volumes on the host, but we'll leave it up
@@ -192,7 +192,7 @@ func ProvisionVolume(req *ct.VolumeReq, h VolumeCreator, job *host.Job) (*volume
 func JobMetaFromMetadata(metadata map[string]string) map[string]string {
 	jobMeta := make(map[string]string, len(metadata))
 	for k, v := range metadata {
-		if strings.HasPrefix(k, "flynn-controller.") {
+		if strings.HasPrefix(k, "drycc-controller.") {
 			continue
 		}
 		jobMeta[k] = v

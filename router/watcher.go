@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/router/types"
 )
 
 type Watcher interface {

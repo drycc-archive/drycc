@@ -9,7 +9,7 @@ usage() {
   cat <<USAGE >&2
 usage: $0 [options]
 
-Boot a Flynn cluster and run integration tests.
+Boot a Drycc cluster and run integration tests.
 
 OPTIONS:
   -h, --help               Show this message
@@ -68,8 +68,8 @@ main() {
     exit 1
   fi
 
-  local flynn="${ROOT}/build/bin/flynn"
-  local flynn_host="${ROOT}/build/bin/flynn-host"
+  local drycc="${ROOT}/build/bin/drycc"
+  local drycc_host="${ROOT}/build/bin/drycc-host"
 
   pushd "${ROOT}" >/dev/null
   make
@@ -81,14 +81,14 @@ main() {
   if [[ -n "${version}" ]]; then
     boot_flags+=("--version" "${version}")
   fi
-  cluster_add=$("${ROOT}/script/bootstrap-flynn" ${boot_flags[@]} &> >(tee /dev/stderr) | tail -3 | head -1)
+  cluster_add=$("${ROOT}/script/bootstrap-drycc" ${boot_flags[@]} &> >(tee /dev/stderr) | tail -3 | head -1)
 
-  if [[ "${cluster_add:0:17}" != "flynn cluster add" ]]; then
+  if [[ "${cluster_add:0:17}" != "drycc cluster add" ]]; then
     echo Bootstrap failed >&2
     exit 1
   fi
 
-  "${ROOT}/script/configure-docker" "${CLUSTER_DOMAIN:-"${size}.localflynn.com"}"
+  "${ROOT}/script/configure-docker" "${CLUSTER_DOMAIN:-"${size}.localdrycc.com"}"
 
   local args=(
     "--concurrency 1"
@@ -96,9 +96,9 @@ main() {
   )
 
   local mounts=(
-    "${ROOT}:/go/src/github.com/flynn/flynn"
+    "${ROOT}:/go/src/github.com/drycc/drycc"
     "/var/run/docker.sock:/var/run/docker.sock"
-    "/var/lib/flynn:/var/lib/flynn"
+    "/var/lib/drycc:/var/lib/drycc"
   )
 
   if [[ -d "${ROOT}/backups" ]]; then
@@ -116,14 +116,14 @@ main() {
   fi
   args+=("--router-ip=192.0.2.200")
 
-  "${flynn_host}" run \
+  "${drycc_host}" run \
     --bind "$(join "," ${mounts[@]})" \
     --volume "/tmp" \
     "${ROOT}/build/image/test.json" \
     /usr/bin/env \
-    ROOT="/go/src/github.com/flynn/flynn" \
+    ROOT="/go/src/github.com/drycc/drycc" \
     CLUSTER_ADD_ARGS="${cluster_add:18}" \
-    /bin/run-flynn-test.sh \
+    /bin/run-drycc-test.sh \
     ${args[@]}
 }
 

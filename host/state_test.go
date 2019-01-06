@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/flynn/flynn/host/types"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/host/types"
+	. "github.com/drycc/go-check"
 )
 
 func Test(t *testing.T) { TestingT(t) }

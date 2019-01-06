@@ -13,8 +13,8 @@ import (
 	"syscall"
 
 	"github.com/docker/docker/pkg/archive"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pinkerton"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pinkerton"
 )
 
 type Builder struct {
@@ -22,7 +22,7 @@ type Builder struct {
 	Context *pinkerton.Context
 }
 
-// Build builds a Flynn image from a Docker image, either creating a squashfs
+// Build builds a Drycc image from a Docker image, either creating a squashfs
 // layer per Docker layer or a squashfs layer for a group of layers up to a
 // Docker tag (e.g. slugrunner becomes three squashfs layers for ubuntu ->
 // cedarish -> slugrunner when groupByTags is set)

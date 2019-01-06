@@ -3,8 +3,8 @@ package main
 import (
 	"sync"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/volume"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/volume"
 )
 
 type Volume struct {
@@ -47,16 +47,16 @@ func NewVolume(info *volume.Info, state ct.VolumeState, hostID string) *Volume {
 	return &Volume{
 		Volume: ct.Volume{
 			VolumeReq: ct.VolumeReq{
-				Path:         info.Meta["flynn-controller.path"],
-				DeleteOnStop: info.Meta["flynn-controller.delete_on_stop"] == "true",
+				Path:         info.Meta["drycc-controller.path"],
+				DeleteOnStop: info.Meta["drycc-controller.delete_on_stop"] == "true",
 			},
 			ID:        info.ID,
 			HostID:    hostID,
 			Type:      info.Type,
 			State:     state,
-			AppID:     info.Meta["flynn-controller.app"],
-			ReleaseID: info.Meta["flynn-controller.release"],
-			JobType:   info.Meta["flynn-controller.type"],
+			AppID:     info.Meta["drycc-controller.app"],
+			ReleaseID: info.Meta["drycc-controller.release"],
+			JobType:   info.Meta["drycc-controller.type"],
 			Meta:      info.Meta,
 			CreatedAt: &info.CreatedAt,
 		},

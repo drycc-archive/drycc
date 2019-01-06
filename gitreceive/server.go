@@ -1,5 +1,5 @@
 /*
-gitreceive handles 'smart' Git HTTP requests for Flynn
+gitreceive handles 'smart' Git HTTP requests for Drycc
 
 This HTTP server can service 'git clone', 'git push' etc. commands
 from Git clients that use the 'smart' Git HTTP protocol (git-upload-pack
@@ -24,12 +24,12 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/pkg/archiver"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/status"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/pkg/archiver"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/status"
 )
 
 func main() {
@@ -307,7 +307,7 @@ git-archive-all() {
 
 while read oldrev newrev refname; do
 	if [[ $refname = "refs/heads/master" ]]; then
-		git-archive-all $newrev | /bin/flynn-receiver "$RECEIVE_APP" "$newrev" --meta git=true --meta "git.commit=$newrev"| sed -u "s/^/"$'\e[1G\e[K'"/"
+		git-archive-all $newrev | /bin/drycc-receiver "$RECEIVE_APP" "$newrev" --meta git=true --meta "git.commit=$newrev"| sed -u "s/^/"$'\e[1G\e[K'"/"
 		master_pushed=1
 		break
 	fi

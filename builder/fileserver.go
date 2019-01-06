@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	p9p "github.com/flynn/go-p9p"
-	"github.com/flynn/go-p9p/ufs"
+	p9p "github.com/drycc/go-p9p"
+	"github.com/drycc/go-p9p/ufs"
 )
 
 func serveFilesystem(dir string, l net.Listener) {

@@ -5,16 +5,16 @@ import (
 	"log"
 	"os"
 
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/go-docopt"
 )
 
 var usage = `
-usage: flynn-builder <command> [<args>...]
+usage: drycc-builder <command> [<args>...]
 
 Commands:
-  build      build Flynn images
+  build      build Drycc images
   run        run a command and generate an image layer
-  export     export Flynn binaries, manifests & images to a TUF repository
+  export     export Drycc binaries, manifests & images to a TUF repository
 `[1:]
 
 type Command struct {

@@ -22,7 +22,7 @@ Commands:
 Examples:
   pinkerton pull https://registry.hub.docker.com/redis
   pinkerton pull https://registry.hub.docker.com/ubuntu?tag=trusty
-  pinkerton pull https://registry.hub.docker.com/flynn/slugrunner?id=1443bd6a675b959693a1a4021d660bebbdbff688d00c65ff057c46702e4b8933
+  pinkerton pull https://registry.hub.docker.com/drycc/slugrunner?id=1443bd6a675b959693a1a4021d660bebbdbff688d00c65ff057c46702e4b8933
   pinkerton checkout slugrunner-test 1443bd6a675b959693a1a4021d660bebbdbff688d00c65ff057c46702e4b8933
   pinkerton cleanup slugrunner-test
 

@@ -2,11 +2,11 @@
 
 # Start an instance with:
 #
-# gcloud compute --project flynn-sandbox images create ubuntu-1604-vmx \
+# gcloud compute --project drycc-sandbox images create ubuntu-1604-vmx \
 #   --source-image-family ubuntu-1604-lts --source-image-project ubuntu-os-cloud \
 #   --licenses "https://www.googleapis.com/compute/v1/projects/vm-options/global/licenses/enable-vmx"
 #
-# gcloud beta compute --project flynn-sandbox instances create flynn-ci-0 \
+# gcloud beta compute --project drycc-sandbox instances create drycc-ci-0 \
 #   --zone us-central1-a \
 #   --machine-type n1-highmem-96 \
 #   --subnet default \
@@ -26,7 +26,7 @@
 #   --image ubuntu-1604-vmx \
 #   --boot-disk-size 1000 \
 #   --boot-disk-type pd-ssd \
-#   --boot-disk-device-name flynn-ci-0
+#   --boot-disk-device-name drycc-ci-0
 
 set -e
 
@@ -34,7 +34,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${ROOT}/script/lib/ui.sh"
 
 main() {
-  local dir="/opt/flynn-test"
+  local dir="/opt/drycc-test"
   local build_dir="${dir}/build"
 
   info "mounting build directory"
@@ -42,7 +42,7 @@ main() {
 
   info
   info "install finished!"
-  info "you should now run test/scripts/setup.sh from a machine that has a local build of Flynn."
+  info "you should now run test/scripts/setup.sh from a machine that has a local build of Drycc."
 }
 
 setup_disk() {

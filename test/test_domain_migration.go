@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/dialer"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/router/types"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/dialer"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/router/types"
+	c "github.com/drycc/go-check"
 )
 
 type DomainMigrationSuite struct {

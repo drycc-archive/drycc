@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	ct "github.com/flynn/flynn/controller/types"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/verify"
+	ct "github.com/drycc/drycc/controller/types"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/verify"
 	"github.com/jackc/pgx"
 )
 
@@ -34,7 +34,7 @@ func (r *ArtifactRepo) Add(data interface{}) error {
 	if a.URI == "" {
 		return ct.ValidationError{Field: "uri", Message: "must not be empty"}
 	}
-	if a.Type == ct.ArtifactTypeFlynn && a.RawManifest == nil {
+	if a.Type == ct.ArtifactTypeDrycc && a.RawManifest == nil {
 		if a.Size <= 0 {
 			return ct.ValidationError{Field: "size", Message: "must be greater than zero"}
 		}

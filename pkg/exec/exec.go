@@ -7,13 +7,13 @@ import (
 	"io"
 	"io/ioutil"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/schedutil"
-	"github.com/flynn/flynn/pkg/stream"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/schedutil"
+	"github.com/drycc/drycc/pkg/stream"
 	"github.com/opencontainers/runc/libcontainer/configs"
 )
 

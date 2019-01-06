@@ -6,7 +6,7 @@ layout: docs
 # Vagrant Installation
 
 Vagrant is a virtual machine manager that runs on your local machine. We provide
-a pre-built Vagrant/VirtualBox VM image that can be used to try out Flynn
+a pre-built Vagrant/VirtualBox VM image that can be used to try out Drycc
 locally without manually installing it.
 
 ## Dependencies
@@ -19,21 +19,21 @@ install them by following the directions on their respective web sites:
 
 ## Installation
 
-Clone the Flynn git repository:
+Clone the Drycc git repository:
 
 ```
-$ git clone https://github.com/flynn/flynn
+$ git clone https://github.com/drycc/drycc
 ```
 
-A Makefile is provided for convenience as a simple wrapper around common flynn
+A Makefile is provided for convenience as a simple wrapper around common drycc
 commands. For systems without `make` installed, manually run the `vagrant` commands.
 
 Change to the `demo` directory and bring up the Vagrant box:
 
 ```
-$ cd flynn/demo
+$ cd drycc/demo
 
-# Provision the VM and bootstrap a flynn cluster
+# Provision the VM and bootstrap a drycc cluster
 # Init should only be called once
 $ make init
 # Print login token and open dashboard in browser
@@ -43,10 +43,10 @@ $ make dashboard
 
 $ vagrant up
 # Follow the instructions output by vagrant up, then...
-$ flynn -a dashboard env get LOGIN_TOKEN
+$ drycc -a dashboard env get LOGIN_TOKEN
 # Copy the login token
 # Open the dashboard in a browser
-$ open http://dashboard.demo.localflynn.com
+$ open http://dashboard.demo.localdrycc.com
 ```
 
 Additional make commands:
@@ -55,7 +55,7 @@ Additional make commands:
 # Halt the VM
 $ make down
 
-# Bring up the VM and flynn
+# Bring up the VM and drycc
 $ make up
 
 # SSH into the VM
@@ -78,7 +78,7 @@ $ make up
 $ make reset
 ```
 
-With a successful installation, you will have a single node Flynn cluster running inside the VM.
+With a successful installation, you will have a single node Drycc cluster running inside the VM.
 
-Now you have Flynn installed and running, head over to the [Flynn
-Basics](/docs/basics) page for a tutorial on deploying an application to Flynn.
+Now you have Drycc installed and running, head over to the [Drycc
+Basics](/docs/basics) page for a tutorial on deploying an application to Drycc.

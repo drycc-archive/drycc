@@ -25,8 +25,8 @@ We learn information about you when:
 
 - you give it to us directly (e.g., when you choose to send us crash reports);
 - we collect it automatically through our products and services (e.g., when your
-  Flynn cluster or Flynn CLI sends us usage statistics);
-- someone else tells us information about you (e.g., when Flynn works with your
+  Drycc cluster or Drycc CLI sends us usage statistics);
+- someone else tells us information about you (e.g., when Drycc works with your
   cloud provider to set up your account); or
 - when we try and understand more about you based on information you've given to
   us (e.g., when we use your IP address and operating system to direct you to
@@ -109,18 +109,18 @@ Twitter](https://support.twitter.com/articles/20170405).
 
 ## Usage Statistics
 
-Flynn sends Prime Directive usage, performance, and configuration statistics.
+Drycc sends Prime Directive usage, performance, and configuration statistics.
 Your IP address and randomly generated identifiers are also collected. These
 statistics are transmitted using TLS and help us improve future versions of
-Flynn. Once sent to Prime Directive, statistics may be aggregated and made
+Drycc. Once sent to Prime Directive, statistics may be aggregated and made
 available to a broad range of developers, including both Prime Directive
 employees and public contributors.
 
-Collection of statistics may be disabled for a Flynn cluster by running this
+Collection of statistics may be disabled for a Drycc cluster by running this
 command:
 
 ```text
-flynn -a controller env set TELEMETRY_DISABLED=true
+drycc -a controller env set TELEMETRY_DISABLED=true
 ```
 
 ## Contact Prime Directive

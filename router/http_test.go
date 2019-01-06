@@ -19,13 +19,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/testutil"
-	"github.com/flynn/flynn/pkg/httpclient"
-	"github.com/flynn/flynn/pkg/tlscert"
-	"github.com/flynn/flynn/router/schema"
-	"github.com/flynn/flynn/router/types"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/testutil"
+	"github.com/drycc/drycc/pkg/httpclient"
+	"github.com/drycc/drycc/pkg/tlscert"
+	"github.com/drycc/drycc/router/schema"
+	"github.com/drycc/drycc/router/types"
+	. "github.com/drycc/go-check"
 	"github.com/jackc/pgx"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/websocket"
@@ -560,7 +560,7 @@ func (s *S) TestWildcardRouting(c *C) {
 	discoverdRegisterHTTPService(c, l, "3", srv3.Listener.Addr().String())
 
 	assertGet(c, "http://"+l.Addrs[0], "foo.bar", "1")
-	assertGet(c, "http://"+l.Addrs[0], "flynn.foo.bar", "2")
+	assertGet(c, "http://"+l.Addrs[0], "drycc.foo.bar", "2")
 	assertGet(c, "http://"+l.Addrs[0], "dev.foo.bar", "3")
 }
 
@@ -1422,7 +1422,7 @@ func (s *S) TestClosedBackendRetriesAnotherBackend(c *C) {
 		c.Log("method:", test.method, "upgrade:", test.upgrade)
 		var body io.Reader
 		if test.method == "POST" {
-			body = strings.NewReader("A not-so-large Flynn test body...")
+			body = strings.NewReader("A not-so-large Drycc test body...")
 		}
 		req, _ := http.NewRequest(test.method, "http://"+l.Addrs[0], body)
 		req.Host = "example.com"

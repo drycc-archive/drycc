@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# A script to cleanup after flynn-host has exited inside a container.
+# A script to cleanup after drycc-host has exited inside a container.
 
 set -e
 
 JOB_ID="$1"
-ZPOOL="flynn-${JOB_ID}"
-HOST_DIR="/var/lib/flynn/${JOB_ID}"
+ZPOOL="drycc-${JOB_ID}"
+HOST_DIR="/var/lib/drycc/${JOB_ID}"
 
 # try multiple times to destroy the zpool in case it's still busy
 for i in $(seq 10); do

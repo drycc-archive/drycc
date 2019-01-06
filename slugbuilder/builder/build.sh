@@ -16,7 +16,7 @@ mkdir -p ${cache_root}
 mkdir -p ${buildpack_root}
 mkdir -p ${build_dir}/.profile.d
 
-# create the "flynn" user
+# create the "drycc" user
 source "/builder/create-user.sh"
 
 echo_title() {
@@ -106,7 +106,7 @@ chown -R "${USER}:${USER}" \
 
 export APP_DIR="${app_dir}"
 export HOME="${app_dir}"
-export REQUEST_ID="flynn-build"
+export REQUEST_ID="drycc-build"
 export STACK=cedar-14
 export CF_STACK=cflinuxfs2
 
@@ -130,7 +130,7 @@ if [[ -n "${SSH_CLIENT_HOSTS}" ]]; then
   unset SSH_CLIENT_HOSTS
 fi
 
-# Fix for https://github.com/flynn/flynn/issues/85
+# Fix for https://github.com/drycc/drycc/issues/85
 export CURL_CONNECT_TIMEOUT=30
 
 # Bump max time to download a single runtime tarball from its default of

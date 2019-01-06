@@ -8,7 +8,7 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/flynn/flynn/pkg/rpcplus"
+	"github.com/drycc/drycc/pkg/rpcplus"
 )
 
 type FDWriter struct {

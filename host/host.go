@@ -15,55 +15,55 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/flynn/flynn/bootstrap/discovery"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/cli"
-	"github.com/flynn/flynn/host/config"
-	"github.com/flynn/flynn/host/logmux"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/api"
-	"github.com/flynn/flynn/host/volume/manager"
-	zfsVolume "github.com/flynn/flynn/host/volume/zfs"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/bootstrap/discovery"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/cli"
+	"github.com/drycc/drycc/host/config"
+	"github.com/drycc/drycc/host/logmux"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/api"
+	"github.com/drycc/drycc/host/volume/manager"
+	zfsVolume "github.com/drycc/drycc/host/volume/zfs"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
 	"github.com/inconshreveable/log15"
 	"github.com/opencontainers/runc/libcontainer"
 	_ "github.com/opencontainers/runc/libcontainer/nsenter"
 )
 
-const configFile = "/etc/flynn/host.json"
+const configFile = "/etc/drycc/host.json"
 
 func init() {
 	cli.Register("daemon", runDaemon, `
-usage: flynn-host daemon [options]
+usage: drycc-host daemon [options]
 
 options:
   --http-port=PORT           HTTP port [default: 1113]
   --external-ip=IP           external IP of host
   --listen-ip=IP             bind host network services to this IP
-  --state=PATH               path to state file [default: /var/lib/flynn/host-state.bolt]
-  --sink-state=PATH          path to the sink state file [default: /var/lib/flynn/sink-state.bolt]
+  --state=PATH               path to state file [default: /var/lib/drycc/host-state.bolt]
+  --sink-state=PATH          path to the sink state file [default: /var/lib/drycc/sink-state.bolt]
   --id=ID                    host id
   --tags=TAGS                host tags (comma separated list of KEY=VAL pairs, used for job constraints in the scheduler)
-  --force                    kill all containers booted by flynn-host before starting
-  --volpath=PATH             directory to create volumes in [default: /var/lib/flynn/volumes]
+  --force                    kill all containers booted by drycc-host before starting
+  --volpath=PATH             directory to create volumes in [default: /var/lib/drycc/volumes]
   --vol-provider=VOL         volume provider [default: zfs]
   --backend=BACKEND          runner backend [default: libcontainer]
-  --flynn-init=PATH          path to flynn-init binary [default: /usr/local/bin/flynn-init]
-  --log-dir=DIR              directory to store job logs [default: /var/log/flynn]
+  --drycc-init=PATH          path to drycc-init binary [default: /usr/local/bin/drycc-init]
+  --log-dir=DIR              directory to store job logs [default: /var/log/drycc]
   --log-file=FILE            custom log file path
   --discovery=TOKEN          join cluster with discovery token
   --discovery-service=NAME   join cluster using service discovery
   --peer-ips=IPLIST          join existing cluster using IPs
-  --bridge-name=NAME         network bridge name [default: flynnbr0]
+  --bridge-name=NAME         network bridge name [default: dryccbr0]
   --no-resurrect             disable cluster resurrection
   --max-job-concurrency=NUM  maximum number of jobs to start concurrently
   --partitions=PARTITIONS    specify resource partitions for host [default: system=cpu_shares:4096 background=cpu_shares:4096 user=cpu_shares:8192]
   --init-log-level=LEVEL     containerinit log level [default: info]
   --zpool-name=NAME          zpool name
-  --enable-dhcp              enable DHCP server (useful to provide container IPs to VMs running in Flynn jobs)
+  --enable-dhcp              enable DHCP server (useful to provide container IPs to VMs running in Drycc jobs)
 	`)
 }
 
@@ -83,7 +83,7 @@ func main() {
 
 	defer shutdown.Exit()
 
-	usage := `usage: flynn-host [-h|--help] [--version] <command> [<args>...]
+	usage := `usage: drycc-host [-h|--help] [--version] <command> [<args>...]
 
 Options:
   -h, --help                 Show this message
@@ -93,7 +93,7 @@ Commands:
   help                       Show usage for a specific command
   init                       Create cluster configuration for daemon
   daemon                     Start the daemon
-  update                     Update Flynn components
+  update                     Update Drycc components
   download                   Download container images
   bootstrap                  Bootstrap layer 1
   inspect                    Get low-level information about a job
@@ -106,15 +106,15 @@ Commands:
   list                       Lists ID and IP of each host
   version                    Show current version
   fix                        Fix a broken cluster
-  tags                       Manage flynn-host daemon tags
+  tags                       Manage drycc-host daemon tags
   discover                   Return low-level information about a service
-  promote                    Promotes a Flynn node to a member of the consensus cluster
-  demote                     Demotes a Flynn node, removing it from the consensus cluster
+  promote                    Promotes a Drycc node to a member of the consensus cluster
+  demote                     Demotes a Drycc node, removing it from the consensus cluster
   log-sink                   Manage host log sinks
-  cli-add-command            Get the 'flynn cluster add' command to manage this cluster
-  volume                     Manage volumes on the Flynn node
+  cli-add-command            Get the 'drycc cluster add' command to manage this cluster
+  volume                     Manage volumes on the Drycc node
 
-See 'flynn-host help <command>' for more information on a specific command.
+See 'drycc-host help <command>' for more information on a specific command.
 `
 
 	args, _ := docopt.Parse(usage, nil, true, version.String(), true)
@@ -122,10 +122,10 @@ See 'flynn-host help <command>' for more information on a specific command.
 	cmdArgs := args.All["<args>"].([]string)
 
 	if cmd == "help" {
-		if len(cmdArgs) == 0 { // `flynn help`
+		if len(cmdArgs) == 0 { // `drycc help`
 			fmt.Println(usage)
 			return
-		} else { // `flynn help <command>`
+		} else { // `drycc help <command>`
 			cmd = cmdArgs[0]
 			cmdArgs = []string{"--help"}
 		}
@@ -134,7 +134,7 @@ See 'flynn-host help <command>' for more information on a specific command.
 	if cmd == "daemon" {
 		// merge in args and env from config file, if available
 		var c *config.Config
-		if n := os.Getenv("FLYNN_HOST_CONFIG"); n != "" {
+		if n := os.Getenv("DRYCC_HOST_CONFIG"); n != "" {
 			var err error
 			c, err = config.Open(n)
 			if err != nil {
@@ -181,7 +181,7 @@ func runDaemon(args *docopt.Args) {
 	volPath := args.String["--volpath"]
 	volProvider := args.String["--vol-provider"]
 	backendName := args.String["--backend"]
-	flynnInit := args.String["--flynn-init"]
+	dryccInit := args.String["--drycc-init"]
 	logDir := args.String["--log-dir"]
 	logFile := args.String["--log-file"]
 	discoveryToken := args.String["--discovery"]
@@ -218,8 +218,8 @@ func runDaemon(args *docopt.Args) {
 		zpoolName = zfsVolume.DefaultDatasetName
 	}
 
-	if path, err := filepath.Abs(flynnInit); err == nil {
-		flynnInit = path
+	if path, err := filepath.Abs(dryccInit); err == nil {
+		dryccInit = path
 	}
 
 	var partitionCGroups = make(map[string]int64) // name -> cpu shares
@@ -312,7 +312,7 @@ func runDaemon(args *docopt.Args) {
 			State:            state,
 			VolManager:       vman,
 			BridgeName:       bridgeName,
-			InitPath:         flynnInit,
+			InitPath:         dryccInit,
 			InitLogLevel:     initLogLevel,
 			LogMux:           mux,
 			PartitionCGroups: partitionCGroups,
@@ -354,7 +354,7 @@ func runDaemon(args *docopt.Args) {
 	backend.SetHost(host)
 
 	// restore the host status if set in the environment
-	if statusEnv := os.Getenv("FLYNN_HOST_STATUS"); statusEnv != "" {
+	if statusEnv := os.Getenv("DRYCC_HOST_STATUS"); statusEnv != "" {
 		log.Info("restoring host status from parent")
 		if err := json.Unmarshal([]byte(statusEnv), &host.status); err != nil {
 			log.Error("error restoring host status from parent", "err", err)
@@ -383,7 +383,7 @@ func runDaemon(args *docopt.Args) {
 	// if we have a control socket FD, wait for a "resume" message before
 	// opening state DBs and serving requests.
 	var controlFD int
-	if fdEnv := os.Getenv("FLYNN_CONTROL_FD"); fdEnv != "" {
+	if fdEnv := os.Getenv("DRYCC_CONTROL_FD"); fdEnv != "" {
 		log.Info("parsing control socket file descriptor")
 		controlFD, err = strconv.Atoi(fdEnv)
 		if err != nil {
@@ -564,7 +564,7 @@ func setupLogger(logDir, logFile string) (log15.Logger, error) {
 		return nil, err
 	}
 	if logFile == "" {
-		logFile = filepath.Join(logDir, "flynn-host.log")
+		logFile = filepath.Join(logDir, "drycc-host.log")
 	}
 	handler, err := log15.FileHandler(logFile, log15.LogfmtFormat())
 	if err != nil {

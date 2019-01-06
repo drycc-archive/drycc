@@ -13,12 +13,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/router/schema"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/router/schema"
+	"github.com/drycc/drycc/router/types"
 	"github.com/inconshreveable/log15"
 )
 

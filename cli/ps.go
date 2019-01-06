@@ -7,16 +7,16 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("ps", runPs, `
-usage: flynn ps [-a] [-c] [-q] [-t <type>]
+usage: drycc ps [-a] [-c] [-q] [-t <type>]
 
-List flynn jobs.
+List drycc jobs.
 
 Options:
   -a, --all           Show all jobs (default is running and pending)
@@ -26,26 +26,26 @@ Options:
 
 Example:
 
-       $ flynn ps
+       $ drycc ps
        ID                                          TYPE  STATE  CREATED             RELEASE
        host0-52aedfbf-e613-40f2-941a-d832d10fc400  web   up     About a minute ago  cf39a906-38d1-4393-a6b1-8ad2befe8142
        host0-205595d8-206a-46a2-be30-2e98f53df272  web   up     25 seconds ago      cf39a906-38d1-4393-a6b1-8ad2befe8142
        host0-0f34548b-72fa-41fe-a425-abc4ac6a3857  web   up     25 seconds ago      cf39a906-38d1-4393-a6b1-8ad2befe8142
 
-       $ flynn ps --all --command
+       $ drycc ps --all --command
        ID                                          TYPE  STATE  CREATED             RELEASE				  COMMAND
        host0-52aedfbf-e613-40f2-941a-d832d10fc400  web   up     2 minutes ago       cf39a906-38d1-4393-a6b1-8ad2befe842	  /runner/init start web
        host0-205595d8-206a-46a2-be30-2e98f53df272  web   up     About a minute ago  cf39a906-38d1-4393-a6b1-8ad2befe842	  /runner/init start web
        host0-0f34548b-72fa-41fe-a425-abc4ac6a3857  web   up     About a minute ago  cf39a906-38d1-4393-a6b1-8ad2befe842	  /runner/init start web
        host0-129b821f-3195-4b3b-b04b-669196cfbb03  run   down   5 seconds ago       cf39a906-38d1-4393-a6b1-8ad2befe842	  /runner/init /bin/bash
 
-       $ flynn ps --all --quiet
+       $ drycc ps --all --quiet
        host0-52aedfbf-e613-40f2-941a-d832d10fc400
        host0-205595d8-206a-46a2-be30-2e98f53df272
        host0-0f34548b-72fa-41fe-a425-abc4ac6a3857
        host0-129b821f-3195-4b3b-b04b-669196cfbb03
 
-       $ flynn ps --all --type=run
+       $ drycc ps --all --type=run
        ID                                          TYPE  STATE  CREATED             RELEASE
        host0-129b821f-3195-4b3b-b04b-669196cfbb03  run   down   5 seconds ago       cf39a906-38d1-4393-a6b1-8ad2befe842
 `)

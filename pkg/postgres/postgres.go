@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sirenia/state"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sirenia/state"
 	"github.com/jackc/pgx"
 )
 
@@ -42,7 +42,7 @@ func New(connPool *pgx.ConnPool, conf *Conf) *DB {
 func Wait(conf *Conf, afterConn func(*pgx.Conn) error) *DB {
 	if conf == nil {
 		conf = &Conf{
-			Service:  os.Getenv("FLYNN_POSTGRES"),
+			Service:  os.Getenv("DRYCC_POSTGRES"),
 			User:     os.Getenv("PGUSER"),
 			Password: os.Getenv("PGPASSWORD"),
 			Database: os.Getenv("PGDATABASE"),

@@ -48,7 +48,7 @@ func Generate(p Params) (*Certificate, error) {
 
 	template := &x509.Certificate{
 		SerialNumber: serialNumber,
-		Subject:      pkix.Name{Organization: []string{"Flynn"}},
+		Subject:      pkix.Name{Organization: []string{"Drycc"}},
 		NotBefore:    notBefore,
 		NotAfter:     notAfter,
 
@@ -56,7 +56,7 @@ func Generate(p Params) (*Certificate, error) {
 		IsCA: p.IsCA,
 	}
 	if p.IsCA {
-		template.Subject.OrganizationalUnit = []string{"Flynn Ephemeral CA"}
+		template.Subject.OrganizationalUnit = []string{"Drycc Ephemeral CA"}
 		template.KeyUsage = x509.KeyUsageCertSign | x509.KeyUsageCRLSign
 	} else {
 		template.Subject.CommonName = p.Hosts[0]

@@ -6,11 +6,11 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/flynn/pkg/status"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/drycc/pkg/status"
 	"github.com/julienschmidt/httprouter"
 	"github.com/inconshreveable/log15"
 )
@@ -106,7 +106,7 @@ func (h *Handler) handleGetBackup(w http.ResponseWriter, req *http.Request, _ ht
 	// Close the reader and confirm that it finished.
 	// Sets a trailer at the end of the HTTP response.
 	if err := r.Close(); err == nil {
-		// Temporary hack for writing trailers until Flynn uses Go 1.5.
+		// Temporary hack for writing trailers until Drycc uses Go 1.5.
 		w.(http.Flusher).Flush()
 		conn, buf, _ := w.(http.Hijacker).Hijack()
 		buf.WriteString("0\r\n") // eof
@@ -132,4 +132,4 @@ func (h *Handler) handlePostStop(w http.ResponseWriter, req *http.Request, _ htt
 	w.WriteHeader(200)
 }
 
-const backupChecksumTrailer = "Flynn-Backup-Checksum"
+const backupChecksumTrailer = "Drycc-Backup-Checksum"

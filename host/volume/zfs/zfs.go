@@ -13,9 +13,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/random"
 	zfs "github.com/mistifyio/go-zfs"
 	"github.com/rancher/sparse-tools/sparse"
 	"github.com/inconshreveable/log15"
@@ -24,7 +24,7 @@ import (
 // blockSize is the block size used when creating new zvols
 const blockSize = 8 * 1024
 
-const DefaultDatasetName = "flynn-default"
+const DefaultDatasetName = "drycc-default"
 
 type zfsVolume struct {
 	info       *volume.Info
@@ -88,7 +88,7 @@ func DefaultMakeDev(volPath string, log log15.Logger) *MakeDev {
 	}
 	log.Info(fmt.Sprintf("using ZFS zpool size %d", size))
 	return &MakeDev{
-		BackingFilename: filepath.Join(volPath, "zfs/vdev/flynn-default-zpool.vdev"),
+		BackingFilename: filepath.Join(volPath, "zfs/vdev/drycc-default-zpool.vdev"),
 		Size:            size,
 	}
 }
@@ -147,7 +147,7 @@ func NewProvider(config *ProviderConfig) (volume.Provider, error) {
 		}
 	}
 	if config.WorkingDir == "" {
-		config.WorkingDir = "/var/lib/flynn/volumes/zfs/"
+		config.WorkingDir = "/var/lib/drycc/volumes/zfs/"
 	}
 	for _, typ := range volume.VolumeTypes {
 		if err := os.MkdirAll(filepath.Join(config.WorkingDir, "mnt", string(typ)), 0755); err != nil {
@@ -194,8 +194,8 @@ func (p *Provider) NewVolume(info *volume.Info) (volume.Volume, error) {
 	// try creating the filesystem multiple times as sometimes it gets
 	// created but fails to mount, returning an error like:
 	//
-	//   filesystem 'flynn-default/data/xxx' is already mounted
-	//   cannot mount 'flynn-default/data/xxx': mountpoint or dataset is busy
+	//   filesystem 'drycc-default/data/xxx' is already mounted
+	//   cannot mount 'drycc-default/data/xxx': mountpoint or dataset is busy
 	//   filesystem successfully created, but not mounted
 	err := zfsCreateAttempts.Run(func() (err error) {
 		v.dataset, err = zfs.CreateFilesystem(p.datasetPath(info), map[string]string{
@@ -597,7 +597,7 @@ func (p *Provider) ReceiveSnapshot(vol volume.Volume, input io.Reader) (volume.V
 		return nil, fmt.Errorf("zfs recv misplaced snapshot data")
 	}
 	snapds := snapshots[len(snapshots)-1]
-	// reassemble as a flynn volume for return
+	// reassemble as a drycc volume for return
 	id := random.UUID()
 	info := &volume.Info{ID: id, Type: vol.Info().Type}
 	snap := &zfsVolume{

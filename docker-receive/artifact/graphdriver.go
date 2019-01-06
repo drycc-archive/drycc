@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	graphdriver.Register("flynn", newGraphDriver)
+	graphdriver.Register("drycc", newGraphDriver)
 }
 
 func newGraphDriver(root string, options []string, uidMaps, gidMaps []idtools.IDMap) (graphdriver.Driver, error) {
@@ -23,14 +23,14 @@ func newGraphDriver(root string, options []string, uidMaps, gidMaps []idtools.ID
 
 // GraphDriver implements the graphdriver.Driver interface by storing diffs as
 // single files on the filesystem, and is used when converting Docker images to
-// Flynn squashfs images to avoid extra libraries or privileges required by
+// Drycc squashfs images to avoid extra libraries or privileges required by
 // standard Docker drivers (e.g. AUFS)
 type GraphDriver struct {
 	root string
 }
 
 func (d *GraphDriver) String() string {
-	return "flynn"
+	return "drycc"
 }
 
 func (d *GraphDriver) Status() [][2]string {

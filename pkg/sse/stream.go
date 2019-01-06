@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	hh "github.com/flynn/flynn/pkg/httphelper"
+	hh "github.com/drycc/drycc/pkg/httphelper"
 	log "github.com/inconshreveable/log15"
 )
 

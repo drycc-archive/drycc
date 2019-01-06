@@ -7,16 +7,16 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("limit", runLimit, `
-usage: flynn limit [-t <proc>]
-       flynn limit set <proc> <var>=<val>...
+usage: drycc limit [-t <proc>]
+       drycc limit set <proc> <var>=<val>...
 
 Manage app resource limits.
 
@@ -30,21 +30,21 @@ Commands:
 
 Examples:
 
-	$ flynn limit
+	$ drycc limit
 	web:     cpu=1000  temp_disk=100MB  max_fd=10000  memory=1GB
 	worker:  cpu=1000  temp_disk=100MB  max_fd=10000  memory=1GB
 
-	$ flynn limit set web memory=512MB max_fd=12000 cpu=500 temp_disk=200MB
+	$ drycc limit set web memory=512MB max_fd=12000 cpu=500 temp_disk=200MB
 	Created release 5058ae7964f74c399a240bdd6e7d1bcb
 
-	$ flynn limit
+	$ drycc limit
 	web:     cpu=500   temp_disk=200MB  max_fd=12000  memory=512MB
 	worker:  cpu=1000  temp_disk=100MB  max_fd=10000  memory=1GB
 
-	$ flynn limit set web memory=256MB
+	$ drycc limit set web memory=256MB
 	Created release b39fe25d0ea344b6b2af5cf4d6542a80
 
-	$ flynn limit
+	$ drycc limit
 	web:     cpu=500   temp_disk=200MB  max_fd=12000  memory=256MB
 	worker:  cpu=1000  temp_disk=100MB  max_fd=10000  memory=1GB
 `)

@@ -56,5 +56,5 @@ Right now, the files are stored as large objects in PostgreSQL or on the local
 filesystem, but it's intended to provide a simple, pre-authenticated gateway to
 S3 and maybe other file storage systems in the near future.
 
-Flynn uses blobstore to store and retrieve Heroku-style slugs built with
+Drycc uses blobstore to store and retrieve Heroku-style slugs built with
 [slugbuilder](/slugbuilder).

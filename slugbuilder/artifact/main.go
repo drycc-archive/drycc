@@ -16,10 +16,10 @@ import (
 	"strings"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/typeconv"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/typeconv"
 	"gopkg.in/yaml.v2"
 )
 
@@ -119,7 +119,7 @@ func run(dir string, uid, gid int) error {
 
 	artifact := &ct.Artifact{
 		ID:   os.Getenv("SLUG_IMAGE_ID"),
-		Type: ct.ArtifactTypeFlynn,
+		Type: ct.ArtifactTypeDrycc,
 		URI:  manifestURL,
 		Meta: map[string]string{
 			"blobstore":                 "true",

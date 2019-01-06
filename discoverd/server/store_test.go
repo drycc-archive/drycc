@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/server"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/server"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 // Ensure the store can open and close.

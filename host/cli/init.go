@@ -3,21 +3,21 @@ package cli
 import (
 	"fmt"
 
-	"github.com/flynn/flynn/bootstrap/discovery"
-	"github.com/flynn/flynn/host/config"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/bootstrap/discovery"
+	"github.com/drycc/drycc/host/config"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("init", runInit, `
-usage: flynn-host init [options]
+usage: drycc-host init [options]
 
 options:
   --init-discovery    create and join a discovery token
   --discovery=TOKEN   join cluster with discovery token
   --peer-ips=IPLIST   join cluster using host IPs (must be already bootstrapped)
   --external-ip=IP    external IP address of host, defaults to the first IPv4 address of eth0
-  --file=NAME         file to write to [default: /etc/flynn/host.json]
+  --file=NAME         file to write to [default: /etc/drycc/host.json]
   `)
 }
 

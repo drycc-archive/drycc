@@ -7,16 +7,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("scale", runScale, `
-usage: flynn scale [options] [<type>=<spec>...]
+usage: drycc scale [options] [<type>=<spec>...]
 
 Scale changes the number of jobs and tags for each process type in a release.
 
@@ -37,24 +37,24 @@ Options:
 
 Example:
 
-	$ flynn scale
+	$ drycc scale
 	web=4 worker=2
 
-	$ flynn scale --all
+	$ drycc scale --all
 	496d6e74-9db9-4cff-bcce-a3b44015907a (current)
 	web=1 worker=2
 
 	632cd907-85ab-4e53-90d0-84635650ec9a
 	web=2
 
-	$ flynn scale web=2 worker=5
+	$ drycc scale web=2 worker=5
 	scaling web: 4=>2, worker: 2=>5
 
-	02:28:34.333 ==> web flynn-3f656af6f1e44092aa7037046236b203 down
-	02:28:34.466 ==> web flynn-ee83def0b8e4455793a43c8c70f5b34e down
-	02:28:35.479 ==> worker flynn-84f70ca18c9641ef83a178a19db867a3 up
-	02:28:36.508 ==> worker flynn-a3de8c326cc542aa89235e53ba304260 up
-	02:28:37.601 ==> worker flynn-e24760c511af4733b01ed5b98aa54647 up
+	02:28:34.333 ==> web drycc-3f656af6f1e44092aa7037046236b203 down
+	02:28:34.466 ==> web drycc-ee83def0b8e4455793a43c8c70f5b34e down
+	02:28:35.479 ==> worker drycc-84f70ca18c9641ef83a178a19db867a3 up
+	02:28:36.508 ==> worker drycc-a3de8c326cc542aa89235e53ba304260 up
+	02:28:37.601 ==> worker drycc-e24760c511af4733b01ed5b98aa54647 up
 
 	scale completed in 3.944629056s
 `)

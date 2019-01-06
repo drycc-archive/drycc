@@ -6,18 +6,18 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("list", runListHosts, `
-usage: flynn-host list
+usage: drycc-host list
 
 Example:
 
-  $ flynn-host list
+  $ drycc-host list
   ID    ADDR
   host  10.0.2.15:1113
 

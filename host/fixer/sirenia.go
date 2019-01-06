@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	sirenia "github.com/flynn/flynn/pkg/sirenia/client"
-	state "github.com/flynn/flynn/pkg/sirenia/state"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	sirenia "github.com/drycc/drycc/pkg/sirenia/client"
+	state "github.com/drycc/drycc/pkg/sirenia/state"
 )
 
 func (f *ClusterFixer) CheckSirenia(svc string) error {
@@ -66,16 +66,16 @@ func (f *ClusterFixer) FixSirenia(svc string) error {
 		return fmt.Errorf("no primary in sirenia state")
 	}
 
-	log.Info("getting primary job info", "job.id", state.Primary.Meta["FLYNN_JOB_ID"])
-	primaryJob, primaryHost, err := f.GetJob(state.Primary.Meta["FLYNN_JOB_ID"])
+	log.Info("getting primary job info", "job.id", state.Primary.Meta["DRYCC_JOB_ID"])
+	primaryJob, primaryHost, err := f.GetJob(state.Primary.Meta["DRYCC_JOB_ID"])
 	if err != nil {
 		log.Error("unable to get primary job info")
 	}
 	var syncJob *host.Job
 	var syncHost *cluster.Host
 	if state.Sync != nil {
-		log.Info("getting sync job info", "job.id", state.Sync.Meta["FLYNN_JOB_ID"])
-		syncJob, syncHost, err = f.GetJob(state.Sync.Meta["FLYNN_JOB_ID"])
+		log.Info("getting sync job info", "job.id", state.Sync.Meta["DRYCC_JOB_ID"])
+		syncJob, syncHost, err = f.GetJob(state.Sync.Meta["DRYCC_JOB_ID"])
 		if err != nil {
 			log.Error("unable to get sync job info")
 		}
@@ -98,7 +98,7 @@ func (f *ClusterFixer) FixSirenia(svc string) error {
 				if !current || event.Kind != discoverd.EventKindUp {
 					continue
 				}
-				if event.Instance.Meta["FLYNN_JOB_ID"] == jobID {
+				if event.Instance.Meta["DRYCC_JOB_ID"] == jobID {
 					upCh <- event.Instance.Addr
 				}
 			}
@@ -127,7 +127,7 @@ outer:
 			}
 		}
 		// job not assigned in state, attempt to terminate it
-		if jobID, ok := i.Meta["FLYNN_JOB_ID"]; ok {
+		if jobID, ok := i.Meta["DRYCC_JOB_ID"]; ok {
 			hostID, err := cluster.ExtractHostID(jobID)
 			if err != nil {
 				log.Error("error extracting host id from jobID", "jobID", jobID, "err", err)

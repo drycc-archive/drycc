@@ -7,14 +7,14 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/flynn/flynn/blobstore/data"
-	"github.com/flynn/flynn/pkg/postgres"
-	docopt "github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/blobstore/data"
+	"github.com/drycc/drycc/pkg/postgres"
+	docopt "github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("migrate", runMigrate, `
-usage: flynn-blobstore migrate [-c <concurrency>] [--delete] [-p <prefix>]
+usage: drycc-blobstore migrate [-c <concurrency>] [--delete] [-p <prefix>]
 
 Move file blobs from default backend to a different backend.
 

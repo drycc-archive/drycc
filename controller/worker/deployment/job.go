@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/worker/types"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/worker/types"
 	"github.com/inconshreveable/log15"
 )
 

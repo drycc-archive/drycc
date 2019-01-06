@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"testing"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 	"github.com/gorilla/sessions"
 )
 

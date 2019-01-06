@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/tlscert"
-	"github.com/flynn/que-go"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/tlscert"
+	"github.com/drycc/que-go"
 	"golang.org/x/net/context"
 )
 

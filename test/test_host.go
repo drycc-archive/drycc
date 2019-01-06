@@ -14,23 +14,23 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/dialer"
-	"github.com/flynn/flynn/pkg/exec"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/schedutil"
-	"github.com/flynn/flynn/pkg/stream"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/dialer"
+	"github.com/drycc/drycc/pkg/exec"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/schedutil"
+	"github.com/drycc/drycc/pkg/stream"
+	c "github.com/drycc/go-check"
 )
 
 type HostSuite struct {
@@ -255,7 +255,7 @@ func (s *Helper) makeIshApp(t *c.C, a *IshApp) (*IshApp, error) {
 
 	// run a job that accepts tcp connections and performs tasks we ask of it in its container
 	a.cmd = exec.JobUsingHost(a.host, s.createArtifactWithClient(t, "test-apps", a.client), &host.Job{
-		Metadata: map[string]string{"flynn-controller.app": app.ID},
+		Metadata: map[string]string{"drycc-controller.app": app.ID},
 		Config: host.ContainerConfig{
 			Args:  []string{"/bin/ish"},
 			Ports: []host.Port{{Proto: "tcp"}},
@@ -544,7 +544,7 @@ func (s *HostSuite) TestNotifyOOM(t *c.C) {
 		s.createArtifact(t, "test-apps"),
 		"/bin/oom",
 	)
-	cmd.Meta = map[string]string{"flynn-controller.app": appID}
+	cmd.Meta = map[string]string{"drycc-controller.app": appID}
 	runErr := make(chan error)
 	go func() {
 		runErr <- cmd.Run()
@@ -630,11 +630,11 @@ func (s *HostSuite) TestVolumeDeleteOnStop(t *c.C) {
 func (s *HostSuite) TestUpdate(t *c.C) {
 	dir := t.MkDir()
 
-	// start flynn-host
+	// start drycc-host
 	id := random.String(8)
 	var out bytes.Buffer
 	cmd := osexec.Command(
-		"flynn-host",
+		"drycc-host",
 		"daemon",
 		"--http-port", "11113",
 		"--state", filepath.Join(dir, "host-state.bolt"),
@@ -648,7 +648,7 @@ func (s *HostSuite) TestUpdate(t *c.C) {
 	cmd.Stdout = &out
 	cmd.Stderr = &out
 	defer func() {
-		debug(t, "*** flynn-host output ***")
+		debug(t, "*** drycc-host output ***")
 		debug(t, out.String())
 		debug(t, "*************************")
 	}()
@@ -674,9 +674,9 @@ func (s *HostSuite) TestUpdate(t *c.C) {
 	t.Assert(status.ID, c.Equals, id)
 	t.Assert(status.PID, c.Equals, cmd.Process.Pid)
 
-	// exec flynn-host and check we get the status from the new daemon
+	// exec drycc-host and check we get the status from the new daemon
 	pid, err := client.Update(
-		"flynn-host",
+		"drycc-host",
 		"daemon",
 		"--http-port", "11113",
 		"--state", filepath.Join(dir, "host-state.bolt"),
@@ -699,7 +699,7 @@ func (s *HostSuite) TestUpdate(t *c.C) {
 	select {
 	case <-done:
 	case <-time.After(15 * time.Second):
-		t.Fatal("timed out waiting for flynn-host daemon to exit")
+		t.Fatal("timed out waiting for drycc-host daemon to exit")
 	}
 
 	// client.GetStatus intermittently returns io.EOF right after the update. We
@@ -711,7 +711,7 @@ func (s *HostSuite) TestUpdate(t *c.C) {
 	for start := time.Now(); time.Since(start) < 10*time.Second; time.Sleep(delay) {
 		status, err = client.GetStatus()
 		if e, ok := err.(*url.Error); ok && strings.Contains(e.Err.Error(), "EOF") {
-			debugf(t, "got io.EOF from flynn-host, trying again in %s", delay)
+			debugf(t, "got io.EOF from drycc-host, trying again in %s", delay)
 			continue
 		}
 		break
@@ -723,7 +723,7 @@ func (s *HostSuite) TestUpdate(t *c.C) {
 
 func (s *HostSuite) TestUpdateTags(t *c.C) {
 	events := make(chan *discoverd.Event)
-	stream, err := s.discoverdClient(t).Service("flynn-host").Watch(events)
+	stream, err := s.discoverdClient(t).Service("drycc-host").Watch(events)
 	t.Assert(err, c.IsNil)
 	defer stream.Close()
 
@@ -751,7 +751,7 @@ func (s *HostSuite) TestUpdateTags(t *c.C) {
 		}
 	}
 	if client == nil {
-		t.Fatal("did not initialize flynn-host client")
+		t.Fatal("did not initialize drycc-host client")
 	}
 
 	t.Assert(client.UpdateTags(map[string]string{"foo": "bar"}), c.IsNil)

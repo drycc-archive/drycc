@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/flynn/flynn/host/resource"
+	"github.com/drycc/drycc/host/resource"
 	"github.com/opencontainers/runc/libcontainer/configs"
 )
 

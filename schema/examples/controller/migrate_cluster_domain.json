@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/migrate_cluster_domain#",
+  "id": "https://drycc.cc/schema/examples/controller/migrate_cluster_domain#",
   "title": "Migrate Cluster Domain",
   "description": "Queues a job to migrate cluster domain. Stream `domain_migration` events to know when it's done.",
   "allOf": [

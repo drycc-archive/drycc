@@ -13,22 +13,22 @@ import (
 	"strings"
 	"time"
 
-	cfg "github.com/flynn/flynn/cli/config"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/backup"
-	"github.com/flynn/go-docopt"
+	cfg "github.com/drycc/drycc/cli/config"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/backup"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("docker", runDocker, `
-usage: flynn docker set-push-url [<url>]
-       flynn docker login
-       flynn docker logout
-       flynn docker push <image>
+usage: drycc docker set-push-url [<url>]
+       drycc docker login
+       drycc docker logout
+       drycc docker push <image>
 
-Deploy Docker images to a Flynn cluster.
+Deploy Docker images to a Drycc cluster.
 
 Commands:
 	set-push-url  set the Docker push URL (defaults to https://docker.$CLUSTER_DOMAIN)
@@ -43,18 +43,18 @@ Example:
 
 	Assuming you have a Docker image tagged "my-custom-image:v2":
 
-	$ flynn docker push my-custom-image:v2
-	flynn: getting image config with "docker inspect -f {{ json .Config }} my-custom-image:v2"
-	flynn: tagging Docker image with "docker tag my-custom-image:v2 docker.1.localflynn.com/my-app:latest"
-	flynn: pushing Docker image with "docker push docker.1.localflynn.com/my-app:latest"
-	The push refers to a repository [docker.1.localflynn.com/my-app] (len: 1)
+	$ drycc docker push my-custom-image:v2
+	drycc: getting image config with "docker inspect -f {{ json .Config }} my-custom-image:v2"
+	drycc: tagging Docker image with "docker tag my-custom-image:v2 docker.1.localdrycc.com/my-app:latest"
+	drycc: pushing Docker image with "docker push docker.1.localdrycc.com/my-app:latest"
+	The push refers to a repository [docker.1.localdrycc.com/my-app] (len: 1)
 	a8eb754d1a89: Pushed
 	...
 	3059b4820522: Pushed
 	latest: digest: sha256:1752ca12bbedb99734ca1ba3ec35720768a95ad83b7b6c371fc37a28b98ea351 size: 61216
-	flynn: image pushed, waiting for artifact creation
-	flynn: deploying release using artifact URI http://docker-receive.discoverd?name=my-app&id=sha256:1752ca12bbedb99734ca1ba3ec35720768a95ad83b7b6c371fc37a28b98ea351
-	flynn: image deployed, scale it with 'flynn scale app=N'
+	drycc: image pushed, waiting for artifact creation
+	drycc: deploying release using artifact URI http://docker-receive.discoverd?name=my-app&id=sha256:1752ca12bbedb99734ca1ba3ec35720768a95ad83b7b6c371fc37a28b98ea351
+	drycc: image deployed, scale it with 'drycc scale app=N'
 `)
 }
 
@@ -79,10 +79,10 @@ func runDockerSetPushURL(args *docopt.Args) error {
 	url := args.String["<url>"]
 	if url == "" {
 		if cluster.DockerPushURL != "" {
-			return fmt.Errorf("ERROR: refusing to overwrite current Docker push URL %q with a default one. To overwrite the existing URL, set one explicitly with 'flynn docker set-push-url URL'", cluster.DockerPushURL)
+			return fmt.Errorf("ERROR: refusing to overwrite current Docker push URL %q with a default one. To overwrite the existing URL, set one explicitly with 'drycc docker set-push-url URL'", cluster.DockerPushURL)
 		}
 		if !strings.Contains(cluster.ControllerURL, "controller") {
-			return errors.New("ERROR: unable to determine default Docker push URL, set one explicitly with 'flynn docker set-push-url URL'")
+			return errors.New("ERROR: unable to determine default Docker push URL, set one explicitly with 'drycc docker set-push-url URL'")
 		}
 		url = strings.Replace(cluster.ControllerURL, "controller", "docker", 1)
 	}
@@ -202,7 +202,7 @@ func runDockerPush(args *docopt.Args, client controller.Client) error {
 
 	// get the image config to determine Cmd, Entrypoint and Env
 	cmd := exec.Command("docker", "inspect", "-f", "{{ json .Config }}", image)
-	log.Printf("flynn: getting image config with %q", strings.Join(cmd.Args, " "))
+	log.Printf("drycc: getting image config with %q", strings.Join(cmd.Args, " "))
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return err
@@ -226,7 +226,7 @@ func runDockerPush(args *docopt.Args, client controller.Client) error {
 	// tag the docker image ready to be pushed
 	tag := fmt.Sprintf("%s/%s:latest", dockerHost, app.Name)
 	cmd = exec.Command("docker", "tag", image, tag)
-	log.Printf("flynn: tagging Docker image with %q", strings.Join(cmd.Args, " "))
+	log.Printf("drycc: tagging Docker image with %q", strings.Join(cmd.Args, " "))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
@@ -239,7 +239,7 @@ func runDockerPush(args *docopt.Args, client controller.Client) error {
 	}
 
 	// create and deploy a release with the image config and created artifact
-	log.Printf("flynn: deploying release using artifact URI %s", artifact.URI)
+	log.Printf("drycc: deploying release using artifact URI %s", artifact.URI)
 	release := &ct.Release{
 		ArtifactIDs: []string{artifact.ID},
 		Processes:   prevRelease.Processes,
@@ -277,7 +277,7 @@ func runDockerPush(args *docopt.Args, client controller.Client) error {
 			continue
 		}
 		// only set the key if it doesn't exist so variables set with
-		// `flynn env set` are not overwritten
+		// `drycc env set` are not overwritten
 		if _, ok := release.Env[keyVal[0]]; !ok {
 			release.Env[keyVal[0]] = keyVal[1]
 		}
@@ -294,7 +294,7 @@ func runDockerPush(args *docopt.Args, client controller.Client) error {
 	if err := client.DeployAppRelease(app.ID, release.ID, nil); err != nil {
 		return err
 	}
-	log.Printf("flynn: image deployed, scale it with 'flynn scale app=N'")
+	log.Printf("drycc: image deployed, scale it with 'drycc scale app=N'")
 	return nil
 }
 
@@ -311,7 +311,7 @@ func dockerPush(client controller.Client, repo, tag string) (*ct.Artifact, error
 
 	// push the Docker image to docker-receive
 	cmd := exec.Command("docker", "push", tag)
-	log.Printf("flynn: pushing Docker image with %q", strings.Join(cmd.Args, " "))
+	log.Printf("drycc: pushing Docker image with %q", strings.Join(cmd.Args, " "))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
@@ -319,7 +319,7 @@ func dockerPush(client controller.Client, repo, tag string) (*ct.Artifact, error
 	}
 
 	// wait for an artifact to be created
-	log.Printf("flynn: image pushed, waiting for artifact creation")
+	log.Printf("drycc: image pushed, waiting for artifact creation")
 	for {
 		select {
 		case event, ok := <-events:
@@ -341,7 +341,7 @@ func dockerPush(client controller.Client, repo, tag string) (*ct.Artifact, error
 }
 
 func dockerSave(tag string, tw *backup.TarWriter, progress backup.ProgressBar) error {
-	tmp, err := ioutil.TempFile("", "flynn-docker-save")
+	tmp, err := ioutil.TempFile("", "drycc-docker-save")
 	if err != nil {
 		return fmt.Errorf("error creating temp file: %s", err)
 	}

@@ -5,58 +5,58 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("create", runCreate, `
-usage: flynn create [-r <remote>] [-y] [<name>]
+usage: drycc create [-r <remote>] [-y] [<name>]
 
-Create an application in Flynn.
+Create an application in Drycc.
 
 If a name is not provided, a random name will be generated.
 
-If run from a git repository, a 'flynn' remote will be created or replaced that
+If run from a git repository, a 'drycc' remote will be created or replaced that
 allows deploying the application via git.
 
 Options:
-	-r, --remote=<remote>  Name of git remote to create, empty string for none. [default: flynn]
+	-r, --remote=<remote>  Name of git remote to create, empty string for none. [default: drycc]
 	-y, --yes              Skip the confirmation prompt if the git remote already exists.
 
 Examples:
 
-	$ flynn create
+	$ drycc create
 	Created turkeys-stupefy-perry
 `)
 
 	register("delete", runDelete, `
-usage: flynn delete [-y] [-r <remote>]
+usage: drycc delete [-y] [-r <remote>]
 
 Delete an app.
 
-If run from a git repository with a 'flynn' remote for the app, it will be
+If run from a git repository with a 'drycc' remote for the app, it will be
 removed.
 
 Options:
-	-r, --remote=<remote>  Name of git remote to delete, empty string for none. [default: flynn]
+	-r, --remote=<remote>  Name of git remote to delete, empty string for none. [default: drycc]
 	-y, --yes              Skip the confirmation prompt.
 
 Examples:
 
-	$ flynn -a turkeys-stupefy-perry delete
+	$ drycc -a turkeys-stupefy-perry delete
 	Are you sure you want to delete the app "turkeys-stupefy-perry"? (yes/no): yes
 	Deleted turkeys-stupefy-perry
 `)
 	register("apps", runApps, `
-usage: flynn apps
+usage: drycc apps
 
 List all apps.
 
 Examples:
 
-	$ flynn apps
+	$ drycc apps
 	ID                                NAME
 	f1e85f5392454a329929e3f27f7a5644  gitreceive
 	4c6325c1f13547059e5496c91a6a97dd  router
@@ -66,21 +66,21 @@ Examples:
 `)
 
 	register("info", runInfo, `
-usage: flynn info
+usage: drycc info
 
 Show information for an app.
 
 Examples:
 
-	$ flynn info
+	$ drycc info
 	=== example
-	Git URL:  https://git.dev.localflynn.com/example.git
-	Web URL:  http://example.dev.localflynn.com
+	Git URL:  https://git.dev.localdrycc.com/example.git
+	Web URL:  http://example.dev.localdrycc.com
 
-	$ flynn -a example info
+	$ drycc -a example info
 	=== example
-	Git URL:  https://git.dev.localflynn.com/example.git
-	Web URL:  http://example.dev.localflynn.com
+	Git URL:  https://git.dev.localdrycc.com/example.git
+	Web URL:  http://example.dev.localdrycc.com
 `)
 }
 

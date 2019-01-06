@@ -8,21 +8,21 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("promote", runPromote, `
-usage: flynn-host promote ADDR
+usage: drycc-host promote ADDR
 
-Promotes a Flynn node to a member of the consensus cluster.
+Promotes a Drycc node to a member of the consensus cluster.
 `)
 	Register("demote", runDemote, `
-usage: flynn-host demote [-f|--force] ADDR
+usage: drycc-host demote [-f|--force] ADDR
 
-Demotes a Flynn node, removing it from the consensus cluster.
+Demotes a Drycc node, removing it from the consensus cluster.
 `)
 }
 

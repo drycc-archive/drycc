@@ -14,11 +14,11 @@ import (
 	"time"
 
 	units "github.com/docker/go-units"
-	"github.com/flynn/flynn/cli/config"
-	controller "github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/test/buildlog"
+	"github.com/drycc/drycc/cli/config"
+	controller "github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/test/buildlog"
 )
 
 type ClusterType uint8
@@ -84,10 +84,10 @@ func New(bc BootConfig, out io.Writer) *Cluster {
 	}
 }
 
-func BuildFlynn(bc BootConfig, rootFS, commit string, merge bool, out io.Writer) (string, error) {
+func BuildDrycc(bc BootConfig, rootFS, commit string, merge bool, out io.Writer) (string, error) {
 	c := New(bc, out)
 	defer c.Shutdown()
-	return c.BuildFlynn(rootFS, commit, merge, false)
+	return c.BuildDrycc(rootFS, commit, merge, false)
 }
 
 func (c *Cluster) log(a ...interface{}) (int, error) {
@@ -98,8 +98,8 @@ func (c *Cluster) logf(f string, a ...interface{}) (int, error) {
 	return fmt.Fprintf(c.out, strings.Join([]string{"++", time.Now().Format("15:04:05.000"), f}, " "), a...)
 }
 
-func (c *Cluster) BuildFlynn(rootFS, commit string, merge bool, runTests bool) (string, error) {
-	c.log("Building Flynn...")
+func (c *Cluster) BuildDrycc(rootFS, commit string, merge bool, runTests bool) (string, error) {
+	c.log("Building Drycc...")
 
 	if err := c.setup(); err != nil {
 		return "", err
@@ -126,7 +126,7 @@ func (c *Cluster) BuildFlynn(rootFS, commit string, merge bool, runTests bool) (
 	}
 
 	c.log("Waiting for instance to boot...")
-	if err := buildFlynn(build, commit, merge, c.out); err != nil {
+	if err := buildDrycc(build, commit, merge, c.out); err != nil {
 		build.Kill()
 		return disk.FS, fmt.Errorf("error running build script: %s", err)
 	}
@@ -174,7 +174,7 @@ func (c *Cluster) Boot(typ ClusterType, count int, buildLog *buildlog.Log, killO
 		return nil, err
 	}
 	for _, inst := range instances {
-		if err := c.startFlynnHost(inst, instances); err != nil {
+		if err := c.startDryccHost(inst, instances); err != nil {
 			return nil, err
 		}
 	}
@@ -202,7 +202,7 @@ func (c *Cluster) AddHost() (*Instance, error) {
 		return nil, err
 	}
 	inst := instances[0]
-	if err := c.startFlynnHost(inst, c.defaultInstances); err != nil {
+	if err := c.startDryccHost(inst, c.defaultInstances); err != nil {
 		return nil, err
 	}
 	return inst, err
@@ -214,7 +214,7 @@ func (c *Cluster) AddVanillaHost(rootFS string) (*Instance, error) {
 	return instances[0], err
 }
 
-// RemoveHost stops flynn-host on the instance but leaves it running so the logs
+// RemoveHost stops drycc-host on the instance but leaves it running so the logs
 // are still available if we need to dump them later.
 func (c *Cluster) RemoveHost(id string) error {
 	inst, err := c.Instances.Get(id)
@@ -223,8 +223,8 @@ func (c *Cluster) RemoveHost(id string) error {
 	}
 	c.log("removing host", id)
 
-	// ssh into the host and tell the flynn-host daemon to stop
-	cmd := "sudo start-stop-daemon --stop --pidfile /var/run/flynn-host.pid --retry 15"
+	// ssh into the host and tell the drycc-host daemon to stop
+	cmd := "sudo start-stop-daemon --stop --pidfile /var/run/drycc-host.pid --retry 15"
 	return inst.Run(cmd, nil)
 }
 
@@ -261,7 +261,7 @@ func (c *Cluster) startVMs(typ ClusterType, rootFS string, count int, initial bo
 	return instances, nil
 }
 
-func (c *Cluster) startFlynnHost(inst *Instance, peerInstances []*Instance) error {
+func (c *Cluster) startDryccHost(inst *Instance, peerInstances []*Instance) error {
 	peers := make([]string, 0, len(peerInstances))
 	for _, inst := range peerInstances {
 		if !inst.initial {
@@ -275,8 +275,8 @@ func (c *Cluster) startFlynnHost(inst *Instance, peerInstances []*Instance) erro
 		IP:    inst.IP,
 		Peers: strings.Join(peers, ","),
 	}
-	flynnHostScript.Execute(&script, data)
-	c.logf("Starting flynn-host on %s [id: %s]\n", inst.IP, inst.ID)
+	dryccHostScript.Execute(&script, data)
+	c.logf("Starting drycc-host on %s [id: %s]\n", inst.IP, inst.ID)
 	return inst.Run("bash", &Streams{Stdin: &script, Stdout: c.out, Stderr: os.Stderr})
 }
 
@@ -336,18 +336,18 @@ func (c *Cluster) Shutdown() {
 	}
 }
 
-var flynnBuildScript = template.Must(template.New("flynn-build").Parse(`
+var dryccBuildScript = template.Must(template.New("drycc-build").Parse(`
 #!/bin/bash
 set -e -x
 
 export GOPATH=~/go
-flynn=$GOPATH/src/github.com/flynn/flynn
+drycc=$GOPATH/src/github.com/drycc/drycc
 
-if [ ! -d $flynn ]; then
-  git clone https://github.com/flynn/flynn $flynn
+if [ ! -d $drycc ]; then
+  git clone https://github.com/drycc/drycc $drycc
 fi
 
-cd $flynn
+cd $drycc
 
 # Also fetch Github PR commits
 if ! git config --get-all remote.origin.fetch | grep -q '^+refs/pull'; then
@@ -358,23 +358,23 @@ git fetch
 git checkout --quiet {{ .Commit }}
 
 {{ if .Merge }}
-git config user.email "ci@flynn.io"
+git config user.email "ci@drycc.cc"
 git config user.name "CI"
 git merge origin/master
 {{ end }}
 
-# build flynn, ensuring that it bootstraps on the local
-# VM (rather than using the host Flynn cluster)
-script/build-flynn --force-bootstrap </dev/null
+# build drycc, ensuring that it bootstraps on the local
+# VM (rather than using the host Drycc cluster)
+script/build-drycc --force-bootstrap </dev/null
 
-script/kill-flynn
+script/kill-drycc
 
 if [[ -f test/scripts/debug-info.sh ]]; then
   sudo cp test/scripts/debug-info.sh /usr/local/bin/debug-info.sh
 fi
 
-sudo cp build/bin/flynn-{host,init} /usr/local/bin
-sudo cp build/manifests/bootstrap-manifest.json /etc/flynn-bootstrap.json
+sudo cp build/bin/drycc-{host,init} /usr/local/bin
+sudo cp build/manifests/bootstrap-manifest.json /etc/drycc-bootstrap.json
 `[1:]))
 
 type buildData struct {
@@ -382,19 +382,19 @@ type buildData struct {
 	Merge  bool
 }
 
-func buildFlynn(inst *Instance, commit string, merge bool, out io.Writer) error {
+func buildDrycc(inst *Instance, commit string, merge bool, out io.Writer) error {
 	var b bytes.Buffer
-	flynnBuildScript.Execute(&b, buildData{commit, merge})
+	dryccBuildScript.Execute(&b, buildData{commit, merge})
 	return inst.RunWithTimeout("bash", &Streams{Stdin: &b, Stdout: out, Stderr: out}, 30*time.Minute)
 }
 
-var flynnUnitTestScript = `
+var dryccUnitTestScript = `
 #!/bin/bash
 set -e -x
 
 export GOPATH=~/go
-flynn=$GOPATH/src/github.com/flynn/flynn
-cd $flynn
+drycc=$GOPATH/src/github.com/drycc/drycc
+cd $drycc
 
 if [[ -f test/scripts/test-unit.sh ]]; then
   timeout --signal=QUIT --kill-after=25 20m test/scripts/test-unit.sh
@@ -402,7 +402,7 @@ fi
 `[1:]
 
 func runUnitTests(inst *Instance, out io.Writer) error {
-	return inst.Run("bash", &Streams{Stdin: bytes.NewBufferString(flynnUnitTestScript), Stdout: out, Stderr: out})
+	return inst.Run("bash", &Streams{Stdin: bytes.NewBufferString(dryccUnitTestScript), Stdout: out, Stderr: out})
 }
 
 type hostScriptData struct {
@@ -411,7 +411,7 @@ type hostScriptData struct {
 	Peers string
 }
 
-var flynnHostScript = template.Must(template.New("flynn-host").Parse(`
+var dryccHostScript = template.Must(template.New("drycc-host").Parse(`
 if [[ -f /usr/local/bin/debug-info.sh ]]; then
   /usr/local/bin/debug-info.sh &>/tmp/debug-info.log &
 fi
@@ -425,10 +425,10 @@ sudo start-stop-daemon \
   --background \
   --no-close \
   --make-pidfile \
-  --pidfile /var/run/flynn-host.pid \
+  --pidfile /var/run/drycc-host.pid \
   --exec /usr/bin/env \
   -- \
-  flynn-host \
+  drycc-host \
   daemon \
   --id {{ .ID }} \
   --external-ip {{ .IP }} \
@@ -438,7 +438,7 @@ sudo start-stop-daemon \
   --max-job-concurrency 8 \
   --init-log-level debug \
   --tags "host_id={{ .ID }}" \
-  &>/tmp/flynn-host.log
+  &>/tmp/drycc-host.log
 `[1:]))
 
 type bootstrapMsg struct {
@@ -454,7 +454,7 @@ type controllerCert struct {
 
 func (c *Cluster) bootstrapLayer1(instances []*Instance) error {
 	inst := instances[0]
-	c.ClusterDomain = fmt.Sprintf("flynn-%s.local", random.String(16))
+	c.ClusterDomain = fmt.Sprintf("drycc-%s.local", random.String(16))
 	c.ControllerKey = random.String(16)
 	rd, wr := io.Pipe()
 
@@ -466,7 +466,7 @@ func (c *Cluster) bootstrapLayer1(instances []*Instance) error {
 	var cmdErr error
 	go func() {
 		command := fmt.Sprintf(
-			"CLUSTER_DOMAIN=%s CONTROLLER_KEY=%s DISCOVERD=%s:1111 FLANNEL_NETWORK=100.65.0.0/16 flynn-host bootstrap --json --min-hosts=%d --peer-ips=%s --job-timeout=120 /etc/flynn-bootstrap.json",
+			"CLUSTER_DOMAIN=%s CONTROLLER_KEY=%s DISCOVERD=%s:1111 FLANNEL_NETWORK=100.65.0.0/16 drycc-host bootstrap --json --min-hosts=%d --peer-ips=%s --job-timeout=120 /etc/drycc-bootstrap.json",
 			c.ClusterDomain, c.ControllerKey, inst.IP, len(instances), strings.Join(ips, ","),
 		)
 		cmdErr = inst.Run(command, &Streams{Stdout: wr, Stderr: c.out})
@@ -542,7 +542,7 @@ func (c *Cluster) DumpLogs(buildLog *buildlog.Log) {
 			fmt.Sprintf("host-logs-%s.log", inst.ID),
 			inst,
 			"ps faux",
-			"cat /var/log/flynn/flynn-host.log",
+			"cat /var/log/drycc/drycc-host.log",
 			"cat /tmp/debug-info.log",
 		)
 	}
@@ -550,28 +550,28 @@ func (c *Cluster) DumpLogs(buildLog *buildlog.Log) {
 	printLogs := func(typ string, instances []*Instance) {
 		fallback := func(instances []*Instance) {
 			for _, inst := range instances {
-				run(fmt.Sprintf("%s-fallback-%s.log", typ, inst.ID), inst, "sudo bash -c 'tail -n +1 /var/log/flynn/*.log'")
+				run(fmt.Sprintf("%s-fallback-%s.log", typ, inst.ID), inst, "sudo bash -c 'tail -n +1 /var/log/drycc/*.log'")
 			}
 		}
 
-		run(fmt.Sprintf("%s-jobs.log", typ), instances[0], "flynn-host ps -a")
+		run(fmt.Sprintf("%s-jobs.log", typ), instances[0], "drycc-host ps -a")
 
 		var out bytes.Buffer
-		cmd := `flynn-host ps -aqf '{{ metadata "flynn-controller.app_name" }}:{{ metadata "flynn-controller.type" }}:{{ .Job.ID }}'`
+		cmd := `drycc-host ps -aqf '{{ metadata "drycc-controller.app_name" }}:{{ metadata "drycc-controller.type" }}:{{ .Job.ID }}'`
 		if err := instances[0].Run(cmd, &Streams{Stdout: &out, Stderr: &out}); err != nil {
 			fallback(instances)
 			return
 		}
 
-		// only fallback if all `flynn-host log` commands fail
+		// only fallback if all `drycc-host log` commands fail
 		shouldFallback := true
 		jobs := strings.Split(strings.TrimSpace(out.String()), "\n")
 		for _, job := range jobs {
 			fields := strings.Split(job, ":")
 			jobID := fields[2]
 			cmds := []string{
-				fmt.Sprintf("timeout 10s flynn-host inspect --redact-env BACKEND_S3 %s", jobID),
-				fmt.Sprintf("timeout 10s flynn-host log --init %s", jobID),
+				fmt.Sprintf("timeout 10s drycc-host inspect --redact-env BACKEND_S3 %s", jobID),
+				fmt.Sprintf("timeout 10s drycc-host log --init %s", jobID),
 			}
 			if err := run(fmt.Sprintf("%s-%s.log", typ, job), instances[0], cmds...); err != nil {
 				continue
@@ -583,10 +583,10 @@ func (c *Cluster) DumpLogs(buildLog *buildlog.Log) {
 		}
 
 		// run the fallback on any stopped instances as their logs will
-		// not appear in `flynn-host ps`
+		// not appear in `drycc-host ps`
 		stoppedInstances := make([]*Instance, 0, len(instances))
 		for _, inst := range instances {
-			if err := inst.Run("sudo kill -0 $(cat /var/run/flynn-host.pid)", nil); err != nil {
+			if err := inst.Run("sudo kill -0 $(cat /var/run/drycc-host.pid)", nil); err != nil {
 				stoppedInstances = append(stoppedInstances, inst)
 			}
 		}

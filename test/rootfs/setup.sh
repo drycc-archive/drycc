@@ -18,7 +18,7 @@ echo ubuntu:ubuntu | chpasswd
 echo "LABEL=rootfs / ext4 defaults 0 1" > /etc/fstab
 
 # setup networking
-cat > /etc/systemd/network/10-flynn.network <<EOF
+cat > /etc/systemd/network/10-drycc.network <<EOF
 [Match]
 Name=en*
 
@@ -103,7 +103,7 @@ apt-get install -y \
   squashfs-tools \
   pkg-config
 
-# install flynn test dependencies: postgres, redis, mariadb
+# install drycc test dependencies: postgres, redis, mariadb
 # (normally these are used via appliances; install locally for unit tests)
 apt-get -qy --fix-missing --force-yes install language-pack-en
 update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8

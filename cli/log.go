@@ -8,16 +8,16 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/flynn/flynn/controller/client"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
+	"github.com/drycc/drycc/controller/client"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
 
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("log", runLog, `
-usage: flynn log [-f] [-j <id>] [-n <lines>] [-r] [-s] [-t <type>] [-i]
+usage: drycc log [-f] [-j <id>] [-n <lines>] [-r] [-s] [-t <type>] [-i]
 
 Stream log for an app.
 

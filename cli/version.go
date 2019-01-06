@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/flynn/flynn/pkg/version"
+	"github.com/drycc/drycc/pkg/version"
 )
 
 func init() {
 	register("version", runVersion, `
-usage: flynn version
+usage: drycc version
 
-Show flynn version string.
+Show drycc version string.
 `)
 }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to update the timestamp of a Flynn TUF repository
+# A script to update the timestamp of a Drycc TUF repository
 
 set -eo pipefail
 
@@ -15,16 +15,16 @@ usage: $0 [options]
 
 OPTIONS:
   -h            Show this message
-  -b BUCKET     The S3 bucket containing the TUF repository [default: flynn]
-  -d DIR        Path to the local TUF repository [default: /etc/flynn/tuf]
+  -b BUCKET     The S3 bucket containing the TUF repository [default: drycc]
+  -d DIR        Path to the local TUF repository [default: /etc/drycc/tuf]
 
 Requires AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY to be set
 USAGE
 }
 
 main() {
-  local bucket="flynn"
-  local tuf_dir="/etc/flynn/tuf"
+  local bucket="drycc"
+  local tuf_dir="/etc/drycc/tuf"
 
   while getopts "hb:d:" opt; do
     case $opt in

@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/worker/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/worker/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
 )
 
 func (d *DeployJob) deploySirenia() (err error) {
@@ -74,7 +74,7 @@ loop:
 			case discoverd.EventKindServiceMeta:
 				serviceMeta = event.ServiceMeta
 			case discoverd.EventKindUp:
-				if event.Instance.Meta["FLYNN_RELEASE_ID"] == d.NewReleaseID {
+				if event.Instance.Meta["DRYCC_RELEASE_ID"] == d.NewReleaseID {
 					return loggedErr("sirenia cluster in unexpected state")
 				}
 			}
@@ -106,7 +106,7 @@ loop:
 	}
 
 	stopInstance := func(inst *discoverd.Instance) error {
-		log := log.New("job_id", inst.Meta["FLYNN_JOB_ID"])
+		log := log.New("job_id", inst.Meta["DRYCC_JOB_ID"])
 
 		d.deployEvents <- ct.DeploymentEvent{
 			ReleaseID: d.OldReleaseID,
@@ -169,8 +169,8 @@ loop:
 				}
 				if event.Kind == discoverd.EventKindUp &&
 					event.Instance.Meta != nil &&
-					event.Instance.Meta["FLYNN_RELEASE_ID"] == d.NewReleaseID &&
-					event.Instance.Meta["FLYNN_PROCESS_TYPE"] == processType {
+					event.Instance.Meta["DRYCC_RELEASE_ID"] == d.NewReleaseID &&
+					event.Instance.Meta["DRYCC_PROCESS_TYPE"] == processType {
 					inst = event.Instance
 					break loop
 				}

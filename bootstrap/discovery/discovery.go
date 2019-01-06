@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/flynn/flynn/pkg/version"
+	"github.com/drycc/drycc/pkg/version"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -24,7 +24,7 @@ type Info struct {
 type Instance struct {
 	ID            string         `json:"id,omitempty"`
 	ClusterID     string         `json:"cluster_id,omitempty"`
-	FlynnVersion  string         `json:"flynn_version,omitempty"`
+	DryccVersion  string         `json:"drycc_version,omitempty"`
 	SSHPublicKeys []SSHPublicKey `json:"ssh_public_keys,omitempty"`
 	URL           string         `json:"url,omitempty"`
 	Name          string         `json:"name,omitempty"`
@@ -43,7 +43,7 @@ func RegisterInstance(info Info) (string, error) {
 		Name:          info.Name,
 		URL:           info.InstanceURL,
 		SSHPublicKeys: make([]SSHPublicKey, 0, 4),
-		FlynnVersion:  version.String(),
+		DryccVersion:  version.String(),
 	}}
 
 	for _, t := range []string{"dsa", "rsa", "ecdsa", "ed25519"} {
@@ -98,7 +98,7 @@ func GetCluster(uri string) ([]*Instance, error) {
 }
 
 func NewToken() (string, error) {
-	uri := "https://discovery.flynn.io/clusters"
+	uri := "https://discovery.drycc.cc/clusters"
 	if base := os.Getenv("DISCOVERY_SERVER"); base != "" {
 		uri = base + "/clusters"
 	}
@@ -107,7 +107,7 @@ func NewToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("User-Agent", fmt.Sprintf("flynn-host/%s %s-%s", version.String(), runtime.GOOS, runtime.GOARCH))
+	req.Header.Set("User-Agent", fmt.Sprintf("drycc-host/%s %s-%s", version.String(), runtime.GOOS, runtime.GOARCH))
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err

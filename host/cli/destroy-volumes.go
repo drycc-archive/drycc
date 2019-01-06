@@ -6,20 +6,20 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/manager"
-	"github.com/flynn/flynn/host/volume/zfs"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/manager"
+	"github.com/drycc/drycc/host/volume/zfs"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/go-docopt"
 	"github.com/inconshreveable/log15"
 )
 
 func init() {
 	Register("destroy-volumes", runVolumeDestroy, `
-usage: flynn-host destroy-volumes [options]
+usage: drycc-host destroy-volumes [options]
 
 options:
-  --volpath=PATH         directory to create volumes in [default: /var/lib/flynn/volumes]
+  --volpath=PATH         directory to create volumes in [default: /var/lib/drycc/volumes]
   --include-data         actually destroy data in backends *this is dangerous* [default: false]
   --keep-system-images   don't destroy system images
 
@@ -32,7 +32,7 @@ the datasets will be destroyed).
 
 If '--include-data' is not specified (or the volume database cannot be loaded),
 it will simply be removed.  In this case, data will remain behind in the backend
-storage engines (and eventually require manual cleanup), but the flynn-host
+storage engines (and eventually require manual cleanup), but the drycc-host
 daemon's next launch will still be like a fresh launch.
 
 If '--keep-system-images' is set, system image volumes are not destroyed and
@@ -44,7 +44,7 @@ destroyed, but zpools will not be touched).`)
 
 func runVolumeDestroy(args *docopt.Args) error {
 	if os.Getuid() != 0 {
-		fmt.Println("this command requires root!\ntry again with `sudo flynn-host destroy-volumes`.")
+		fmt.Println("this command requires root!\ntry again with `sudo drycc-host destroy-volumes`.")
 		shutdown.ExitWithCode(1)
 	}
 
@@ -118,7 +118,7 @@ func loadVolumeState(volumeDBPath string) (*volumemanager.Manager, error) {
 func destroyVolumes(vman *volumemanager.Manager, keepSystemImages bool) error {
 	someVolumesNotDestroyed := false
 	for id, vol := range vman.Volumes() {
-		if keepSystemImages && vol.Info().Meta["flynn.system-image"] == "true" {
+		if keepSystemImages && vol.Info().Meta["drycc.system-image"] == "true" {
 			continue
 		}
 		fmt.Printf("removing volume id=%q... ", id)
@@ -132,7 +132,7 @@ func destroyVolumes(vman *volumemanager.Manager, keepSystemImages bool) error {
 		}
 	}
 	for id, vol := range vman.Volumes() {
-		if keepSystemImages && vol.Info().Meta["flynn.system-image"] == "true" {
+		if keepSystemImages && vol.Info().Meta["drycc.system-image"] == "true" {
 			continue
 		}
 		fmt.Printf("removing volume id=%q... ", id)

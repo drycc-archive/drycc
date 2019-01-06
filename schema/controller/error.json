@@ -1,5 +1,5 @@
 {
-  "id": "https://flynn.io/schema/controller/error#",
+  "id": "https://drycc.cc/schema/controller/error#",
   "allOf": [
     {
       "sortIndex": 15,
@@ -7,6 +7,6 @@
         "schema/examples/controller/app_create_error#"
       ]
     },
-    { "$ref": "https://flynn.io/schema/error#" }
+    { "$ref": "https://drycc.cc/schema/error#" }
   ]
 }

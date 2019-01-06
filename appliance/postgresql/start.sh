@@ -8,11 +8,11 @@ case $1 in
     exec sudo \
       -u postgres \
       -E -H \
-      /bin/flynn-postgres $*
+      /bin/drycc-postgres $*
     ;;
   api)
     shift
-    exec /bin/flynn-postgres-api $*
+    exec /bin/drycc-postgres-api $*
     ;;
   *)
     echo "Usage: $0 {postgres|api}"

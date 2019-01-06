@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to update Flynn release channels.
+# A script to update Drycc release channels.
 #
 # PREREQUISITES:
 #
@@ -22,8 +22,8 @@ usage: $0 [options] CHANNEL VERSION
 
 OPTIONS:
   -h, --help            Show this message
-  -b, --bucket BUCKET   The S3 bucket to sync with [default: flynn]
-  -d, --tuf-dir DIR     Path to the local TUF repository [default: /etc/flynn/tuf]
+  -b, --bucket BUCKET   The S3 bucket to sync with [default: drycc]
+  -d, --tuf-dir DIR     Path to the local TUF repository [default: /etc/drycc/tuf]
   -e, --edit            Edit the changelog before committing the channel update
   --no-sync             Don't sync files with S3
   --no-changelog        Don't create a changelog
@@ -31,8 +31,8 @@ USAGE
 }
 
 main() {
-  local bucket="flynn"
-  local tuf_dir="/etc/flynn/tuf"
+  local bucket="drycc"
+  local tuf_dir="/etc/drycc/tuf"
   local changelog=true
   local edit=false
   local sync=true
@@ -149,7 +149,7 @@ main() {
 #
 # For example:
 #
-#   * 2016-06-27: script: Add --version and --channel flags to install-flynn ([#3003](https://github.com/flynn/flynn/pull/3003))
+#   * 2016-06-27: script: Add --version and --channel flags to install-drycc ([#3003](https://github.com/drycc/drycc/pull/3003))
 generate_changelog() {
   local repo_url="https://s3.amazonaws.com/${bucket}/tuf"
   info "getting current ${channel} version from ${repo_url}"
@@ -202,7 +202,7 @@ format_changes_between() {
 
 pull_requests() {
   local page=$1
-  local url="https://api.github.com/repos/flynn/flynn/pulls?state=closed&sort=updated&direction=desc&page=${page}"
+  local url="https://api.github.com/repos/drycc/drycc/pulls?state=closed&sort=updated&direction=desc&page=${page}"
 
   curl -fsSL "${url}"
 }

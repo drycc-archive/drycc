@@ -17,20 +17,20 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/bootstrap"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/tlscert"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/bootstrap"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/tlscert"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("bootstrap", runBootstrap, `
-usage: flynn-host bootstrap [options] [<manifest>]
+usage: drycc-host bootstrap [options] [<manifest>]
 
 Options:
   -n, --min-hosts=MIN  minimum number of hosts required to be online
@@ -64,7 +64,7 @@ func runBootstrap(args *docopt.Args) error {
 
 	manifestFile := args.String["<manifest>"]
 	if manifestFile == "" {
-		manifestFile = "/etc/flynn/bootstrap-manifest.json"
+		manifestFile = "/etc/drycc/bootstrap-manifest.json"
 	}
 
 	var steps []string
@@ -180,12 +180,12 @@ func runBootstrapBackup(manifest []byte, backupFile string, ch chan *bootstrap.S
 		Discoverd, Flannel, Postgres, MariaDB, MongoDB, Controller *ct.ExpandedFormation
 	}
 
-	jsonData, err := getFile("flynn.json")
+	jsonData, err := getFile("drycc.json")
 	if err != nil {
 		return err
 	}
 	if jsonData == nil {
-		return fmt.Errorf("did not file flynn.json in backup file")
+		return fmt.Errorf("did not file drycc.json in backup file")
 	}
 	if err := json.NewDecoder(jsonData).Decode(&data); err != nil {
 		return fmt.Errorf("error decoding backup data: %s", err)
@@ -491,7 +491,7 @@ WHERE release_id = (SELECT release_id FROM apps WHERE name = 'dashboard' AND del
 	cmd.Args = []string{"psql"}
 	cmd.Env = map[string]string{
 		"PGHOST":     "leader.postgres.discoverd",
-		"PGUSER":     "flynn",
+		"PGUSER":     "drycc",
 		"PGDATABASE": "postgres",
 		"PGPASSWORD": data.Postgres.Release.Env["PGPASSWORD"],
 	}
@@ -559,7 +559,7 @@ WHERE release_id = (SELECT release_id FROM apps WHERE name = 'dashboard' AND del
 		}
 
 		cmd = exec.JobUsingHost(state.Hosts[0], artifacts["mariadb"], nil)
-		cmd.Args = []string{"mysql", "-u", "flynn", "-h", "leader.mariadb.discoverd"}
+		cmd.Args = []string{"mysql", "-u", "drycc", "-h", "leader.mariadb.discoverd"}
 		cmd.Env = map[string]string{
 			"MYSQL_PWD": data.MariaDB.Release.Env["MYSQL_PWD"],
 		}
@@ -604,7 +604,7 @@ WHERE release_id = (SELECT release_id FROM apps WHERE name = 'dashboard' AND del
 		}
 
 		cmd = exec.JobUsingHost(state.Hosts[0], artifacts["mongodb"], nil)
-		cmd.Args = []string{"mongorestore", "-h", "leader.mongodb.discoverd", "-u", "flynn", "-p", data.MongoDB.Release.Env["MONGO_PWD"], "--archive"}
+		cmd.Args = []string{"mongorestore", "-h", "leader.mongodb.discoverd", "-u", "drycc", "-p", data.MongoDB.Release.Env["MONGO_PWD"], "--archive"}
 		cmd.Stdin = mongodb
 		meta = bootstrap.StepMeta{ID: "restore", Action: "restore-mongodb"}
 		ch <- &bootstrap.StepInfo{StepMeta: meta, State: "start", Timestamp: time.Now().UTC()}
@@ -654,7 +654,7 @@ WHERE release_id = (SELECT release_id FROM apps WHERE name = 'dashboard' AND del
 
 	// now that the controller and blobstore are up and controller
 	// migrations have run (so we know artifacts have a manifest column),
-	// migrate all artifacts to Flynn images
+	// migrate all artifacts to Drycc images
 	jsonb := func(v interface{}) []byte {
 		data, _ := json.Marshal(v)
 		return data
@@ -668,7 +668,7 @@ WHERE release_id = (SELECT release_id FROM apps WHERE name = 'dashboard' AND del
 
 		// update current artifact in database for service
 		sqlBuf.WriteString(fmt.Sprintf(`
-UPDATE artifacts SET uri = '%s', type = 'flynn', manifest = '%s', hashes = '%s', size = %d, layer_url_template = '%s', meta = '%s' WHERE artifact_id = (
+UPDATE artifacts SET uri = '%s', type = 'drycc', manifest = '%s', hashes = '%s', size = %d, layer_url_template = '%s', meta = '%s' WHERE artifact_id = (
   SELECT artifact_id FROM release_artifacts WHERE release_id = (
     SELECT release_id FROM apps WHERE name = '%s' AND deleted_at IS NULL
   )
@@ -682,7 +682,7 @@ UPDATE artifacts SET uri = '%s', type = 'flynn', manifest = '%s', hashes = '%s',
 DO $$
   BEGIN
     IF (SELECT env->>'SLUGBUILDER_IMAGE_ID' FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'gitreceive' AND deleted_at IS NULL)) IS NULL THEN
-      INSERT INTO artifacts (artifact_id, type, uri, manifest, hashes, size, layer_url_template, meta) VALUES ('%s', 'flynn', '%s', '%s', '%s', %d, '%s', '%s');
+      INSERT INTO artifacts (artifact_id, type, uri, manifest, hashes, size, layer_url_template, meta) VALUES ('%s', 'drycc', '%s', '%s', '%s', %d, '%s', '%s');
     END IF;
   END;
 $$;`, random.UUID(), slugBuilder.URI, jsonb(&slugBuilder.RawManifest), jsonb(slugBuilder.Hashes), slugBuilder.Size, slugBuilder.LayerURLTemplate, jsonb(slugBuilder.Meta)))
@@ -696,7 +696,7 @@ DO $$
   BEGIN
     IF (SELECT env->>'SLUGRUNNER_IMAGE_ID' FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'gitreceive' AND deleted_at IS NULL)) IS NULL THEN
       IF NOT EXISTS (SELECT 1 FROM artifacts WHERE uri = (SELECT env->>'SLUGRUNNER_IMAGE_URI' FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'gitreceive' AND deleted_at IS NULL))) THEN
-        INSERT INTO artifacts (artifact_id, type, uri, manifest, hashes, size, layer_url_template, meta) VALUES ('%s', 'flynn', '%s', '%s', '%s', %d, '%s', '%s');
+        INSERT INTO artifacts (artifact_id, type, uri, manifest, hashes, size, layer_url_template, meta) VALUES ('%s', 'drycc', '%s', '%s', '%s', %d, '%s', '%s');
       END IF;
     END IF;
   END;
@@ -708,7 +708,7 @@ $$;`, random.UUID(), slugRunner.URI, jsonb(&slugRunner.RawManifest), jsonb(slugR
 	for _, name := range []string{"slugbuilder", "slugrunner"} {
 		artifact := artifacts[name+"-image"]
 		sqlBuf.WriteString(fmt.Sprintf(`
-UPDATE artifacts SET uri = '%[1]s', type = 'flynn', manifest = '%[2]s', hashes = '%[3]s', size = %[4]d, layer_url_template = '%[5]s', meta = '%[6]s'
+UPDATE artifacts SET uri = '%[1]s', type = 'drycc', manifest = '%[2]s', hashes = '%[3]s', size = %[4]d, layer_url_template = '%[5]s', meta = '%[6]s'
 WHERE artifact_id = (SELECT (env->>'%[7]s_IMAGE_ID')::uuid FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'gitreceive' AND deleted_at IS NULL))
 OR uri = (SELECT env->>'%[7]s_IMAGE_URI' FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'gitreceive' AND deleted_at IS NULL));`,
 			artifact.URI, jsonb(&artifact.RawManifest), jsonb(artifact.Hashes), artifact.Size, artifact.LayerURLTemplate, jsonb(artifact.Meta), strings.ToUpper(name)))
@@ -719,7 +719,7 @@ OR uri = (SELECT env->>'%[7]s_IMAGE_URI' FROM releases WHERE release_id = (SELEC
 	// to use the latest redis image)
 	redisImage := artifacts["redis-image"]
 	sqlBuf.WriteString(fmt.Sprintf(`
-UPDATE artifacts SET uri = '%s', type = 'flynn', manifest = '%s', hashes = '%s', size = %d, layer_url_template = '%s', meta = '%s'
+UPDATE artifacts SET uri = '%s', type = 'drycc', manifest = '%s', hashes = '%s', size = %d, layer_url_template = '%s', meta = '%s'
 WHERE artifact_id = (SELECT (env->>'REDIS_IMAGE_ID')::uuid FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'redis' AND deleted_at IS NULL))
 OR uri = (SELECT env->>'REDIS_IMAGE_URI' FROM releases WHERE release_id = (SELECT release_id FROM apps WHERE name = 'redis' AND deleted_at IS NULL));`,
 		redisImage.URI, jsonb(&redisImage.RawManifest), jsonb(redisImage.Hashes), redisImage.Size, redisImage.LayerURLTemplate, jsonb(redisImage.Meta)))
@@ -778,7 +778,7 @@ DELETE FROM volumes WHERE created_at < '%s';`,
 	}
 
 	// determine if there are any slugs or docker images which need to be
-	// converted to Flynn images
+	// converted to Drycc images
 	migrateSlugs := false
 	migrateDocker := false
 	artifactList, err := client.ArtifactList()
@@ -828,7 +828,7 @@ DELETE FROM volumes WHERE created_at < '%s';`,
 		cmd.Args = []string{"/bin/slug-migrator"}
 		cmd.Env = map[string]string{
 			"CONTROLLER_KEY": data.Controller.Release.Env["AUTH_KEY"],
-			"FLYNN_POSTGRES": data.Controller.Release.Env["FLYNN_POSTGRES"],
+			"DRYCC_POSTGRES": data.Controller.Release.Env["DRYCC_POSTGRES"],
 			"PGHOST":         "leader.postgres.discoverd",
 			"PGUSER":         data.Controller.Release.Env["PGUSER"],
 			"PGDATABASE":     data.Controller.Release.Env["PGDATABASE"],
@@ -875,7 +875,7 @@ DELETE FROM volumes WHERE created_at < '%s';`,
 		cmd.Args = []string{"/bin/docker-migrator"}
 		cmd.Env = map[string]string{
 			"CONTROLLER_KEY": data.Controller.Release.Env["AUTH_KEY"],
-			"FLYNN_POSTGRES": data.Controller.Release.Env["FLYNN_POSTGRES"],
+			"DRYCC_POSTGRES": data.Controller.Release.Env["DRYCC_POSTGRES"],
 			"PGHOST":         "leader.postgres.discoverd",
 			"PGUSER":         data.Controller.Release.Env["PGUSER"],
 			"PGDATABASE":     data.Controller.Release.Env["PGDATABASE"],

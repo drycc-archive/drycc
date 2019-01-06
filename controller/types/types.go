@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/tlscert"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/tlscert"
+	"github.com/drycc/drycc/router/types"
 	"github.com/jtacoma/uritemplates"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/tent/canonical-json-go"
@@ -62,7 +62,7 @@ type App struct {
 }
 
 func (a *App) System() bool {
-	v, ok := a.Meta["flynn-system-app"]
+	v, ok := a.Meta["drycc-system-app"]
 	return ok && v == "true"
 }
 
@@ -72,7 +72,7 @@ func (a *App) RedisAppliance() bool {
 
 // Critical apps cannot be completely scaled down by the scheduler
 func (a *App) Critical() bool {
-	v, ok := a.Meta["flynn-system-critical"]
+	v, ok := a.Meta["drycc-system-critical"]
 	return ok && v == "true"
 }
 
@@ -162,19 +162,19 @@ const (
 type ArtifactType string
 
 const (
-	// ArtifactTypeFlynn is the type of artifact which references a Flynn
+	// ArtifactTypeDrycc is the type of artifact which references a Drycc
 	// image manifest
-	ArtifactTypeFlynn ArtifactType = "flynn"
+	ArtifactTypeDrycc ArtifactType = "drycc"
 
 	// DeprecatedArtifactTypeFile is a deprecated artifact type which was
 	// used to reference slugs when they used to be tarballs stored in the
-	// blobstore (they are now squashfs based Flynn images)
+	// blobstore (they are now squashfs based Drycc images)
 	DeprecatedArtifactTypeFile ArtifactType = "file"
 
 	// DeprecatedArtifactTypeDocker is a deprecated artifact type which
 	// used to reference a pinkerton-compatible Docker URI used to pull
 	// Docker images from a Docker registry (they are now converted to
-	// squashfs based Flynn images either at build time or at push time by
+	// squashfs based Drycc images either at build time or at push time by
 	// docker-receive)
 	DeprecatedArtifactTypeDocker ArtifactType = "docker"
 )
@@ -604,7 +604,7 @@ type AppGarbageCollectionEvent struct {
 
 type ImageManifestType string
 
-const ImageManifestTypeV1 ImageManifestType = "application/vnd.flynn.image.manifest.v1+json"
+const ImageManifestTypeV1 ImageManifestType = "application/vnd.drycc.image.manifest.v1+json"
 
 type ImageManifest struct {
 	Type        ImageManifestType           `json:"_type"`
@@ -663,7 +663,7 @@ type ImagePlatform struct {
 
 type ImageLayerType string
 
-const ImageLayerTypeSquashfs ImageLayerType = "application/vnd.flynn.image.squashfs.v1"
+const ImageLayerTypeSquashfs ImageLayerType = "application/vnd.drycc.image.squashfs.v1"
 
 type ImageLayer struct {
 	ID     string            `json:"id,omitempty"`

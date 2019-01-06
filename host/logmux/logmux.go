@@ -15,11 +15,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	"github.com/flynn/flynn/pkg/syslog/rfc6587"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/syslog/rfc6587"
 	"github.com/inconshreveable/log15"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -353,7 +353,7 @@ func (s *LogStream) follow(r io.Reader, buffer, appID string, h *rfc5424.Header,
 	l := s.m.appLog(appID)
 	seqBuf := make([]byte, 10)
 	sd := &rfc5424.StructuredData{
-		ID:     []byte("flynn"),
+		ID:     []byte("drycc"),
 		Params: []rfc5424.StructuredDataParam{{Name: []byte("seq")}},
 	}
 
@@ -363,7 +363,7 @@ func (s *LogStream) follow(r io.Reader, buffer, appID string, h *rfc5424.Header,
 		if err != nil && err != bufio.ErrBufferFull {
 			// if the log was explicitly closed (because an update
 			// is in progress), store the buffer and return so it
-			// can be passed to the new flynn-host daemon.
+			// can be passed to the new drycc-host daemon.
 			if s.closed.Load().(bool) {
 				s.buf = string(line)
 				return

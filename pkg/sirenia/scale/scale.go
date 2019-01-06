@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/pkg/dialer"
-	sirenia "github.com/flynn/flynn/pkg/sirenia/client"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/pkg/dialer"
+	sirenia "github.com/drycc/drycc/pkg/sirenia/client"
 	"github.com/inconshreveable/log15"
 )
 

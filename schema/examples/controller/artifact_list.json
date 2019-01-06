@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/artifact_list#",
+  "id": "https://drycc.cc/schema/examples/controller/artifact_list#",
   "title": "List artifacts",
   "description": "",
   "allOf": [

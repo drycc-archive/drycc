@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/testutil"
-	"github.com/flynn/flynn/flannel/subnet"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/testutil"
+	"github.com/drycc/drycc/flannel/subnet"
 )
 
 type test struct {

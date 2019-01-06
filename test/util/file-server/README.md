@@ -1,5 +1,5 @@
 HTTP File Server
 ================
 
-A simple HTTP file server used in tests for pulling updated Flynn components
+A simple HTTP file server used in tests for pulling updated Drycc components
 (see `ReleaseSuite.TestReleaseImages`).

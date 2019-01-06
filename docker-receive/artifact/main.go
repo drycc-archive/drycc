@@ -11,12 +11,12 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/docker-receive/utils"
-	"github.com/flynn/flynn/pinkerton"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/imagebuilder"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/docker-receive/utils"
+	"github.com/drycc/drycc/pinkerton"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/imagebuilder"
 )
 
 func main() {
@@ -37,7 +37,7 @@ func run(url string) error {
 		return err
 	}
 
-	context, err := pinkerton.BuildContext("flynn", "/tmp/docker")
+	context, err := pinkerton.BuildContext("drycc", "/tmp/docker")
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func run(url string) error {
 	// create the artifact
 	artifact := &ct.Artifact{
 		ID:   os.Getenv("ARTIFACT_ID"),
-		Type: ct.ArtifactTypeFlynn,
+		Type: ct.ArtifactTypeDrycc,
 		URI:  imageURL,
 		Meta: map[string]string{
 			"blobstore":                 "true",

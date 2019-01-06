@@ -3,8 +3,8 @@ package bootstrap
 import (
 	"fmt"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/random"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/random"
 )
 
 type AddAppAction struct {

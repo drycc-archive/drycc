@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/flynn/flynn/appliance/mariadb"
-	ct "github.com/flynn/flynn/controller/types"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/appliance/mariadb"
+	ct "github.com/drycc/drycc/controller/types"
+	c "github.com/drycc/go-check"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -21,12 +21,12 @@ var _ = c.ConcurrentSuite(&MariaDBSuite{})
 // Sirenia integration tests
 var sireniaMariaDB = sireniaDatabase{
 	appName:    "mariadb",
-	serviceKey: "FLYNN_MYSQL",
+	serviceKey: "DRYCC_MYSQL",
 	hostKey:    "MYSQL_HOST",
 	initDb: func(t *c.C, r *ct.Release, d *sireniaDeploy) {
 		dsn := &mariadb.DSN{
 			Host:     fmt.Sprintf("leader.%s.discoverd", d.name) + ":3306",
-			User:     "flynn",
+			User:     "drycc",
 			Password: r.Env["MYSQL_PWD"],
 			Database: "mysql",
 		}
@@ -45,7 +45,7 @@ var sireniaMariaDB = sireniaDatabase{
 		dbname := "deploy_test"
 		dsn := &mariadb.DSN{
 			Host:     fmt.Sprintf("leader.%s.discoverd", d.name) + ":3306",
-			User:     "flynn",
+			User:     "drycc",
 			Password: r.Env["MYSQL_PWD"],
 			Database: dbname,
 		}
@@ -79,23 +79,23 @@ func (s *MariaDBSuite) TestDeployMultipleAsync(t *c.C) {
 
 func (s *MariaDBSuite) TestDumpRestore(t *c.C) {
 	r := s.newGitRepo(t, "empty")
-	t.Assert(r.flynn("create"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
 
-	res := r.flynn("resource", "add", "mysql")
+	res := r.drycc("resource", "add", "mysql")
 	t.Assert(res, Succeeds)
 	id := strings.Split(res.Output, " ")[2]
 
-	t.Assert(r.flynn("mysql", "console", "--", "-e",
+	t.Assert(r.drycc("mysql", "console", "--", "-e",
 		"CREATE TABLE T (F text); INSERT INTO T (F) VALUES ('abc')"), Succeeds)
 
 	file := filepath.Join(t.MkDir(), "db.dump")
-	t.Assert(r.flynn("mysql", "dump", "-f", file), Succeeds)
-	t.Assert(r.flynn("mysql", "console", "--", "-e", "DROP TABLE T"), Succeeds)
+	t.Assert(r.drycc("mysql", "dump", "-f", file), Succeeds)
+	t.Assert(r.drycc("mysql", "console", "--", "-e", "DROP TABLE T"), Succeeds)
 
-	r.flynn("mysql", "restore", "-f", file)
+	r.drycc("mysql", "restore", "-f", file)
 
-	query := r.flynn("mysql", "console", "--", "-e", "SELECT * FROM T")
+	query := r.drycc("mysql", "console", "--", "-e", "SELECT * FROM T")
 	t.Assert(query, SuccessfulOutputContains, "abc")
 
-	t.Assert(r.flynn("resource", "remove", "mysql", id), Succeeds)
+	t.Assert(r.drycc("resource", "remove", "mysql", id), Succeeds)
 }

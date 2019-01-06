@@ -8,15 +8,15 @@ toc_min_level: 2
 
 This guide will explain how to:
 
-* Make changes to the Flynn source code
-* Build and run Flynn
+* Make changes to the Drycc source code
+* Build and run Drycc
 * Run the tests
-* Create a release of Flynn
+* Create a release of Drycc
 
 ## Development environment
 
 Development work is typically done inside a [VirtualBox](https://www.virtualbox.org/) VM managed
-by [Vagrant](https://www.vagrantup.com/), and Flynn includes a Vagrantfile which fully automates
+by [Vagrant](https://www.vagrantup.com/), and Drycc includes a Vagrantfile which fully automates
 the creation of the VM.
 
 ### Running the development VM
@@ -24,13 +24,13 @@ the creation of the VM.
 If you don't already have VirtualBox and Vagrant installed, you should
 install them by following the directions on their respective web sites.
 
-Clone the Flynn source code locally:
+Clone the Drycc source code locally:
 
 ```
-$ git clone https://github.com/flynn/flynn.git
+$ git clone https://github.com/drycc/drycc.git
 ```
 
-Then, inside the `flynn` directory, bring up the VM:
+Then, inside the `drycc` directory, bring up the VM:
 
 ```
 $ vagrant up
@@ -50,22 +50,22 @@ From now on, it is assumed that commands will be run inside the VM, unless other
 
 ## Making code changes
 
-The development VM is configured to share the Flynn source code from your machine and mount
+The development VM is configured to share the Drycc source code from your machine and mount
 it inside the VM, meaning you can edit files locally on your machine and those changes
 will be visible inside the VM.
 
-Since Flynn is primarily written in Go, the source code needs to be inside a valid Go workspace.
-The development VM has a `GOPATH` of `$HOME/go` and the Flynn source code is synchronized into
-`$GOPATH/src/github.com/flynn/flynn`.
+Since Drycc is primarily written in Go, the source code needs to be inside a valid Go workspace.
+The development VM has a `GOPATH` of `$HOME/go` and the Drycc source code is synchronized into
+`$GOPATH/src/github.com/drycc/drycc`.
 
 If you don't have a specific issue you are trying to fix, but are interested in contributing
 to the project, you should start by looking at GitHub issues labelled
-[complexity/easy](https://github.com/flynn/flynn/labels/complexity/easy).
+[complexity/easy](https://github.com/drycc/drycc/labels/complexity/easy).
 
-## Building Flynn
+## Building Drycc
 
 We use the [tup](http://gittup.org/tup/) build system to run the commands which build the various
-components of Flynn.
+components of Drycc.
 
 To kickoff the build process, just run `make`:
 
@@ -82,28 +82,28 @@ fix the issue and then re-run `make`.
 If you want to rebuild all Go binaries, run `make clean`.
 
 Once tup runs successfully, you will have a number of built Go binaries and Docker images which
-can be used to run Flynn.
+can be used to run Drycc.
 
-## Running Flynn
+## Running Drycc
 
-Once you have built all the Flynn components, you can boot a single node Flynn cluster by running
+Once you have built all the Drycc components, you can boot a single node Drycc cluster by running
 the following script:
 
 ```
-$ script/bootstrap-flynn
+$ script/bootstrap-drycc
 ```
 
 This will do the following:
 
-* stop the `flynn-host` daemon and any running Flynn services
-* start the `flynn-host` daemon
-* run the Flynn bootstrapper, which will start all of the Flynn services
+* stop the `drycc-host` daemon and any running Drycc services
+* start the `drycc-host` daemon
+* run the Drycc bootstrapper, which will start all of the Drycc services
 
-If you want to boot Flynn using a different job backend, or an external IP other
+If you want to boot Drycc using a different job backend, or an external IP other
 than that of the `eth0` device, the script provides some options for doing so.
-See `script/bootstrap-flynn -h` for a full list of supported options.
+See `script/bootstrap-drycc -h` for a full list of supported options.
 
-Once Flynn is running, you can add the cluster to the `flynn` CLI tool using the
+Once Drycc is running, you can add the cluster to the `drycc` CLI tool using the
 bootstrap output, and then try out your changes.
 
 ## Debugging
@@ -111,73 +111,73 @@ bootstrap output, and then try out your changes.
 If things don't seem to be running as expected, here are some useful commands to help
 diagnose the issue:
 
-### check the flynn-host daemon log
+### check the drycc-host daemon log
 
 ```
-$ less /tmp/flynn-host.log
+$ less /tmp/drycc-host.log
 ```
 
 ### view running jobs
 
 ```
-$ flynn-host ps
+$ drycc-host ps
 ID                                                      STATE    STARTED             CONTROLLER APP  CONTROLLER TYPE
-flynn-66f3ca0c60374a1abb172e3a73b50e21                  running  About a minute ago  example         web
-flynn-9d716860f69f4f63bfb4074bcc7f4419                  running  4 minutes ago       gitreceive      app
-flynn-7eff6d37af3c4d909565ca0ab3b077ad                  running  4 minutes ago       router          app
-flynn-b8f3ecd48bb343dab96744a17c96b95d                  running  4 minutes ago       blobstore       web
+drycc-66f3ca0c60374a1abb172e3a73b50e21                  running  About a minute ago  example         web
+drycc-9d716860f69f4f63bfb4074bcc7f4419                  running  4 minutes ago       gitreceive      app
+drycc-7eff6d37af3c4d909565ca0ab3b077ad                  running  4 minutes ago       router          app
+drycc-b8f3ecd48bb343dab96744a17c96b95d                  running  4 minutes ago       blobstore       web
 ...
 ```
 
 ### view all jobs (i.e. running + stopped)
 
 ```
-$ flynn-host ps -a
+$ drycc-host ps -a
 ID                                                      STATE    STARTED             CONTROLLER APP  CONTROLLER TYPE
-flynn-7fd8c48542e442349c0217e7cb52dec9                  running  15 seconds ago      example         web
-flynn-66f3ca0c60374a1abb172e3a73b50e21                  running  About a minute ago  example         web
-flynn-9868a539703145a1886bc2557f6f6441                  done     2 minutes ago       example         web
-flynn-100f36e9d18849658e11188a8b85e79f                  done     3 minutes ago       example         web
-flynn-f737b5ece2694f81b3d5efdc2cb8dc56                  done     4 minutes ago
-flynn-9d716860f69f4f63bfb4074bcc7f4419                  running  5 minutes ago       gitreceive      app
-flynn-7eff6d37af3c4d909565ca0ab3b077ad                  running  5 minutes ago       router          app
-flynn-b8f3ecd48bb343dab96744a17c96b95d                  running  5 minutes ago       blobstore       web
+drycc-7fd8c48542e442349c0217e7cb52dec9                  running  15 seconds ago      example         web
+drycc-66f3ca0c60374a1abb172e3a73b50e21                  running  About a minute ago  example         web
+drycc-9868a539703145a1886bc2557f6f6441                  done     2 minutes ago       example         web
+drycc-100f36e9d18849658e11188a8b85e79f                  done     3 minutes ago       example         web
+drycc-f737b5ece2694f81b3d5efdc2cb8dc56                  done     4 minutes ago
+drycc-9d716860f69f4f63bfb4074bcc7f4419                  running  5 minutes ago       gitreceive      app
+drycc-7eff6d37af3c4d909565ca0ab3b077ad                  running  5 minutes ago       router          app
+drycc-b8f3ecd48bb343dab96744a17c96b95d                  running  5 minutes ago       blobstore       web
 ...
 ```
 
 ### view the output of a job
 
 ```
-$ flynn-host log $JOBID
+$ drycc-host log $JOBID
 Listening on 55006
 ```
 
 ### inspect a job
 
 ```
-$ flynn-host inspect $JOBID
-ID                           flynn-075c21e8b79a41d89713352f04f94a71
+$ drycc-host inspect $JOBID
+ID                           drycc-075c21e8b79a41d89713352f04f94a71
 Status                       running
 StartedAt                    2014-10-14 14:34:11.726864147 +0000 UTC
 EndedAt                      0001-01-01 00:00:00 +0000 UTC
 ExitStatus                   0
 IP Address                   192.168.200.24
-flynn-controller.release     954b7ee40ef24a1798807499d5eb8297
-flynn-controller.type        web
-flynn-controller.app         e568286366d443c49dc18e7a99f40fc1
-flynn-controller.app_name    example
+drycc-controller.release     954b7ee40ef24a1798807499d5eb8297
+drycc-controller.type        web
+drycc-controller.app         e568286366d443c49dc18e7a99f40fc1
+drycc-controller.app_name    example
 ```
 
 ### stop a job
 
 ```
-$ flynn-host stop $JOBID
+$ drycc-host stop $JOBID
 ```
 
 ### stop all jobs
 
 ```
-$ flynn-host ps -a | xargs flynn-host stop
+$ drycc-host ps -a | xargs drycc-host stop
 ```
 
 *(NOTE: as jobs are stopped, the scheduler may start new jobs. To avoid this, stop the scheduler first)*
@@ -187,7 +187,7 @@ $ flynn-host ps -a | xargs flynn-host stop
 Assuming the app has name `example`:
 
 ```
-$ flynn-host ps | awk -F " {2,}" '$4=="example" {print $1}' | xargs flynn-host stop
+$ drycc-host ps | awk -F " {2,}" '$4=="example" {print $1}' | xargs drycc-host stop
 ```
 
 ### upload logs and system information to a GitHub gist
@@ -196,10 +196,10 @@ If you want to get help diagnosing issues on your system, run the following to u
 useful information to an anonymous GitHub gist:
 
 ```
-$ flynn-host collect-debug-info
+$ drycc-host collect-debug-info
 INFO[03-11|19:25:29] uploading logs and debug information to a private, anonymous gist
 INFO[03-11|19:25:29] this may take a while depending on the size of your logs
-INFO[03-11|19:25:29] getting flynn-host logs
+INFO[03-11|19:25:29] getting drycc-host logs
 INFO[03-11|19:25:29] getting job logs
 INFO[03-11|19:25:29] getting system information
 INFO[03-11|19:25:30] creating anonymous gist
@@ -207,30 +207,30 @@ INFO[03-11|19:25:30] creating anonymous gist
 INFO[03-11|19:25:38] debug information uploaded to: https://gist.github.com/47379bd4604442cac820
 ```
 
-You can then post the gist in the `#flynn` IRC room when asking for assistance to make it easier for
+You can then post the gist in the `#drycc` IRC room when asking for assistance to make it easier for
 someone to help you.
 
 If you would rather not use the GitHub gist service, or your logs are too big to fit into a single gist,
 you can create a tarball of the information by specifying the `--tarball` flag:
 
 ```
-$ flynn-host collect-debug-info --tarball
+$ drycc-host collect-debug-info --tarball
 INFO[03-11|19:28:58] creating a tarball containing logs and debug information
 INFO[03-11|19:28:58] this may take a while depending on the size of your logs
-INFO[03-11|19:28:58] getting flynn-host logs
+INFO[03-11|19:28:58] getting drycc-host logs
 INFO[03-11|19:28:58] getting job logs
 INFO[03-11|19:28:58] getting system information
-INFO[03-11|19:28:59] created tarball containing debug information at /tmp/flynn-host-debug407848418/flynn-host-debug.tar.gz
+INFO[03-11|19:28:59] created tarball containing debug information at /tmp/drycc-host-debug407848418/drycc-host-debug.tar.gz
 ```
 
-You can then send this to a Flynn developer after speaking to them in IRC.
+You can then send this to a Drycc developer after speaking to them in IRC.
 
 ## Running tests
 
-Flynn has two types of tests:
+Drycc has two types of tests:
 
 * "unit" tests which are run using `go test`
-* "integration" tests which run against a booted Flynn cluster
+* "integration" tests which run against a booted Drycc cluster
 
 ### Run the unit tests
 
@@ -255,7 +255,7 @@ $ go test ./controller/...
 
 ### Run the integration tests
 
-The integration tests live in the `tests` directory, and require a running Flynn
+The integration tests live in the `tests` directory, and require a running Drycc
 cluster before they can run.
 
 To run all the integration tests:
@@ -266,9 +266,9 @@ $ script/run-integration-tests
 
 This will:
 
-* Run `make` to build Flynn
-* Boot a single node Flynn cluster by running `script/bootstrap-flynn`
-* Run the integration test binary (i.e. `bin/flynn-test`)
+* Run `make` to build Drycc
+* Boot a single node Drycc cluster by running `script/bootstrap-drycc`
+* Run the integration test binary (i.e. `bin/drycc-test`)
 
 To run an individual integration test (e.g. `TestEnvDir`):
 
@@ -278,30 +278,30 @@ $ script/run-integration-tests -f TestEnvDir
 
 ## Pull request
 
-Once you have made changes to the Flynn source code and tested your changes, you
+Once you have made changes to the Drycc source code and tested your changes, you
 should open a pull request on GitHub so we can review your changes and merge
-them into the Flynn repository.
+them into the Drycc repository.
 
 Please see the [contribution guide](/docs/contributing) for more information.
 
-## Releasing Flynn
+## Releasing Drycc
 
-Once you have built and tested Flynn inside the development VM, you can create a release
+Once you have built and tested Drycc inside the development VM, you can create a release
 and install the components on other hosts (e.g. in EC2).
 
-A Flynn release is a set of components consisting of binaries, configuration files and
-filesystem images, all of which must be installed in order to run Flynn.
+A Drycc release is a set of components consisting of binaries, configuration files and
+filesystem images, all of which must be installed in order to run Drycc.
 
 ### The Update Framework (TUF)
 
-Flynn uses [The Update Framework](http://theupdateframework.com/) (also known as TUF) to
-securely distribute all of the Flynn components.
+Drycc uses [The Update Framework](http://theupdateframework.com/) (also known as TUF) to
+securely distribute all of the Drycc components.
 
-To release Flynn, you will need to generate a TUF repository using the
-[go-tuf](https://github.com/flynn/go-tuf) library.
+To release Drycc, you will need to generate a TUF repository using the
+[go-tuf](https://github.com/drycc/go-tuf) library.
 
-Follow the [installation instructions](https://github.com/flynn/go-tuf#install)
-and then follow the ["Create signed root manifest"](https://github.com/flynn/go-tuf#examples)
+Follow the [installation instructions](https://github.com/drycc/go-tuf#install)
+and then follow the ["Create signed root manifest"](https://github.com/drycc/go-tuf#examples)
 example. You should now have a directory with the following layout:
 
 
@@ -347,23 +347,23 @@ You should now see some files in the `repository` directory (the filenames may d
 ```
 
 Upload the `repository` directory to a location where you intend to serve the
-released version of Flynn from. For example, if using the `my-flynn-repo` S3
+released version of Drycc from. For example, if using the `my-drycc-repo` S3
 bucket:
 
 ```
-$ aws s3 cp --recursive --acl public-read repository s3://my-flynn-repo/tuf
+$ aws s3 cp --recursive --acl public-read repository s3://my-drycc-repo/tuf
 ```
 
-### Rebuild Flynn
+### Rebuild Drycc
 
-The TUF root keys need to be compiled into the Flynn release, and image URLs must
+The TUF root keys need to be compiled into the Drycc release, and image URLs must
 be relative to the file server the TUF repository is served from. This can be
 accomplished by updating the `tuf` object in `builder/manifest.json` then re-running
 `make`, e.g.:
 
 ```
 "tuf": {
-  "repository": "https://s3.amazonaws.com/my-flynn-repo/tuf",
+  "repository": "https://s3.amazonaws.com/my-drycc-repo/tuf",
   "root_keys": [
     {"keytype":"ed25519","keyval":{"public":"31351ecc833417968faabf98e004d1ef48ecfd996f971aeed399a7dc735d2c8c"}}
   ]
@@ -372,15 +372,15 @@ accomplished by updating the `tuf` object in `builder/manifest.json` then re-run
 
 *The TUF root keys can be determined by running `tuf root-keys` in the TUF repository.*
 
-Run `script/build-flynn --version XXX` instead of `make` to set an explicit version:
+Run `script/build-drycc --version XXX` instead of `make` to set an explicit version:
 
 ```
-$ script/build-flynn --version v20171206.lmars
+$ script/build-drycc --version v20171206.lmars
 ```
 
 ### Export components
 
-Export the Flynn components into the TUF repository (it expects the targets, snapshot and
+Export the Drycc components into the TUF repository (it expects the targets, snapshot and
 timestamp passphrases to be set in the `TUF_TARGETS_PASSPHRASE`, `TUF_SNAPSHOT_PASSPHRASE`
 and `TUF_TIMESTAMP_PASSPHRASE` environment variables respectively):
 
@@ -392,15 +392,15 @@ $ script/export-components /path/to/tuf-repo
 
 Upload the `repository` directory of the TUF repo to the remote file server.
 
-For example, if using the `my-flynn-repo` S3 bucket:
+For example, if using the `my-drycc-repo` S3 bucket:
 
 ```
-$ aws s3 cp --recursive --acl public-read repository s3://my-flynn-repo/tuf
+$ aws s3 cp --recursive --acl public-read repository s3://my-drycc-repo/tuf
 ```
 
-You can now distribute `script/install-flynn` and run it with an explicit repo URL
-to install the custom built Flynn components:
+You can now distribute `script/install-drycc` and run it with an explicit repo URL
+to install the custom built Drycc components:
 
 ```
-install-flynn -r https://s3.amazonaws.com/my-flynn-repo
+install-drycc -r https://s3.amazonaws.com/my-drycc-repo
 ```

@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/flynn/flynn/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/shutdown"
 )
 
 func main() {

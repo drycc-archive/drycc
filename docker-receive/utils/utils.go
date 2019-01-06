@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 
-	ct "github.com/flynn/flynn/controller/types"
+	ct "github.com/drycc/drycc/controller/types"
 )
 
 func ConfigURL(id string) string {

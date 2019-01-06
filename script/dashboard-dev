@@ -40,11 +40,11 @@ main() {
 }
 
 compile() {
-  local flynn_host="${ROOT}/build/bin/flynn-host"
+  local drycc_host="${ROOT}/build/bin/drycc-host"
   local builder_image="${ROOT}/build/image/dashboard-compiled.json"
 
   # compile the dashboard in place
-  "${flynn_host}" run \
+  "${drycc_host}" run \
     --bind    "${ROOT}:${ROOT},${ROOT}/dashboard/app:/app" \
     --limits  "temp_disk=1G" \
     --workdir "${ROOT}" \
@@ -62,11 +62,11 @@ run() {
   export DISABLE_CACHE="true"
   export LOGIN_TOKEN="test"
   export SESSION_SECRET="abc123"
-  export URL="http://dashboard.1.localflynn.com:4457"
+  export URL="http://dashboard.1.localdrycc.com:4457"
   export PORT="4457"
   export APP_NAME="dashboard"
-  export DEFAULT_ROUTE_DOMAIN="1.localflynn.com"
-  export CONTROLLER_DOMAIN="controller.1.localflynn.com"
+  export DEFAULT_ROUTE_DOMAIN="1.localdrycc.com"
+  export CONTROLLER_DOMAIN="controller.1.localdrycc.com"
   export CONTROLLER_KEY="${CONTROLLER_KEY}"
   export GITHUB_TOKEN="MY_TOKEN"
 

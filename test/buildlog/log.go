@@ -5,7 +5,7 @@ import (
 	"mime/multipart"
 	"time"
 
-	"github.com/flynn/flynn/pkg/iotool"
+	"github.com/drycc/drycc/pkg/iotool"
 )
 
 type Log struct {

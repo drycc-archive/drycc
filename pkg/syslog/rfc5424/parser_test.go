@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) TestParse(c *C) {

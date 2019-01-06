@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/que-go"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/que-go"
 	"github.com/inconshreveable/log15"
 )
 
@@ -98,7 +98,7 @@ func (c *context) HandleAppDeletion(job *que.Job) (err error) {
 	log.Info(fmt.Sprintf("deleted %d resources", len(a.DeletedResources)))
 
 	log.Info("cleaning app cache")
-	// TODO: share URL construction with gitreceive / flynn-receive
+	// TODO: share URL construction with gitreceive / drycc-receive
 	for _, cacheURL := range []string{
 		fmt.Sprintf("http://blobstore.discoverd/repos/%s.tar", app.ID),
 		fmt.Sprintf("http://blobstore.discoverd/%s-cache.tgz", app.ID),

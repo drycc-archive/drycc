@@ -3,8 +3,8 @@ package fixer
 import (
 	"fmt"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
 )
 
 func (f *ClusterFixer) FixDiscoverd() error {
@@ -27,8 +27,8 @@ outer:
 			}
 			for _, j := range jobs {
 				if j.Status == host.StatusRunning &&
-					j.Job.Metadata["flynn-controller.app_name"] == "discoverd" &&
-					j.Job.Metadata["flynn-controller.type"] == "app" {
+					j.Job.Metadata["drycc-controller.app_name"] == "discoverd" &&
+					j.Job.Metadata["drycc-controller.type"] == "app" {
 					continue outer
 				}
 			}

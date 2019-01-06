@@ -1,35 +1,35 @@
-# flynn-test
+# drycc-test
 
-flynn-test contains full-stack acceptance tests for Flynn.
+drycc-test contains full-stack acceptance tests for Drycc.
 
 ## Usage
 
-### Bootstrap Flynn
+### Bootstrap Drycc
 
-The tests need a running Flynn cluster, so you will need to boot one first.
+The tests need a running Drycc cluster, so you will need to boot one first.
 
-To run Flynn locally, first boot and SSH to the Flynn dev box:
+To run Drycc locally, first boot and SSH to the Drycc dev box:
 
 ```text
 vagrant up
 vagrant ssh
 ```
 
-then build and bootstrap Flynn (this may take a few minutes):
+then build and bootstrap Drycc (this may take a few minutes):
 
 ```text
 make
-script/bootstrap-flynn
+script/bootstrap-drycc
 ```
 
 ### Run the tests
 
-Run the `flynn cluster add` command from the bootstrap output to add the cluster to your `~/.flynnrc` file, then run the tests:
+Run the `drycc cluster add` command from the bootstrap output to add the cluster to your `~/.dryccrc` file, then run the tests:
 
 ```text
-flynn cluster add ...
-cd ~/go/src/github.com/flynn/flynn/test
-bin/flynn-test --flynnrc ~/.flynnrc --cli `pwd`/../cli/bin/flynn
+drycc cluster add ...
+cd ~/go/src/github.com/drycc/drycc/test
+bin/drycc-test --dryccrc ~/.dryccrc --cli `pwd`/../cli/bin/drycc
 ```
 
 ## Auto booting clusters
@@ -38,56 +38,56 @@ The test binary is capable of booting its own cluster to run the tests against, 
 
 ### Build root filesystem + kernel
 
-Before running the tests, you need a root filesystem and a Linux kernel capable of building and running Flynn.
+Before running the tests, you need a root filesystem and a Linux kernel capable of building and running Drycc.
 
-To build these into `/tmp/flynn`:
+To build these into `/tmp/drycc`:
 
 ```text
-mkdir -p /tmp/flynn
-sudo rootfs/build.sh /tmp/flynn
+mkdir -p /tmp/drycc
+sudo rootfs/build.sh /tmp/drycc
 ```
 
-You should now have `/tmp/flynn/rootfs.img` and `/tmp/flynn/vmlinuz`.
+You should now have `/tmp/drycc/rootfs.img` and `/tmp/drycc/vmlinuz`.
 
 ### Build the tests
 
 ```text
-go build -o flynn-test
+go build -o drycc-test
 ```
 
-### Download Flynn CLI
+### Download Drycc CLI
 
-The tests interact with the VM cluster using the Flynn CLI, so you will need it locally.
+The tests interact with the VM cluster using the Drycc CLI, so you will need it locally.
 
 Download it into the current directory:
 
 ```text
-curl -sL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >flynn
-chmod +x flynn
+curl -sL -A "`uname -sp`" https://dl.drycc.cc/cli | zcat >drycc
+chmod +x drycc
 ```
 
 ### Run the tests
 
 ```text
-sudo ./flynn-test \
+sudo ./drycc-test \
   --user `whoami` \
-  --rootfs /tmp/flynn/rootfs.img \
-  --kernel /tmp/flynn/vmlinuz \
-  --cli `pwd`/flynn
+  --rootfs /tmp/drycc/rootfs.img \
+  --kernel /tmp/drycc/vmlinuz \
+  --cli `pwd`/drycc
 ```
 
 ## CI
 
 ### Install the runner
 
-Install Git if not already installed, then check out the Flynn git repo and run
-the following to install the runner into `/opt/flynn-test`:
+Install Git if not already installed, then check out the Drycc git repo and run
+the following to install the runner into `/opt/drycc-test`:
 
 ```
 sudo test/scripts/install
 ```
 
-Add the following credentials to `/opt/flynn-test/.credentials`:
+Add the following credentials to `/opt/drycc-test/.credentials`:
 
 ```
 export AUTH_KEY=XXXXXXXXXX
@@ -99,7 +99,7 @@ export AWS_SECRET_ACCESS_KEY=XXXXXXXXXX
 Now start the runner:
 
 ```
-sudo start flynn-test
+sudo start drycc-test
 ```
 
 ### Updating the runner
@@ -107,14 +107,14 @@ sudo start flynn-test
 If the runner code has been changed, restart the Upstart job to pull in the new changes:
 
 ```
-sudo restart flynn-test
+sudo restart drycc-test
 ```
 
 If the rootfs needs rebuilding, you will need to remove the existing image before starting
 the runner again:
 
 ```
-sudo stop flynn-test
-sudo rm -rf /opt/flynn-test/build/{rootfs.img,vmlinuz}
-sudo start flynn-test
+sudo stop drycc-test
+sudo rm -rf /opt/drycc-test/build/{rootfs.img,vmlinuz}
+sudo start drycc-test
 ```

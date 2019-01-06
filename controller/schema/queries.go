@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"github.com/flynn/que-go"
+	"github.com/drycc/que-go"
 	"github.com/jackc/pgx"
 )
 

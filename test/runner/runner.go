@@ -26,24 +26,24 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/iotool"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sse"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/pkg/typeconv"
-	"github.com/flynn/flynn/test/arg"
-	"github.com/flynn/flynn/test/buildlog"
-	"github.com/flynn/flynn/test/cluster"
-	"github.com/flynn/tail"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/iotool"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sse"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/pkg/typeconv"
+	"github.com/drycc/drycc/test/arg"
+	"github.com/drycc/drycc/test/buildlog"
+	"github.com/drycc/drycc/test/cluster"
+	"github.com/drycc/tail"
 	"github.com/jackc/pgx"
 	"github.com/julienschmidt/httprouter"
 )
 
-var logBucket = "flynn-ci-logs"
+var logBucket = "drycc-ci-logs"
 
 const textPlain = "text/plain; charset=utf-8"
 
@@ -77,7 +77,7 @@ type Build struct {
 }
 
 func (b *Build) URL() string {
-	return "https://ci.flynn.io/builds/" + b.ID
+	return "https://ci.drycc.cc/builds/" + b.ID
 }
 
 func (b *Build) Finished() bool {
@@ -192,8 +192,8 @@ func (r *Runner) start() error {
 	r.s3 = s3.New(session.New(&aws.Config{Region: aws.String("us-east-1")}))
 
 	var err error
-	if r.rootFS, err = cluster.BuildFlynn(r.bc, args.RootFS, "origin/master", false, os.Stdout); err != nil {
-		return fmt.Errorf("could not build flynn: %s", err)
+	if r.rootFS, err = cluster.BuildDrycc(r.bc, args.RootFS, "origin/master", false, os.Stdout); err != nil {
+		return fmt.Errorf("could not build drycc: %s", err)
 	}
 	shutdown.BeforeExit(func() { removeRootFS(r.rootFS) })
 
@@ -256,9 +256,9 @@ set -e -x -o pipefail
 
 echo {{ .Cluster.RouterIP }} {{ .Cluster.ClusterDomain }} {{ .Cluster.ControllerDomain }} {{ .Cluster.GitDomain }} dashboard.{{ .Cluster.ClusterDomain }} docker.{{ .Cluster.ClusterDomain }} | sudo tee -a /etc/hosts
 
-# Wait for the Flynn bridge interface to show up so we can use it as the
+# Wait for the Drycc bridge interface to show up so we can use it as the
 # nameserver to resolve discoverd domains
-iface=flynnbr0
+iface=dryccbr0
 start=$(date +%s)
 while true; do
   ip=$(ifconfig ${iface} | grep -oP 'inet addr:\S+' | cut -d: -f2)
@@ -273,7 +273,7 @@ done
 
 echo "nameserver ${ip}" | sudo tee /etc/resolv.conf
 
-cd ~/go/src/github.com/flynn/flynn
+cd ~/go/src/github.com/drycc/drycc
 
 script/configure-docker "{{ .Cluster.ClusterDomain }}"
 
@@ -281,13 +281,13 @@ export DISCOVERD="http://{{ (index .Cluster.Instances 0).IP }}:1111"
 
 # put the command in a file so the arguments aren't echoed in the logs
 cat > /tmp/run-tests.sh <<EOF
-build/bin/flynn-host run \
+build/bin/drycc-host run \
   --host "{{ (index .Cluster.Instances 0).ID }}" \
-  --bind "$(pwd):/go/src/github.com/flynn/flynn,/var/run/docker.sock:/var/run/docker.sock,/var/lib/flynn:/var/lib/flynn,/mnt/backups:/mnt/backups" \
+  --bind "$(pwd):/go/src/github.com/drycc/drycc,/var/run/docker.sock:/var/run/docker.sock,/var/lib/drycc:/var/lib/drycc,/mnt/backups:/mnt/backups" \
   --volume "/tmp" \
   "build/image/test.json" \
   /usr/bin/env \
-  ROOT="/go/src/github.com/flynn/flynn" \
+  ROOT="/go/src/github.com/drycc/drycc" \
   CLUSTER_ADD_ARGS="-p {{ .Config.TLSPin }} default {{ .Cluster.ClusterDomain }} {{ .Config.Key }}" \
   ROUTER_IP="{{ .Cluster.RouterIP }}" \
   DOMAIN="{{ .Cluster.ClusterDomain }}" \
@@ -295,7 +295,7 @@ build/bin/flynn-host run \
   BLOBSTORE_S3_CONFIG="\${BLOBSTORE_S3_CONFIG}" \
   BLOBSTORE_GCS_CONFIG="\${BLOBSTORE_GCS_CONFIG}" \
   BLOBSTORE_AZURE_CONFIG="\${BLOBSTORE_AZURE_CONFIG}" \
-  /bin/run-flynn-test.sh \
+  /bin/run-drycc-test.sh \
   --cluster-api "http://{{ .RunnerIP }}/cluster/{{ .Cluster.ID }}" \
   --router-ip "{{ .Cluster.RouterIP }}" \
   --backups-dir "/mnt/backups" \
@@ -377,10 +377,10 @@ func (r *Runner) build(b *Build) (err error) {
 		delete(r.clusters, c.ID)
 	}()
 
-	rootFS, err := c.BuildFlynn(r.rootFS, b.Commit, b.Merge, true)
+	rootFS, err := c.BuildDrycc(r.rootFS, b.Commit, b.Merge, true)
 	defer removeRootFS(rootFS)
 	if err != nil {
-		return fmt.Errorf("could not build flynn: %s", err)
+		return fmt.Errorf("could not build drycc: %s", err)
 	}
 
 	if _, err := c.Boot(cluster.ClusterTypeDefault, 3, buildLog, false); err != nil {
@@ -389,7 +389,7 @@ func (r *Runner) build(b *Build) (err error) {
 
 	config, err := c.CLIConfig()
 	if err != nil {
-		return fmt.Errorf("could not generate flynnrc: %s", err)
+		return fmt.Errorf("could not generate dryccrc: %s", err)
 	}
 
 	var script bytes.Buffer
@@ -475,7 +475,7 @@ func (r *Runner) handleEvent(w http.ResponseWriter, req *http.Request, ps httpro
 		return
 	}
 	repo := event.Repo()
-	if repo != "flynn" {
+	if repo != "drycc" {
 		log.Println("webhook: unknown repo", repo)
 		http.Error(w, fmt.Sprintf("unknown repo %s", repo), 400)
 		return
@@ -741,7 +741,7 @@ func (r *Runner) downloadBuildLog(w http.ResponseWriter, req *http.Request, ps h
 	// part, but construct valid multipart content, headers included, so
 	// the file can be parsed with tools such as munpack(1).
 	w.Header().Set("Content-Type", textPlain)
-	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"flynn-ci-build-%s\"", path.Base(build.LogURL)))
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"drycc-ci-build-%s\"", path.Base(build.LogURL)))
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "MIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=%q\r\n\r\n", params["boundary"])
 	io.Copy(w, res.Body)
@@ -774,7 +774,7 @@ func (r *Runner) explainBuild(w http.ResponseWriter, req *http.Request, ps httpr
 	}
 	build.Reason = req.FormValue("reason")
 	build.IssueLink = req.FormValue("issue-link")
-	if build.IssueLink != "" && !strings.HasPrefix(build.IssueLink, "https://github.com/flynn/flynn/issues/") {
+	if build.IssueLink != "" && !strings.HasPrefix(build.IssueLink, "https://github.com/drycc/drycc/issues/") {
 		http.Error(w, fmt.Sprintf("Invalid GitHub issue link: %q\n", build.IssueLink), 400)
 		return
 	}
@@ -803,9 +803,9 @@ type Status struct {
 }
 
 var descriptions = map[string]string{
-	"pending": "The Flynn CI build is in progress",
-	"success": "The Flynn CI build passed",
-	"failure": "The Flynn CI build failed",
+	"pending": "The Drycc CI build is in progress",
+	"success": "The Drycc CI build passed",
+	"failure": "The Drycc CI build failed",
 }
 
 func (r *Runner) updateStatus(b *Build, state string) {
@@ -817,7 +817,7 @@ func (r *Runner) updateStatus(b *Build, state string) {
 			log.Printf("updateStatus: could not save build: %s", err)
 		}
 
-		url := fmt.Sprintf("https://api.github.com/repos/flynn/flynn/statuses/%s", b.Commit)
+		url := fmt.Sprintf("https://api.github.com/repos/drycc/drycc/statuses/%s", b.Commit)
 		description := descriptions[state]
 		if len(b.Failures) > 0 {
 			description += fmt.Sprintf(" [%d failure(s)]", len(b.Failures))
@@ -826,7 +826,7 @@ func (r *Runner) updateStatus(b *Build, state string) {
 			State:       state,
 			TargetURL:   b.URL(),
 			Description: description,
-			Context:     "continuous-integration/flynn",
+			Context:     "continuous-integration/drycc",
 		}
 		body := &bytes.Buffer{}
 		if err := json.NewEncoder(body).Encode(status); err != nil {

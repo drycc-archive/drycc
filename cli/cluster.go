@@ -14,34 +14,34 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	cfg "github.com/flynn/flynn/cli/config"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/backup"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/go-docopt"
+	cfg "github.com/drycc/drycc/cli/config"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/backup"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("cluster", runCluster, `
-usage: flynn cluster
-       flynn cluster add [-f] [-d] [--git-url <giturl>] [--no-git] [--docker-push-url <url>] [--docker] [-p <tlspin>] <cluster-name> <domain> <key>
-       flynn cluster remove <cluster-name>
-       flynn cluster default [<cluster-name>]
-       flynn cluster migrate-domain <domain>
-       flynn cluster backup [--file <file>]
-       flynn cluster log-sink
-       flynn cluster log-sink add syslog [--use-ids] [--insecure] [--format <format>] <url> [<prefix>]
-       flynn cluster log-sink remove <id>
+usage: drycc cluster
+       drycc cluster add [-f] [-d] [--git-url <giturl>] [--no-git] [--docker-push-url <url>] [--docker] [-p <tlspin>] <cluster-name> <domain> <key>
+       drycc cluster remove <cluster-name>
+       drycc cluster default [<cluster-name>]
+       drycc cluster migrate-domain <domain>
+       drycc cluster backup [--file <file>]
+       drycc cluster log-sink
+       drycc cluster log-sink add syslog [--use-ids] [--insecure] [--format <format>] <url> [<prefix>]
+       drycc cluster log-sink remove <id>
 
-Manage Flynn clusters.
+Manage Drycc clusters.
 
 
 Commands:
     With no arguments, shows a list of configured clusters.
 
     add
-        Adds <cluster-name> to the ~/.flynnrc configuration file.
+        Adds <cluster-name> to the ~/.dryccrc configuration file.
 
         options:
             -f, --force               force add cluster
@@ -53,7 +53,7 @@ Commands:
             -p, --tls-pin=<tlspin>    SHA256 of the cluster's TLS cert
 
     remove
-        Removes <cluster-name> from the ~/.flynnrc configuration file.
+        Removes <cluster-name> from the ~/.dryccrc configuration file.
 
     default
         With no arguments, prints the default cluster. With <cluster-name>, sets
@@ -69,7 +69,7 @@ Commands:
         Takes a backup of the cluster.
 
         The backup may be restored while creating a new cluster with
-        'flynn-host bootstrap --from-backup'.
+        'drycc-host bootstrap --from-backup'.
 
         options:
             --file=<backup-file>  file to write backup to (defaults to stdout)
@@ -87,17 +87,17 @@ Commands:
             --format=<format>  One of rfc6587 or newline, defaults to rfc6587.
 
         examples:
-            $ flynn cluster log-sink add syslog syslog+tls://rsyslog.host:514/
+            $ drycc cluster log-sink add syslog syslog+tls://rsyslog.host:514/
 
     log-sink remove
         Removes a log sink with <id>
 
 Examples:
 
-	$ flynn cluster add -p KGCENkp53YF5OvOKkZIry71+czFRkSw2ZdMszZ/0ljs= default dev.localflynn.com e09dc5301d72be755a3d666f617c4600
+	$ drycc cluster add -p KGCENkp53YF5OvOKkZIry71+czFRkSw2ZdMszZ/0ljs= default dev.localdrycc.com e09dc5301d72be755a3d666f617c4600
 	Cluster "default" added.
 
-	$ flynn cluster migrate-domain new.example.com
+	$ drycc cluster migrate-domain new.example.com
 	Migrate cluster domain from "example.com" to "new.example.com"? (yes/no): yes
 	Migrating cluster domain (this can take up to 2m0s)...
 	Changed cluster domain from "example.com" to "new.example.com"
@@ -356,7 +356,7 @@ func runClusterMigrateDomain(args *docopt.Args) error {
 				dm = e.DomainMigration
 				fmt.Printf("Changed cluster domain from %q to %q\n", dm.OldDomain, dm.Domain)
 
-				// update flynnrc
+				// update dryccrc
 				cluster.TLSPin = dm.TLSCert.Pin
 				cluster.ControllerURL = fmt.Sprintf("https://controller.%s", dm.Domain)
 				cluster.GitURL = fmt.Sprintf("https://git.%s", dm.Domain)

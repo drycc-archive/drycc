@@ -5,9 +5,9 @@ import (
 	"io"
 	"testing"
 
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 // Hook gocheck up to the "go test" runner

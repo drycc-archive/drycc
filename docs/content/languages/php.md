@@ -5,16 +5,16 @@ layout: docs
 
 # PHP
 
-Flynn supports deploying PHP applications using either the PHP or [HHVM](http://hhvm.com/)
+Drycc supports deploying PHP applications using either the PHP or [HHVM](http://hhvm.com/)
 runtime, with a choice of either [Apache2](http://httpd.apache.org/) or
 [Nginx](http://wiki.nginx.org/Main) web server.
 
-Flynn uses the [PHP buildpack](https://github.com/heroku/heroku-buildpack-php) to detect,
+Drycc uses the [PHP buildpack](https://github.com/heroku/heroku-buildpack-php) to detect,
 compile, and release PHP applications.
 
 ## Detection
 
-Flynn detects a PHP application by the presence of a `composer.json` file in the root directory.
+Drycc detects a PHP application by the presence of a `composer.json` file in the root directory.
 It then uses [Composer](https://getcomposer.org/) (A PHP dependency management tool) to
 determine, download, and install the dependencies of the application.
 
@@ -41,7 +41,7 @@ Here is an example `composer.json` file to declare a dependency on the
 Running `composer install` will download and install the necessary dependencies and
 create a `composer.lock` file. This contains a snapshot of all the packages and versions
 which were installed. The `composer.lock` file must be present when the application is
-deployed so that Flynn can determine the exact versions of packages to install.
+deployed so that Drycc can determine the exact versions of packages to install.
 
 Composer also creates a `vendor/autoload.php` file which can be required, leading to
 classes from the dependent packages being autoloaded. So to use the `monolog` package
@@ -63,7 +63,7 @@ $log = new Logger('my-application');
 ### Environment-Specific
 
 There are some packages you may use locally that don't need to be installed in
-production. Flynn calls `composer install` with `--no-dev`, which will skip
+production. Drycc calls `composer install` with `--no-dev`, which will skip
 installing any packages in the `require-dev` property of `composer.json`.
 
 For example, you may use the `phpunit` package locally, but this is seldom
@@ -133,7 +133,7 @@ root directory, which contains a line per type in the format `TYPE: COMMAND`.
 The `web` process type gets an allocated HTTP route and a corresponding `PORT` environment
 variable, so it typically starts an HTTP server for your application.
 
-Flynn supports two web servers out-of-the-box:
+Drycc supports two web servers out-of-the-box:
 
 #### Apache2
 

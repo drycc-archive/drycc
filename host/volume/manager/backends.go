@@ -3,8 +3,8 @@ package volumemanager
 import (
 	"encoding/json"
 
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/zfs"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/zfs"
 )
 
 func NewProvider(pspec *volume.ProviderSpec) (provider volume.Provider, err error) {

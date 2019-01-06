@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/client"
+	. "github.com/drycc/go-check"
 	"github.com/miekg/dns"
 )
 

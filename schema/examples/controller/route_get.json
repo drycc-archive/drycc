@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/route_get#",
+  "id": "https://drycc.cc/schema/examples/controller/route_get#",
   "title": "Get route",
   "description": "",
   "allOf": [

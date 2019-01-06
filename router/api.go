@@ -6,12 +6,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/pprof"
-	"github.com/flynn/flynn/pkg/sse"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/pprof"
+	"github.com/drycc/drycc/pkg/sse"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/router/types"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 )

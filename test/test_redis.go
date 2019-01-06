@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	c "github.com/flynn/go-check"
+	c "github.com/drycc/go-check"
 )
 
 type RedisSuite struct {
@@ -18,17 +18,17 @@ func (s *RedisSuite) TestRedisEnv(t *c.C) {
 	a := s.newCliTestApp(t)
 
 	// create a redis resource
-	t.Assert(a.flynn("resource", "add", "redis"), Succeeds)
+	t.Assert(a.drycc("resource", "add", "redis"), Succeeds)
 
 	// get the new release
 	client := s.controllerClient(t)
 	release, err := client.GetAppRelease(a.id)
 	t.Assert(err, c.IsNil)
 
-	// check that FLYNN_REDIS points to a Redis app
-	service, ok := release.Env["FLYNN_REDIS"]
+	// check that DRYCC_REDIS points to a Redis app
+	service, ok := release.Env["DRYCC_REDIS"]
 	if !ok {
-		t.Fatal("missing FLYNN_REDIS")
+		t.Fatal("missing DRYCC_REDIS")
 	}
 	redisApp, err := client.GetApp(service)
 	t.Assert(err, c.IsNil)
@@ -66,26 +66,26 @@ func (s *RedisSuite) TestRedisEnv(t *c.C) {
 func (s *RedisSuite) TestDumpRestore(t *c.C) {
 	a := s.newCliTestApp(t)
 
-	res := a.flynn("resource", "add", "redis")
+	res := a.drycc("resource", "add", "redis")
 	t.Assert(res, Succeeds)
 	id := strings.Split(res.Output, " ")[2]
 
 	release, err := s.controllerClient(t).GetAppRelease(a.id)
 	t.Assert(err, c.IsNil)
 
-	t.Assert(release.Env["FLYNN_REDIS"], c.Not(c.Equals), "")
-	a.waitForService(release.Env["FLYNN_REDIS"])
+	t.Assert(release.Env["DRYCC_REDIS"], c.Not(c.Equals), "")
+	a.waitForService(release.Env["DRYCC_REDIS"])
 
-	t.Assert(a.flynn("redis", "redis-cli", "set", "foo", "bar"), Succeeds)
+	t.Assert(a.drycc("redis", "redis-cli", "set", "foo", "bar"), Succeeds)
 
 	file := filepath.Join(t.MkDir(), "dump.rdb")
-	t.Assert(a.flynn("redis", "dump", "-f", file), Succeeds)
-	t.Assert(a.flynn("redis", "redis-cli", "del", "foo"), Succeeds)
+	t.Assert(a.drycc("redis", "dump", "-f", file), Succeeds)
+	t.Assert(a.drycc("redis", "redis-cli", "del", "foo"), Succeeds)
 
-	a.flynn("redis", "restore", "-f", file)
+	a.drycc("redis", "restore", "-f", file)
 
-	query := a.flynn("redis", "redis-cli", "get", "foo")
+	query := a.drycc("redis", "redis-cli", "get", "foo")
 	t.Assert(query, SuccessfulOutputContains, "bar")
 
-	t.Assert(a.flynn("resource", "remove", "redis", id), Succeeds)
+	t.Assert(a.drycc("resource", "remove", "redis", id), Succeeds)
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/process_type#",
+  "id": "https://drycc.cc/schema/controller/process_type#",
   "title": "Process Type",
   "description": "",
   "sortIndex": 9,

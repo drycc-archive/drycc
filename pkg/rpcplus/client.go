@@ -322,7 +322,7 @@ func NewHTTPClient(conn io.ReadWriteCloser, path string, header http.Header) (*C
 	if header == nil {
 		header = make(http.Header)
 	}
-	header.Set("Accept", "application/vnd.flynn.rpc-hijack+gob")
+	header.Set("Accept", "application/vnd.drycc.rpc-hijack+gob")
 
 	fmt.Fprintf(conn, "CONNECT %s HTTP/1.0\r\n", path)
 	header.Write(conn)

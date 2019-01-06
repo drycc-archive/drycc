@@ -9,7 +9,7 @@ import (
 	"hash"
 	"net"
 
-	"github.com/flynn/flynn/pkg/dialer"
+	"github.com/drycc/drycc/pkg/dialer"
 )
 
 // A Config structure provides pinning and TLS connection information used to

@@ -24,23 +24,23 @@ import (
 	"github.com/docker/go-units"
 	"github.com/docker/libnetwork/ipallocator"
 	"github.com/docker/libnetwork/netutils"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/containerinit"
-	"github.com/flynn/flynn/host/logmux"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/manager"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	logutils "github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/dialer"
-	"github.com/flynn/flynn/pkg/iptables"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/rpcplus"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	"github.com/flynn/flynn/pkg/verify"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/containerinit"
+	"github.com/drycc/drycc/host/logmux"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/manager"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	logutils "github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/dialer"
+	"github.com/drycc/drycc/pkg/iptables"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/rpcplus"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/verify"
 	"github.com/golang/groupcache/singleflight"
 	"github.com/inconshreveable/log15"
 	dhcp "github.com/krolaw/dhcp4"
@@ -53,7 +53,7 @@ import (
 )
 
 const (
-	containerRoot     = "/var/lib/flynn/container"
+	containerRoot     = "/var/lib/drycc/container"
 	defaultMountFlags = syscall.MS_NOEXEC | syscall.MS_NOSUID | syscall.MS_NODEV
 	defaultPartition  = "user"
 	defaultMemory     = 1 * units.GiB
@@ -216,7 +216,7 @@ func (l *LibcontainerBackend) ConfigureNetworking(config *host.NetworkConfig) er
 	}
 	if !bridgeExists {
 		// We need to explicitly assign the MAC address to avoid it changing to a lower value
-		// See: https://github.com/flynn/flynn/issues/223
+		// See: https://github.com/drycc/drycc/issues/223
 		mac := random.Bytes(5)
 		if err := netlink.LinkSetHardwareAddr(bridge, append([]byte{0xfe}, mac...)); err != nil {
 			return err
@@ -284,17 +284,17 @@ func (l *LibcontainerBackend) ConfigureNetworking(config *host.NetworkConfig) er
 
 	// Write a resolv.conf to be bind-mounted into containers pointing at the
 	// future discoverd DNS listener
-	if err := os.MkdirAll("/etc/flynn", 0755); err != nil {
+	if err := os.MkdirAll("/etc/drycc", 0755); err != nil {
 		return err
 	}
 	var resolvSearch string
 	if len(dnsConf.Search) > 0 {
 		resolvSearch = fmt.Sprintf("search %s\n", strings.Join(dnsConf.Search, " "))
 	}
-	if err := ioutil.WriteFile("/etc/flynn/resolv.conf", []byte(fmt.Sprintf("%snameserver %s\n", resolvSearch, l.bridgeAddr.String())), 0644); err != nil {
+	if err := ioutil.WriteFile("/etc/drycc/resolv.conf", []byte(fmt.Sprintf("%snameserver %s\n", resolvSearch, l.bridgeAddr.String())), 0644); err != nil {
 		return err
 	}
-	l.resolvConf = "/etc/flynn/resolv.conf"
+	l.resolvConf = "/etc/drycc/resolv.conf"
 
 	// Allocate IPs for running jobs
 	l.containersMtx.Lock()
@@ -461,9 +461,9 @@ func (l *LibcontainerBackend) Run(job *host.Job, runConfig *RunConfig, rateLimit
 	container := &Container{
 		ID: job.ID,
 		MuxConfig: &logmux.Config{
-			AppID:   job.Metadata["flynn-controller.app"],
+			AppID:   job.Metadata["drycc-controller.app"],
 			HostID:  l.State.id,
-			JobType: job.Metadata["flynn-controller.type"],
+			JobType: job.Metadata["drycc-controller.type"],
 			JobID:   job.ID,
 		},
 		l:    l,
@@ -488,8 +488,8 @@ func (l *LibcontainerBackend) Run(job *host.Job, runConfig *RunConfig, rateLimit
 	}()
 
 	log.Info("setting up rootfs")
-	rootPath := filepath.Join("/var/lib/flynn/image/mnt", job.ID)
-	tmpPath := filepath.Join("/var/lib/flynn/image/tmp", job.ID)
+	rootPath := filepath.Join("/var/lib/drycc/image/mnt", job.ID)
+	tmpPath := filepath.Join("/var/lib/drycc/image/tmp", job.ID)
 	for _, path := range []string{rootPath, tmpPath} {
 		if err := os.MkdirAll(path, 0755); err != nil {
 			log.Error("error setting up rootfs", "err", err)
@@ -519,7 +519,7 @@ func (l *LibcontainerBackend) Run(job *host.Job, runConfig *RunConfig, rateLimit
 			{Type: configs.NEWIPC},
 		}),
 		Cgroups: &configs.Cgroup{
-			Path: filepath.Join("/flynn", job.Partition, job.ID),
+			Path: filepath.Join("/drycc", job.Partition, job.ID),
 			Resources: &configs.Resources{
 				AllowedDevices: *job.Config.AllowedDevices,
 				Memory:         defaultMemory,
@@ -876,7 +876,7 @@ func (l *LibcontainerBackend) mountSquashfs(m *host.Mountspec) (string, error) {
 
 		// write the layer to a temp file and verify it has the
 		// expected hashes
-		tmp, err := ioutil.TempFile("", "flynn-layer-")
+		tmp, err := ioutil.TempFile("", "drycc-layer-")
 		if err != nil {
 			return "", err
 		}
@@ -1045,7 +1045,7 @@ func (c *Container) watch(ready chan<- error, buffer host.LogBuffer) error {
 		return err
 	}
 	go func() {
-		logger := c.l.LogMux.Logger(logagg.MsgIDInit, c.MuxConfig, "component", "flynn-host")
+		logger := c.l.LogMux.Logger(logagg.MsgIDInit, c.MuxConfig, "component", "drycc-host")
 		defer logger.Close()
 		for range notifyOOM {
 			logger.Crit("FATAL: a container process was killed due to lack of available memory")
@@ -1368,7 +1368,7 @@ func (l *LibcontainerBackend) Attach(req *AttachRequest) (err error) {
 	}
 
 	ch := make(chan *rfc5424.Message)
-	stream, err := l.LogMux.StreamLog(req.Job.Job.Metadata["flynn-controller.app"], req.Job.Job.ID, req.Logs, req.Stream, ch)
+	stream, err := l.LogMux.StreamLog(req.Job.Job.Metadata["drycc-controller.app"], req.Job.Job.ID, req.Logs, req.Stream, ch)
 	if err != nil {
 		return err
 	}
@@ -1482,8 +1482,8 @@ func (l *LibcontainerBackend) UnmarshalState(jobs map[string]*host.ActiveJob, jo
 		container.l = l
 		container.job = j.Job
 		container.done = make(chan struct{})
-		container.MuxConfig.AppID = j.Job.Metadata["flynn-controller.app"]
-		container.MuxConfig.JobType = j.Job.Metadata["flynn-controller.type"]
+		container.MuxConfig.AppID = j.Job.Metadata["drycc-controller.app"]
+		container.MuxConfig.JobType = j.Job.Metadata["drycc-controller.type"]
 		container.MuxConfig.JobID = j.Job.ID
 		readySignals[j.Job.ID] = make(chan error)
 		go container.watch(readySignals[j.Job.ID], buffers[j.Job.ID])
@@ -1659,12 +1659,12 @@ func setupCGroups(partitions map[string]int64) error {
 
 func createCGroupPartition(name string, cpuShares int64) error {
 	for _, group := range []string{"blkio", "cpu", "cpuacct", "cpuset", "devices", "freezer", "memory", "net_cls", "perf_event"} {
-		if err := os.MkdirAll(filepath.Join(cgroupRoot, group, "flynn", name), 0755); err != nil {
+		if err := os.MkdirAll(filepath.Join(cgroupRoot, group, "drycc", name), 0755); err != nil {
 			return fmt.Errorf("error creating partition cgroup: %s", err)
 		}
 	}
 	for _, param := range []string{"cpuset.cpus", "cpuset.mems"} {
-		data, err := ioutil.ReadFile(filepath.Join(cgroupRoot, "cpuset", "flynn", param))
+		data, err := ioutil.ReadFile(filepath.Join(cgroupRoot, "cpuset", "drycc", param))
 		if err != nil {
 			return fmt.Errorf("error reading cgroup param: %s", err)
 		}
@@ -1674,15 +1674,15 @@ func createCGroupPartition(name string, cpuShares int64) error {
 			if err != nil {
 				return fmt.Errorf("error reading cgroup param: %s", err)
 			}
-			if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpuset", "flynn", param), data, 0644); err != nil {
+			if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpuset", "drycc", param), data, 0644); err != nil {
 				return fmt.Errorf("error writing cgroup param: %s", err)
 			}
 		}
-		if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpuset", "flynn", name, param), data, 0644); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpuset", "drycc", name, param), data, 0644); err != nil {
 			return fmt.Errorf("error writing cgroup param: %s", err)
 		}
 	}
-	if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpu", "flynn", name, "cpu.shares"), strconv.AppendInt(nil, cpuShares, 10), 0644); err != nil {
+	if err := ioutil.WriteFile(filepath.Join(cgroupRoot, "cpu", "drycc", name, "cpu.shares"), strconv.AppendInt(nil, cpuShares, 10), 0644); err != nil {
 		return fmt.Errorf("error writing cgroup param: %s", err)
 	}
 	return nil
@@ -1698,7 +1698,7 @@ func (t *Tmpfs) Delete() error {
 }
 
 func createTmpfs(size int64) (*Tmpfs, error) {
-	f, err := ioutil.TempFile("", "flynn-ext2-")
+	f, err := ioutil.TempFile("", "drycc-ext2-")
 	if err != nil {
 		return nil, err
 	}

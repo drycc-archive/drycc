@@ -19,8 +19,8 @@
     "app": {
       "name": "discoverd",
       "meta": {
-        "flynn-system-app": "true",
-        "flynn-system-critical": "true"
+        "drycc-system-app": "true",
+        "drycc-system-critical": "true"
       }
     },
     "action": "run-app",
@@ -49,7 +49,7 @@
     "id": "flannel",
     "app": {
       "name": "flannel",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "action": "run-app",
     "release": {
@@ -84,17 +84,17 @@
     "app": {
       "name": "postgres",
       "meta": {
-        "flynn-system-app": "true",
-        "flynn-system-critical": "true"
+        "drycc-system-app": "true",
+        "drycc-system-critical": "true"
       }
     },
     "action": "run-app",
     "release": {
       "env": {
-        "FLYNN_POSTGRES": "postgres",
+        "DRYCC_POSTGRES": "postgres",
         "PGDATABASE": "postgres",
         "PGHOST": "leader.postgres.discoverd",
-        "PGUSER": "flynn",
+        "PGUSER": "drycc",
         "PGPASSWORD": "{{ (index .StepData \"pg-password\").Data }}",
         "SIRENIA_PROCESS": "postgres",
         "SINGLETON": "{{ .Singleton }}"
@@ -103,12 +103,12 @@
         "postgres": {
           "ports": [{"port": 5432, "proto": "tcp"}],
           "volumes": [{"path": "/data"}],
-          "args": ["/bin/start-flynn-postgres", "postgres"],
+          "args": ["/bin/start-drycc-postgres", "postgres"],
           "service": "postgres"
         },
         "web": {
           "ports": [{"port": 80, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-postgres", "api"]
+          "args": ["/bin/start-drycc-postgres", "api"]
         }
       }
     },
@@ -167,8 +167,8 @@
     "app": {
       "name": "controller",
       "meta": {
-        "flynn-system-app": "true",
-        "flynn-system-critical": "true"
+        "drycc-system-app": "true",
+        "drycc-system-critical": "true"
       }
     },
     "release": {
@@ -183,18 +183,18 @@
       "processes": {
         "web": {
           "ports": [{"port": 80, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-controller", "controller"],
+          "args": ["/bin/start-drycc-controller", "controller"],
           "service": "controller",
           "volumes": [{"path": "/tmp", "delete_on_stop": true}]
         },
         "scheduler": {
-          "args": ["/bin/start-flynn-controller", "scheduler"],
+          "args": ["/bin/start-drycc-controller", "scheduler"],
           "omni": true,
           "service": "controller-scheduler",
           "ports": [{ "proto": "tcp" }]
         },
         "worker": {
-          "args": ["/bin/start-flynn-controller", "worker"],
+          "args": ["/bin/start-drycc-controller", "worker"],
           "ports": [{ "proto": "tcp" }]
         }
       }
@@ -217,7 +217,7 @@
     "from_step": "controller",
     "app": {
       "name": "controller",
-      "meta": {"flynn-system-app": "true"},
+      "meta": {"drycc-system-app": "true"},
       "strategy": "one-by-one",
       "deploy_timeout": 120
     }
@@ -229,8 +229,8 @@
     "app": {
       "name": "postgres",
       "meta": {
-        "flynn-system-app": "true",
-        "flynn-system-critical": "true"
+        "drycc-system-app": "true",
+        "drycc-system-critical": "true"
       },
       "strategy": "sirenia",
       "deploy_timeout": 120
@@ -242,7 +242,7 @@
     "from_step": "flannel",
     "app": {
       "name": "flannel",
-      "meta": {"flynn-system-app": "true"},
+      "meta": {"drycc-system-app": "true"},
       "strategy": "one-by-one"
     }
   },
@@ -253,8 +253,8 @@
     "app": {
       "name": "discoverd",
       "meta": {
-        "flynn-system-app": "true",
-        "flynn-system-critical": "true"
+        "drycc-system-app": "true",
+        "drycc-system-critical": "true"
       },
       "strategy": "discoverd-meta",
       "deploy_timeout": 300
@@ -297,19 +297,19 @@
     "id": "redis",
     "app": {
       "name": "redis",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "action": "deploy-app",
     "release": {
       "env": {
-        "FLYNN_REDIS": "redis",
+        "DRYCC_REDIS": "redis",
         "CONTROLLER_KEY": "{{ (index .StepData \"controller-key\").Data }}",
         "REDIS_IMAGE_ID": "{{ (index .StepData \"redis-image\").ID }}"
       },
       "processes": {
         "web": {
           "ports": [{"port": 80, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-redis", "api"]
+          "args": ["/bin/start-drycc-redis", "api"]
         }
       }
     },
@@ -333,15 +333,15 @@
     "app": {
       "name": "mariadb",
       "strategy": "sirenia",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "action": "deploy-app",
     "release": {
       "env": {
-        "FLYNN_MYSQL": "mariadb",
+        "DRYCC_MYSQL": "mariadb",
         "MYSQL_HOST": "leader.mariadb.discoverd",
         "MYSQL_DATABASE": "mysql",
-        "MYSQL_USER": "flynn",
+        "MYSQL_USER": "drycc",
         "MYSQL_PWD": "{{ (index .StepData \"mariadb-password\").Data }}",
         "SIRENIA_PROCESS": "mariadb",
         "SINGLETON": "{{ .Singleton }}"
@@ -349,13 +349,13 @@
       "processes": {
         "mariadb": {
           "ports": [{"port": 3306, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-mariadb", "mariadb"],
+          "args": ["/bin/start-drycc-mariadb", "mariadb"],
           "service": "mariadb",
           "volumes": [{"path": "/data"}]
         },
         "web": {
           "ports": [{"port": 80, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-mariadb", "api"],
+          "args": ["/bin/start-drycc-mariadb", "api"],
           "env": {
             "CONTROLLER_KEY": "{{ (index .StepData \"controller-key\").Data }}"
           }
@@ -383,16 +383,16 @@
     "app": {
       "name": "mongodb",
       "strategy": "sirenia",
-      "meta": {"flynn-system-app": "true"},
+      "meta": {"drycc-system-app": "true"},
       "deploy_timeout": 240
     },
     "action": "deploy-app",
     "release": {
       "env": {
-        "FLYNN_MONGO": "mongodb",
+        "DRYCC_MONGO": "mongodb",
         "MONGO_DATABASE": "admin",
         "MONGO_HOST": "leader.mongodb.discoverd",
-        "MONGO_USER": "flynn",
+        "MONGO_USER": "drycc",
         "MONGO_PWD": "{{ (index .StepData \"mongodb-password\").Data }}",
         "SIRENIA_PROCESS": "mongodb",
         "SINGLETON": "{{ .Singleton }}"
@@ -400,13 +400,13 @@
       "processes": {
         "mongodb": {
           "ports": [{"port": 27017, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-mongodb", "mongodb"],
+          "args": ["/bin/start-drycc-mongodb", "mongodb"],
           "service": "mongodb",
           "volumes": [{"path": "/data"}]
         },
         "web": {
           "ports": [{"port": 80, "proto": "tcp"}],
-          "args": ["/bin/start-flynn-mongodb", "api"],
+          "args": ["/bin/start-drycc-mongodb", "api"],
           "env": {
             "CONTROLLER_KEY": "{{ (index .StepData \"controller-key\").Data }}"
           }
@@ -430,7 +430,7 @@
     "action": "deploy-app",
     "app": {
       "name": "blobstore",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[blobstore]],
     "release": {
@@ -451,7 +451,7 @@
     "action": "deploy-app",
     "app": {
       "name": "router",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[router]],
     "release": {
@@ -464,7 +464,7 @@
       "processes": {
         "app": {
           "host_network": true,
-          "args": ["/bin/flynn-router", "-http-port", "80", "-https-port", "443", "-tcp-range-start", "3000", "-tcp-range-end", "3500"],
+          "args": ["/bin/drycc-router", "-http-port", "80", "-https-port", "443", "-tcp-range-start", "3000", "-tcp-range-end", "3500"],
           "omni": true,
           "service": "router-api"
         }
@@ -480,7 +480,7 @@
     "action": "deploy-app",
     "app": {
       "name": "gitreceive",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[gitreceive]],
     "release": {
@@ -519,7 +519,7 @@
     "action": "deploy-app",
     "app": {
       "name": "docker-receive",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[docker-receive]],
     "release": {
@@ -596,7 +596,7 @@
     "action": "deploy-app",
     "app": {
       "name": "logaggregator",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[logaggregator]],
     "release": {
@@ -619,7 +619,7 @@
     "action": "deploy-app",
     "app": {
       "name": "taffy",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[taffy]],
     "release": {
@@ -640,7 +640,7 @@
     "action": "deploy-app",
     "app": {
       "name": "dashboard",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[dashboard]],
     "release": {
@@ -688,7 +688,7 @@
     "action": "deploy-app",
     "app": {
       "name": "status",
-      "meta": {"flynn-system-app": "true"}
+      "meta": {"drycc-system-app": "true"}
     },
     "artifacts": [$image_artifact[status]],
     "release": {
@@ -769,6 +769,6 @@
   {
     "id": "log-complete",
     "action": "log",
-    "output": "\n\nFlynn bootstrapping complete. Install the Flynn CLI (see https://flynn.io/docs/cli for instructions) and paste the line below into a terminal window:\n\nflynn cluster add -p {{ (index .StepData \"controller-cert\").Pin }} default {{ getenv \"CLUSTER_DOMAIN\" }} {{ (index .StepData \"controller-key\").Data }}\n\nThe built-in dashboard can be accessed at http://dashboard.{{ getenv \"CLUSTER_DOMAIN\" }} and your login token is {{ (index .StepData \"dashboard-login-token\").Data }}"
+    "output": "\n\nDrycc bootstrapping complete. Install the Drycc CLI (see https://drycc.cc/docs/cli for instructions) and paste the line below into a terminal window:\n\ndrycc cluster add -p {{ (index .StepData \"controller-cert\").Pin }} default {{ getenv \"CLUSTER_DOMAIN\" }} {{ (index .StepData \"controller-key\").Data }}\n\nThe built-in dashboard can be accessed at http://dashboard.{{ getenv \"CLUSTER_DOMAIN\" }} and your login token is {{ (index .StepData \"dashboard-login-token\").Data }}"
   }
 ]

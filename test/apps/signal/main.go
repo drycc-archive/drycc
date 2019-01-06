@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/flynn/flynn/discoverd/client"
+	"github.com/drycc/drycc/discoverd/client"
 )
 
 const service = "signal-service"

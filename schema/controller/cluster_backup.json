@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/cluster_backup#",
+  "id": "https://drycc.cc/schema/controller/cluster_backup#",
   "title": "Cluster Backup",
   "description": "",
   "sortIndex": 18,

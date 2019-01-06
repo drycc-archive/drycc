@@ -1,6 +1,6 @@
 package main
 
-import . "github.com/flynn/go-check"
+import . "github.com/drycc/go-check"
 
 func (S) TestParseTagArgs(c *C) {
 	type test struct {

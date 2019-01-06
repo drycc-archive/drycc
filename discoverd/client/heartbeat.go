@@ -8,19 +8,19 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/flynn/flynn/pkg/attempt"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/pkg/attempt"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/random"
 )
 
 // EnvInstanceMeta are environment variables which will be automatically added
 // to instance metadata if present.
 var EnvInstanceMeta = map[string]struct{}{
-	"FLYNN_APP_ID":       {},
-	"FLYNN_APP_NAME":     {},
-	"FLYNN_RELEASE_ID":   {},
-	"FLYNN_PROCESS_TYPE": {},
-	"FLYNN_JOB_ID":       {},
+	"DRYCC_APP_ID":       {},
+	"DRYCC_APP_NAME":     {},
+	"DRYCC_RELEASE_ID":   {},
+	"DRYCC_PROCESS_TYPE": {},
+	"DRYCC_JOB_ID":       {},
 }
 
 type Heartbeater interface {

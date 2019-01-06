@@ -193,7 +193,7 @@ App.isValidId = function (id) {
 App.dispatcherIndex = App.registerWithDispatcher(Dispatcher);
 
 App.isSystemApp = function (app) {
-	return app.meta && app.meta["flynn-system-app"] === "true";
+	return app.meta && app.meta["drycc-system-app"] === "true";
 };
 
 export default App;

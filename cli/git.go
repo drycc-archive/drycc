@@ -10,8 +10,8 @@ import (
 	"strings"
 	"syscall"
 
-	cfg "github.com/flynn/flynn/cli/config"
-	"github.com/flynn/go-docopt"
+	cfg "github.com/drycc/drycc/cli/config"
+	"github.com/drycc/go-docopt"
 )
 
 var gitRepo *bool
@@ -110,7 +110,7 @@ func parseGitRemoteOutput(b []byte) (results map[string]remoteApp, err error) {
 }
 
 func remoteFromGitConfig() string {
-	b, err := exec.Command("git", "config", "flynn.remote").Output()
+	b, err := exec.Command("git", "config", "drycc.remote").Output()
 	if err != nil {
 		return ""
 	}
@@ -120,7 +120,7 @@ func remoteFromGitConfig() string {
 type multipleRemotesError []string
 
 func (remotes multipleRemotesError) Error() string {
-	return "error: Multiple apps listed in git remotes, please specify one with the global -a option to disambiguate.\n\nAvailable Flynn remotes:\n" + strings.Join(remotes, "\n")
+	return "error: Multiple apps listed in git remotes, please specify one with the global -a option to disambiguate.\n\nAvailable Drycc remotes:\n" + strings.Join(remotes, "\n")
 }
 
 func appFromGitRemote(remote string) (*remoteApp, error) {
@@ -143,7 +143,7 @@ func appFromGitRemote(remote string) (*remoteApp, error) {
 		return app, nil
 	}
 
-	// no remote specified, see if there is a single Flynn app remote
+	// no remote specified, see if there is a single Drycc app remote
 	remotes, err := gitRemotes()
 	if err != nil {
 		return nil, nil // hide this error
@@ -171,7 +171,7 @@ func isNotFound(err error) bool {
 }
 
 func init() {
-	register("git-credentials", runGitCredentials, "usage: flynn git-credentials <operation>")
+	register("git-credentials", runGitCredentials, "usage: drycc git-credentials <operation>")
 }
 
 func runGitCredentials(args *docopt.Args) error {

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to build and release Flynn components.
+# A script to build and release Drycc components.
 #
 # PREREQUISITES:
 #
@@ -32,8 +32,8 @@ usage: $0 [options] COMMIT VERSION
 OPTIONS:
   -h, --help              Show this message
   -c, --channel CHANNEL   Point channel at VERSION once released
-  -b, --bucket BUCKET     The S3 bucket to sync with [default: flynn]
-  -t, --tuf-dir DIR       Path to the local TUF repository [default: /etc/flynn/tuf]
+  -b, --bucket BUCKET     The S3 bucket to sync with [default: drycc]
+  -t, --tuf-dir DIR       Path to the local TUF repository [default: /etc/drycc/tuf]
   -k, --keep              Keep release directory
   -r, --resume DIR        Resume the release using DIR
 USAGE
@@ -41,8 +41,8 @@ USAGE
 
 main() {
   local channel=""
-  local bucket="flynn"
-  local tuf_dir="/etc/flynn/tuf"
+  local bucket="drycc"
+  local tuf_dir="/etc/drycc/tuf"
   local dir=""
   local keep=false
 
@@ -101,7 +101,7 @@ main() {
 
   local commit=$1
   local version=$2
-  local flynn_release="${ROOT}/util/release/flynn-release"
+  local drycc_release="${ROOT}/util/release/drycc-release"
 
   dir="${dir:-$(mktemp --directory)}"
   info "using base dir: ${dir}"
@@ -109,17 +109,17 @@ main() {
   check_tuf_keys "${tuf_dir}"
 
   export GOPATH="${dir}"
-  local src="${GOPATH}/src/github.com/flynn/flynn"
+  local src="${GOPATH}/src/github.com/drycc/drycc"
 
   if [[ ! -d "${src}/.git" ]]; then
     info "cloning git repo"
     rm -rf "${src}"
-    git clone --quiet https://github.com/flynn/flynn "${src}"
+    git clone --quiet https://github.com/drycc/drycc "${src}"
   fi
 
   pushd "${src}" >/dev/null
 
-  info "building flynn"
+  info "building drycc"
   git checkout --force --quiet "${commit}"
 
   make release
@@ -143,8 +143,8 @@ main() {
 
   info "uploading files to S3"
   mkdir -p "${dir}/upload"
-  ln -fs "${src}/script/install-flynn" "${dir}/upload/install-flynn"
-  ln -fs "${src}/script/install-flynn" "${dir}/upload/install-flynn-${version}"
+  ln -fs "${src}/script/install-drycc" "${dir}/upload/install-drycc"
+  ln -fs "${src}/script/install-drycc" "${dir}/upload/install-drycc-${version}"
   ln -fs "${tuf_dir}/repository" "${dir}/upload/tuf"
   sync_cloudfront "${dir}/upload/" "s3://${bucket}/"
 

@@ -12,17 +12,17 @@ import (
 	"strconv"
 	"time"
 
-	cc "github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/controller/client/v1"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	g "github.com/flynn/flynn/pkg/examplegenerator"
-	"github.com/flynn/flynn/pkg/httprecorder"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/resource"
-	"github.com/flynn/flynn/pkg/typeconv"
-	"github.com/flynn/flynn/router/types"
+	cc "github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/controller/client/v1"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	g "github.com/drycc/drycc/pkg/examplegenerator"
+	"github.com/drycc/drycc/pkg/httprecorder"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/resource"
+	"github.com/drycc/drycc/pkg/typeconv"
+	"github.com/drycc/drycc/router/types"
 )
 
 type generator struct {
@@ -324,12 +324,12 @@ func (e *generator) createArtifact() {
 		},
 	}
 	artifact := &ct.Artifact{
-		Type:             ct.ArtifactTypeFlynn,
+		Type:             ct.ArtifactTypeDrycc,
 		URI:              e.resourceIds["SLUGRUNNER_IMAGE_URI"],
 		RawManifest:      manifest.RawManifest(),
 		Hashes:           manifest.Hashes(),
 		Size:             int64(len(manifest.RawManifest())),
-		LayerURLTemplate: "https://dl.flynn.io/tuf?target=/layers/{id}.squashfs",
+		LayerURLTemplate: "https://dl.drycc.cc/tuf?target=/layers/{id}.squashfs",
 	}
 	err := e.client.CreateArtifact(artifact)
 	if err != nil {

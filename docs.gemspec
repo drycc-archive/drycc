@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../docs/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'flynn-docs/version'
+require 'drycc-docs/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "flynn-docs"
-  gem.version       = FlynnDocs::VERSION
+  gem.name          = "drycc-docs"
+  gem.version       = DryccDocs::VERSION
   gem.authors       = ["Jesse Stuart"]
   gem.email         = ["jesse@jessestuart.ca"]
-  gem.description   = %q{Flynn docs}
-  gem.summary       = %q{Flynn docs}
+  gem.description   = %q{Drycc docs}
+  gem.summary       = %q{Drycc docs}
   gem.homepage      = ""
 
   gem.files         = `git ls-files docs`.split($/)

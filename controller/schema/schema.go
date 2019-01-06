@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/cupcake/jsonschema"
-	ct "github.com/flynn/flynn/controller/types"
+	ct "github.com/drycc/drycc/controller/types"
 )
 
 var schemaCache map[string]*jsonschema.Schema
@@ -42,7 +42,7 @@ func Load(schemaRoot string) error {
 		if err != nil {
 			return fmt.Errorf("schema: Error loading schema %s: %s", path, err)
 		}
-		cacheKey := "https://flynn.io/schema" + strings.TrimSuffix(filepath.Base(path), ".json")
+		cacheKey := "https://drycc.cc/schema" + strings.TrimSuffix(filepath.Base(path), ".json")
 		schemaCache[cacheKey] = schema
 	}
 	for _, schema := range schemaCache {
@@ -64,9 +64,9 @@ func schemaForType(thing interface{}) *jsonschema.Schema {
 		name = "app"
 	}
 	if name == "route" {
-		return schemaCache["https://flynn.io/schema/router/route"]
+		return schemaCache["https://drycc.cc/schema/router/route"]
 	}
-	cacheKey := "https://flynn.io/schema/controller/" + name
+	cacheKey := "https://drycc.cc/schema/controller/" + name
 	return schemaCache[cacheKey]
 }
 

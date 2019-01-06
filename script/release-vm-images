@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to build and release Flynn VM images.
+# A script to build and release Drycc VM images.
 #
 # PREREQUISITES:
 #
@@ -40,8 +40,8 @@ usage: $0 [options] VERSION
 OPTIONS:
   -h            Show this message
   -k            Keep release directory
-  -b BUCKET     The S3 bucket to upload vagrant images to [default: `flynn`]
-  -d DOMAIN     The CloudFront domain [default: `dl.flynn.io`]
+  -b BUCKET     The S3 bucket to upload vagrant images to [default: `drycc`]
+  -d DOMAIN     The CloudFront domain [default: `dl.drycc.cc`]
   -r DIR        Resume the release using DIR
 
 Requires AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to be set
@@ -83,9 +83,9 @@ main() {
   check_aws_keys
 
   local version=$1
-  bucket=${bucket:-"flynn"}
+  bucket=${bucket:-"drycc"}
   dir="${dir:-$(mktemp -d)}"
-  domain="${domain:-"dl.flynn.io"}"
+  domain="${domain:-"dl.drycc.cc"}"
 
   info "using base dir: ${dir}"
 
@@ -98,7 +98,7 @@ main() {
       -only="virtualbox-iso" \
       -var "headless=true" \
       -var "output_dir=${dir}" \
-      -var "flynn_repository=https://${domain}" \
+      -var "drycc_repository=https://${domain}" \
       -var "version=${version}" \
       -var-file "ubuntu-xenial.json" \
       ubuntu.json | parse_packer)
@@ -136,20 +136,20 @@ main() {
   info "fetching current vagrant manifest"
   local manifest="$(s3cmd \
     --no-progress \
-    get "s3://${bucket}/vagrant/flynn-base.json" - 2>/dev/null)"
+    get "s3://${bucket}/vagrant/drycc-base.json" - 2>/dev/null)"
   if [[ -z "${manifest}" ]]; then
-    manifest='{"name":"flynn-base"}'
+    manifest='{"name":"drycc-base"}'
   fi
 
   info "updating vagrant manifest"
   mkdir -p "${dir}/manifests/vagrant"
-  "${ROOT}/util/release/flynn-release" vagrant \
+  "${ROOT}/util/release/drycc-release" vagrant \
     "https://${domain}/vagrant/boxes/${box_name}" \
     "${checksum}" \
     "${version}" \
     "virtualbox" \
     <<< "${manifest}" \
-    > "${dir}/manifests/vagrant/flynn-base.json"
+    > "${dir}/manifests/vagrant/drycc-base.json"
 
   info "releasing manifests"
   sync_cloudfront "${dir}/manifests/" "s3://${bucket}/"
@@ -169,7 +169,7 @@ main() {
 #
 # example artifact output:
 #
-#   virtualbox-iso|/tmp/tmp.FhRkEcY9YJ/flynn-base_20141021.1_virtualbox.box
+#   virtualbox-iso|/tmp/tmp.FhRkEcY9YJ/drycc-base_20141021.1_virtualbox.box
 #   amazon-ebs|eu-west-1:ami-4c832d3b,us-east-1:ami-fea92d96
 #
 parse_packer() {

@@ -3,13 +3,13 @@ package cli
 import (
 	"fmt"
 
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("version", runVersion, `
-usage: flynn-host version [--release]
+usage: drycc-host version [--release]
 
 Options:
 	--release   Print the release version

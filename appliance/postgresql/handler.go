@@ -3,11 +3,11 @@ package postgresql
 import (
 	"net/http"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/flynn/pkg/status"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/drycc/pkg/status"
 	"github.com/julienschmidt/httprouter"
 	"github.com/inconshreveable/log15"
 )

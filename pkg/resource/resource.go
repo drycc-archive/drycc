@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	hh "github.com/flynn/flynn/pkg/httphelper"
+	hh "github.com/drycc/drycc/pkg/httphelper"
 )
 
 type Resource struct {

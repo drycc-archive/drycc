@@ -50,7 +50,7 @@ main() {
   local src="${tmp}/src"
   clone_app "${src}"
 
-  export FLYNNRC="${tmp}/flynnrc"
+  export DRYCCRC="${tmp}/dryccrc"
   local app="nodejs"
 
   local versions=(
@@ -88,7 +88,7 @@ clone_app() {
   local path=$1
 
   info "cloning Node.js example app"
-  git clone "https://github.com/flynn-examples/nodejs-flynn-example.git" "${path}"
+  git clone "https://github.com/drycc-examples/nodejs-drycc-example.git" "${path}"
 }
 
 backup_mysql_cluster() {
@@ -149,22 +149,22 @@ bootstrap_cluster() {
   info "bootstrapping ${version} cluster"
   export CLUSTER_DOMAIN="$(openssl rand -hex 16).local"
   echo "192.0.2.200 ${CLUSTER_DOMAIN} controller.${CLUSTER_DOMAIN} git.${CLUSTER_DOMAIN} docker.${CLUSTER_DOMAIN}" | sudo tee -a /etc/hosts
-  "${ROOT}/script/kill-flynn"
-  local cluster_add=$("${ROOT}/script/bootstrap-flynn" --version "${version}" &> >(tee "${out}") | tail -3 | head -1)
+  "${ROOT}/script/kill-drycc"
+  local cluster_add=$("${ROOT}/script/bootstrap-drycc" --version "${version}" &> >(tee "${out}") | tail -3 | head -1)
 
-  if [[ "${cluster_add:0:17}" != "flynn cluster add" ]]; then
+  if [[ "${cluster_add:0:17}" != "drycc cluster add" ]]; then
     warn "bootstrap failed:"
     cat "${out}"
     fail "bootstrap failed"
   fi
 
-  flynn cluster remove default
+  drycc cluster remove default
 
   if [[ "${version:1:8}" -ge "20160609" ]]; then
     "${ROOT}/script/configure-docker" "${CLUSTER_DOMAIN}"
-    flynn cluster add --docker ${cluster_add:18}
+    drycc cluster add --docker ${cluster_add:18}
   else
-    flynn cluster add ${cluster_add:18}
+    drycc cluster add ${cluster_add:18}
   fi
 }
 
@@ -173,10 +173,10 @@ git_deploy_app() {
 
   pushd "${src}" >/dev/null
 
-  flynn create --yes "${app}"
+  drycc create --yes "${app}"
 
   local out="${tmp}/git-push-${version}.txt"
-  if ! git push flynn master &> "${out}"; then
+  if ! git push drycc master &> "${out}"; then
     warn "git push failed:"
     cat "${out}"
     fail "git push failed"
@@ -186,48 +186,48 @@ git_deploy_app() {
 }
 
 docker_deploy_app() {
-  info "deploying app using 'flynn docker push'"
+  info "deploying app using 'drycc docker push'"
 
   docker build -t "${app}" "${src}"
 
-  flynn create --remote "" --yes "${app}"
+  drycc create --remote "" --yes "${app}"
 
   local out="${tmp}/docker-push-${version}.txt"
-  if ! flynn -a "${app}" docker push "${app}" &> "${out}"; then
+  if ! drycc -a "${app}" docker push "${app}" &> "${out}"; then
     warn "docker push failed:"
     cat "${out}"
     fail "docker push failed"
   fi
 
-  flynn -a "${app}" scale app=1
+  drycc -a "${app}" scale app=1
 }
 
 add_redis_resource() {
   info "adding Redis resource"
-  flynn -a "${app}" resource add redis
+  drycc -a "${app}" resource add redis
 }
 
 add_mysql_resource() {
   info "adding MySQL resource"
-  flynn -a "${app}" resource add mysql
-  flynn -a "${app}" mysql console -- -e "CREATE TABLE foos (data TEXT); INSERT INTO foos (data) VALUES ('foobar')"
+  drycc -a "${app}" resource add mysql
+  drycc -a "${app}" mysql console -- -e "CREATE TABLE foos (data TEXT); INSERT INTO foos (data) VALUES ('foobar')"
 }
 
 add_mongodb_resource() {
   info "adding MongoDB resource"
-  flynn -a "${app}" resource add mongodb
-  flynn -a "${app}" mongodb mongo -- --eval 'db.foos.insert({data: "foobar"})'
+  drycc -a "${app}" resource add mongodb
+  drycc -a "${app}" mongodb mongo -- --eval 'db.foos.insert({data: "foobar"})'
 }
 
 backup_cluster() {
   local file=$1
 
   info "backing up cluster to ${file}"
-  flynn cluster backup --file "${file}"
+  drycc cluster backup --file "${file}"
 }
 
-flynn() {
-  "${ROOT}/cli/bin/flynn" "$@"
+drycc() {
+  "${ROOT}/cli/bin/drycc" "$@"
 }
 
 main $@

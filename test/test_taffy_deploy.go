@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	c "github.com/drycc/go-check"
 )
 
 type TaffyDeploySuite struct {
@@ -71,11 +71,11 @@ func (s *TaffyDeploySuite) TestDeploys(t *c.C) {
 	client := s.controllerClient(t)
 
 	github := map[string]string{
-		"user":      "flynn-examples",
-		"repo":      "nodejs-flynn-example",
+		"user":      "drycc-examples",
+		"repo":      "nodejs-drycc-example",
 		"branch":    "master",
 		"rev":       "5e177fec38fbde7d0a03e9e8dccf8757c68caa11",
-		"clone_url": "https://github.com/flynn-examples/nodejs-flynn-example.git",
+		"clone_url": "https://github.com/drycc-examples/nodejs-drycc-example.git",
 	}
 
 	// initial deploy
@@ -146,11 +146,11 @@ func (s *TaffyDeploySuite) TestPrivateDeploys(t *c.C) {
 	client := s.controllerClient(t)
 
 	github := map[string]string{
-		"user":      "flynn-examples",
-		"repo":      "nodejs-flynn-example",
+		"user":      "drycc-examples",
+		"repo":      "nodejs-drycc-example",
 		"branch":    "master",
 		"rev":       "5e177fec38fbde7d0a03e9e8dccf8757c68caa11",
-		"clone_url": "git@github.com:/flynn-examples/nodejs-flynn-example.git",
+		"clone_url": "git@github.com:/drycc-examples/nodejs-drycc-example.git",
 	}
 
 	app := &ct.App{}

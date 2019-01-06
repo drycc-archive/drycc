@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/flynn/flynn/pkg/version"
+	"github.com/drycc/drycc/pkg/version"
 )
 
-var telemetryURL = "https://dl.flynn.io/measure/scheduler"
+var telemetryURL = "https://dl.drycc.cc/measure/scheduler"
 
 func init() {
 	if u := os.Getenv("TELEMETRY_URL"); u != "" {
@@ -62,7 +62,7 @@ func (s *Scheduler) SendTelemetry() {
 		dbs[p] = make(map[string]struct{})
 	}
 	for _, f := range s.formations {
-		if f.App.Meta["flynn-system-app"] == "true" || f.GetProcesses().IsEmpty() {
+		if f.App.Meta["drycc-system-app"] == "true" || f.GetProcesses().IsEmpty() {
 			continue
 		}
 		formations++
@@ -71,28 +71,28 @@ func (s *Scheduler) SendTelemetry() {
 		for _, p := range providers {
 			switch p {
 			case "postgres":
-				if _, ok := f.Release.Env["FLYNN_POSTGRES"]; !ok {
+				if _, ok := f.Release.Env["DRYCC_POSTGRES"]; !ok {
 					continue
 				}
 				if db := f.Release.Env["PGDATABASE"]; db != "" {
 					dbs[p][db] = struct{}{}
 				}
 			case "mongodb":
-				if _, ok := f.Release.Env["FLYNN_MONGO"]; !ok {
+				if _, ok := f.Release.Env["DRYCC_MONGO"]; !ok {
 					continue
 				}
 				if db := f.Release.Env["MONGO_DATABASE"]; db != "" {
 					dbs[p][db] = struct{}{}
 				}
 			case "mysql":
-				if _, ok := f.Release.Env["FLYNN_MYSQL"]; !ok {
+				if _, ok := f.Release.Env["DRYCC_MYSQL"]; !ok {
 					continue
 				}
 				if db := f.Release.Env["MYSQL_DATABASE"]; db != "" {
 					dbs[p][db] = struct{}{}
 				}
 			case "redis":
-				if db := f.Release.Env["FLYNN_REDIS"]; db != "" {
+				if db := f.Release.Env["DRYCC_REDIS"]; db != "" {
 					dbs[p][db] = struct{}{}
 				}
 			}
@@ -106,7 +106,7 @@ func (s *Scheduler) SendTelemetry() {
 
 	go func() {
 		req, _ := http.NewRequest("GET", telemetryURL, nil)
-		req.Header.Set("User-Agent", "flynn-scheduler/"+version.String())
+		req.Header.Set("User-Agent", "drycc-scheduler/"+version.String())
 		req.URL.RawQuery = params.Encode()
 
 		for i := 0; i < 5; i++ {

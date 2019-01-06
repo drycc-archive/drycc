@@ -5,16 +5,16 @@ layout: docs
 
 # Java
 
-Flynn supports deploying Java applications which use either the
+Drycc supports deploying Java applications which use either the
 [Maven](http://maven.apache.org/) or [Gradle](http://www.gradle.org/) build
 tools, through the [Java](https://github.com/heroku/heroku-buildpack-java) and
 [Gradle](https://github.com/heroku/heroku-buildpack-gradle) buildpacks.
 
-Flynn uses [OpenJDK](http://openjdk.java.net) to run Java applications.
+Drycc uses [OpenJDK](http://openjdk.java.net) to run Java applications.
 
 ## Detection
 
-Flynn detects Java applications using the following rules:
+Drycc detects Java applications using the following rules:
 
 * A `pom.xml` file in the root directory indicates a Java application which uses
 the Maven build tool.
@@ -36,12 +36,12 @@ For example, here is a `pom.xml` file to declare a compile-time dependency on
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.flynn.example</groupId>
-  <artifactId>flynn-example</artifactId>
+  <groupId>io.drycc.example</groupId>
+  <artifactId>drycc-example</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>flynn-example</name>
+  <name>drycc-example</name>
 
   <dependencies>
     <dependency>
@@ -54,7 +54,7 @@ For example, here is a `pom.xml` file to declare a compile-time dependency on
 </project>
 ```
 
-When an application containing this file is deployed to Flynn, the following
+When an application containing this file is deployed to Drycc, the following
 Maven command is run:
 
 ```
@@ -68,7 +68,7 @@ If this command needs to be customized, it can be done by setting the
 environment variable `MAVEN_CUSTOM_OPTS`:
 
 ```
-flynn env set MAVEN_CUSTOM_OPTS="-dFirstCustomProperty=abc -dSecondCustomProperty=xyz"
+drycc env set MAVEN_CUSTOM_OPTS="-dFirstCustomProperty=abc -dSecondCustomProperty=xyz"
 ```
 
 This results in the following Maven command:
@@ -77,7 +77,7 @@ This results in the following Maven command:
 mvn -B -dFirstCustomProperty=abc -dSecondCustomProperty=xyz clean dependency:list install
 ```
 
-By default, Flynn uses a recent version of Maven. To use a specific version of
+By default, Drycc uses a recent version of Maven. To use a specific version of
 Maven, the `maven.version` property should be set in the `system.properties`
 file in the root directory of the application, for example:
 
@@ -93,7 +93,7 @@ When using the Gradle build tool, dependencies are specified in a `build.gradle`
 in the root directory using various dependency configurations provided by the
 [Java plugin](http://www.gradle.org/docs/current/userguide/java_plugin.html).
 
-Flynn runs the `stage` task during deployment which should be defined to compile
+Drycc runs the `stage` task during deployment which should be defined to compile
 the application.
 
 For example, here is a `build.gradle` file which declares a compile-time dependency
@@ -113,7 +113,7 @@ dependencies {
 task stage (dependsOn: ["clean", "jar"])
 ```
 
-When an application containing this file is deployed to Flynn, the following
+When an application containing this file is deployed to Drycc, the following
 Gradle command is run:
 
 ```
@@ -123,13 +123,13 @@ Gradle command is run:
 This downloads the necessary dependencies and compiles the application into the
 `build` directory.
 
-*Note: It is recommended that the application contain the `gradlew` script which determines which version of Gradle to use. If it is not present, Flynn will install one, but then the version is not deterministic. See the [Gradle Wrapper page](http://www.gradle.org/docs/current/userguide/gradle_wrapper.html) for more information.*
+*Note: It is recommended that the application contain the `gradlew` script which determines which version of Gradle to use. If it is not present, Drycc will install one, but then the version is not deterministic. See the [Gradle Wrapper page](http://www.gradle.org/docs/current/userguide/gradle_wrapper.html) for more information.*
 
 *For more information on specifying dependencies with Gradle, see the [Gradle Dependencies page](http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html).*
 
 ### Java Runtime
 
-By default, Flynn uses OpenJDK 8 to run Java applications. OpenJDK 6 and 7 are
+By default, Drycc uses OpenJDK 8 to run Java applications. OpenJDK 6 and 7 are
 also available, and can be used by setting `java.runtime.version` in a
 `system.properties` file in the root directory:
 

@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
@@ -63,7 +63,7 @@ Options:
 		"clone_url": repo,
 		"branch":    branch,
 		"rev":       rev,
-		"taffy_job": os.Getenv("FLYNN_JOB_ID"),
+		"taffy_job": os.Getenv("DRYCC_JOB_ID"),
 	}
 
 	if homeFolder == "" || homeFolder == "/" {
@@ -130,7 +130,7 @@ func runReceiver(app, rev string, env, meta map[string]string) error {
 	}
 	r, w := io.Pipe()
 
-	cmd := exec.Command("/bin/flynn-receiver", args...)
+	cmd := exec.Command("/bin/drycc-receiver", args...)
 	cmd.Stdin = r
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/postgres"
+	"github.com/drycc/drycc/pkg/postgres"
 )
 
 var migrations *postgres.Migrations
@@ -272,7 +272,7 @@ $$ LANGUAGE plpgsql`,
 			SELECT * FROM to_merge
 		    ) t;
 		$$`,
-		`UPDATE apps SET meta = jsonb_merge(meta, '{"flynn-system-critical":"true"}') WHERE name IN ('discoverd', 'flannel', 'postgres', 'controller')`,
+		`UPDATE apps SET meta = jsonb_merge(meta, '{"drycc-system-critical":"true"}') WHERE name IN ('discoverd', 'flannel', 'postgres', 'controller')`,
 	)
 	migrations.Add(14,
 		`CREATE TABLE backup_statuses (name text PRIMARY KEY)`,
@@ -398,7 +398,7 @@ $$ LANGUAGE plpgsql`,
 			SELECT r.release_id AS id, jsonb_set(r.processes, '{redis,service}', ('"' || a.name || '"')::jsonb, true) AS processes
 			FROM releases r
 			INNER JOIN apps a USING (release_id)
-			WHERE a.meta->>'flynn-system-app' = 'true' AND a.name LIKE 'redis-%'
+			WHERE a.meta->>'drycc-system-app' = 'true' AND a.name LIKE 'redis-%'
 		) r
 		WHERE release_id = r.id`,
 	)
@@ -427,8 +427,8 @@ $$ LANGUAGE plpgsql`,
 		`ALTER TABLE artifacts ADD COLUMN layer_url_template text`,
 		`CREATE FUNCTION check_artifact_manifest() RETURNS OPAQUE AS $$
 			BEGIN
-				IF NEW.type = 'flynn' AND NEW.manifest IS NULL THEN
-					RAISE EXCEPTION 'flynn artifacts must have a manifest' USING ERRCODE = 'check_violation';
+				IF NEW.type = 'drycc' AND NEW.manifest IS NULL THEN
+					RAISE EXCEPTION 'drycc artifacts must have a manifest' USING ERRCODE = 'check_violation';
 				END IF;
 
 				RETURN NULL;
@@ -585,25 +585,25 @@ func migrateProcessArgs(tx *postgres.DBTx) error {
 			if v, ok := proc["cmd"]; ok {
 				cmd = v.([]interface{})
 			}
-			if release.AppName != nil && release.AppMeta["flynn-system-app"] == "true" && len(cmd) > 0 {
+			if release.AppName != nil && release.AppMeta["drycc-system-app"] == "true" && len(cmd) > 0 {
 				switch *release.AppName {
 				case "postgres":
-					proc["entrypoint"] = []interface{}{"/bin/start-flynn-postgres"}
+					proc["entrypoint"] = []interface{}{"/bin/start-drycc-postgres"}
 				case "controller":
-					proc["entrypoint"] = []interface{}{"/bin/start-flynn-controller"}
+					proc["entrypoint"] = []interface{}{"/bin/start-drycc-controller"}
 				case "redis":
-					proc["entrypoint"] = []interface{}{"/bin/start-flynn-redis"}
+					proc["entrypoint"] = []interface{}{"/bin/start-drycc-redis"}
 				case "mariadb":
-					proc["entrypoint"] = []interface{}{"/bin/start-flynn-mariadb"}
+					proc["entrypoint"] = []interface{}{"/bin/start-drycc-mariadb"}
 				case "mongodb":
-					proc["entrypoint"] = []interface{}{"/bin/start-flynn-mongodb"}
+					proc["entrypoint"] = []interface{}{"/bin/start-drycc-mongodb"}
 				case "router":
-					proc["entrypoint"] = []interface{}{"/bin/flynn-router"}
+					proc["entrypoint"] = []interface{}{"/bin/drycc-router"}
 				case "logaggregator":
 					proc["entrypoint"] = []interface{}{"/bin/logaggregator"}
 				default:
 					if strings.HasPrefix(*release.AppName, "redis-") {
-						proc["entrypoint"] = []interface{}{"/bin/start-flynn-redis"}
+						proc["entrypoint"] = []interface{}{"/bin/start-drycc-redis"}
 					} else {
 						panic(fmt.Sprintf("migration failed to set entrypoint for system app %s", *release.AppName))
 					}

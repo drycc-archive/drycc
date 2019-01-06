@@ -25,7 +25,7 @@ echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /
 # https://github.com/docker/docker/blob/9a9fc01af8fb5d98b8eec0740716226fadb3735c/contrib/mkimage/debootstrap#L134-L151
 echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggests
 
-# install common Flynn image tools
+# install common Drycc image tools
 apt-get install --yes squashfs-tools curl
 
 # delete all the apt list files since they're big and get stale quickly

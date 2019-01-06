@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/provider_resource_put#",
+  "id": "https://drycc.cc/schema/examples/controller/provider_resource_put#",
   "title": "Put resource",
   "description": "",
   "allOf": [

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/app#",
+  "id": "https://drycc.cc/schema/controller/app#",
   "title": "App",
   "description": "An app is a namespace for process formations and their dependencies and metadata.",
   "sortIndex": 0,

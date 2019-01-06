@@ -14,8 +14,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 type DialFunc func(network, addr string) (net.Conn, error)

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/event_get#",
+  "id": "https://drycc.cc/schema/examples/controller/event_get#",
   "title": "Get event",
   "description": "",
   "allOf": [

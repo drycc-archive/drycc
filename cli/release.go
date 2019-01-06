@@ -9,19 +9,19 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("release", runRelease, `
-usage: flynn release [-q|--quiet]
-       flynn release add [-t <type>] [-f <file>] <uri>
-       flynn release update <file> [<id>] [--clean]
-       flynn release show [--json] [<id>]
-       flynn release delete [-y] <id>
-       flynn release rollback [-y] [<id>]
+usage: drycc release [-q|--quiet]
+       drycc release add [-t <type>] [-f <file>] <uri>
+       drycc release update <file> [<id>] [--clean]
+       drycc release show [--json] [<id>]
+       drycc release delete [-y] <id>
+       drycc release rollback [-y] [<id>]
 
 Manage app releases.
 
@@ -72,7 +72,7 @@ Commands:
 
 Examples:
 
-	Release an echo server using the flynn/slugbuilder image as a base, running socat.
+	Release an echo server using the drycc/slugbuilder image as a base, running socat.
 
 	$ cat config.json
 	{
@@ -85,16 +85,16 @@ Examples:
 			}
 		}
 	}
-	$ flynn release add -f config.json https://registry.hub.docker.com?name=flynn/slugbuilder&id=15d72b7f573b
+	$ drycc release add -f config.json https://registry.hub.docker.com?name=drycc/slugbuilder&id=15d72b7f573b
 	Created release 989ce4a8-0088-444c-8379-caddded4b957.
 
-	$ flynn release
+	$ drycc release
 	ID                                Created
 	989ce4a8-0088-444c-8379-caddded4b957  11 seconds ago
 
-	$ flynn release show
+	$ drycc release show
 	ID:             989ce4a8-0088-444c-8379-caddded4b957
-	Artifact:       docker+https://registry.hub.docker.com?name=flynn/slugbuilder&id=15d72b7f573b
+	Artifact:       docker+https://registry.hub.docker.com?name=drycc/slugbuilder&id=15d72b7f573b
 	Process Types:  echo
 	Created At:     2015-05-06 21:58:12.751741 +0000 UTC
 	ENV[MY_VAR]:    Hello World, this will be available in all process types.
@@ -107,10 +107,10 @@ Examples:
 			}
 		}
 	}
-	$ flynn release update update.json
+	$ drycc release update update.json
 	Created release 1a270395-8d31-4ec1-953a-0683b4f12635.
 
-	$ flynn release delete --yes c6b7f512-ef49-46f7-bb57-dd39e97bfb09
+	$ drycc release delete --yes c6b7f512-ef49-46f7-bb57-dd39e97bfb09
 	Deleted release c6b7f512-ef49-46f7-bb57-dd39e97bfb09 (deleted 1 files)
 `)
 }

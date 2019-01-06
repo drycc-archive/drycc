@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/testutil"
-	"github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/testutil"
+	"github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) newTestAPIServer(t testutil.TestingT) *testAPIServer {

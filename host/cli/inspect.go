@@ -9,14 +9,14 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("inspect", runInspect, `
-usage: flynn-host inspect [options] ID
+usage: drycc-host inspect [options] ID
 
 Get low-level information about a job.
 

@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	. "github.com/drycc/go-check"
 	"github.com/jackc/pgx"
 )
 
@@ -87,7 +87,7 @@ func connect(c *C, p *Process, db string) *pgx.Conn {
 	conn, err := pgx.Connect(pgx.ConnConfig{
 		Host:     "127.0.0.1",
 		Port:     uint16(port),
-		User:     "flynn",
+		User:     "drycc",
 		Password: "password",
 		Database: db,
 	})

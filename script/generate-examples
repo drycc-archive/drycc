@@ -50,18 +50,18 @@ main() {
 
   export CONTROLLER_KEY="s3cr3t"
 
-  info "bootstrapping flynn" >&2
-  cluster_add=$("${ROOT}/script/bootstrap-flynn" &> >(tee /dev/stderr) | grep "flynn cluster add" | tail -1)
-  if [[ "${cluster_add:0:17}" != "flynn cluster add" ]]; then
+  info "bootstrapping drycc" >&2
+  cluster_add=$("${ROOT}/script/bootstrap-drycc" &> >(tee /dev/stderr) | grep "drycc cluster add" | tail -1)
+  if [[ "${cluster_add:0:17}" != "drycc cluster add" ]]; then
     fail "Bootstrap failed"
   fi
 
   info "generating ${component} examples..." >&2
 
-  ${ROOT}/host/bin/flynn-host run \
+  ${ROOT}/host/bin/drycc-host run \
     --bind="${ROOT}/docs/api-examples:/data" \
     "${ROOT}/build/image/${component}-examples.json" \
-    sh -c "CONTROLLER_KEY=${CONTROLLER_KEY} PORT=${port} /bin/flynn-${component}-examples /data/${component}.json"
+    sh -c "CONTROLLER_KEY=${CONTROLLER_KEY} PORT=${port} /bin/drycc-${component}-examples /data/${component}.json"
 }
 
 main $@

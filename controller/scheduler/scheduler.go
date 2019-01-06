@@ -12,21 +12,21 @@ import (
 	"sync"
 	"time"
 
-	controller "github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	discoverd "github.com/flynn/flynn/discoverd/client"
-	host "github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/pkg/typeconv"
-	"github.com/flynn/flynn/router/types"
+	controller "github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	discoverd "github.com/drycc/drycc/discoverd/client"
+	host "github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/pkg/typeconv"
+	"github.com/drycc/drycc/router/types"
 	"github.com/inconshreveable/log15"
 )
 
@@ -161,7 +161,7 @@ func main() {
 	// Use a low timeout for HTTP requests to avoid blocking the main loop.
 	//
 	// TODO: make all HTTP calls asynchronous
-	//       (see https://github.com/flynn/flynn/issues/1920)
+	//       (see https://github.com/drycc/drycc/issues/1920)
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 
 	log.Info("creating cluster and controller clients")
@@ -1126,11 +1126,11 @@ func (s *Scheduler) HandlePlacementRequest(req *PlacementRequest) {
 						JobID:     &req.Job.ID,
 						JobType:   req.Job.Type,
 						Meta: map[string]string{
-							"flynn-controller.app":            req.Job.AppID,
-							"flynn-controller.release":        req.Job.ReleaseID,
-							"flynn-controller.type":           req.Job.Type,
-							"flynn-controller.path":           volReq.Path,
-							"flynn-controller.delete_on_stop": strconv.FormatBool(volReq.DeleteOnStop),
+							"drycc-controller.app":            req.Job.AppID,
+							"drycc-controller.release":        req.Job.ReleaseID,
+							"drycc-controller.type":           req.Job.Type,
+							"drycc-controller.path":           volReq.Path,
+							"drycc-controller.delete_on_stop": strconv.FormatBool(volReq.DeleteOnStop),
 						},
 					},
 				}
@@ -1245,7 +1245,7 @@ func (s *Scheduler) HandleInternalStateRequest(req *InternalStateRequest) {
 	// create an InternalState as a snapshot of the current state by
 	// copying objects and their exported fields
 	req.State = &InternalState{
-		JobID:      os.Getenv("FLYNN_JOB_ID"),
+		JobID:      os.Getenv("DRYCC_JOB_ID"),
 		Hosts:      make(map[string]*Host, len(s.hosts)),
 		Jobs:       make(map[string]*Job, len(s.jobs)),
 		Formations: make(map[string]*Formation, len(s.formations)),
@@ -1753,8 +1753,8 @@ func (s *Scheduler) HandleServiceEvent(e *discoverd.Event) {
 		return
 	}
 
-	jobID := e.Instance.Meta["FLYNN_JOB_ID"]
-	jobType := e.Instance.Meta["FLYNN_PROCESS_TYPE"]
+	jobID := e.Instance.Meta["DRYCC_JOB_ID"]
+	jobType := e.Instance.Meta["DRYCC_PROCESS_TYPE"]
 	log := s.logger.New("fn", "HandleServiceEvent", "service", e.Service, "kind", e.Kind, "job.id", jobID, "job.type", jobType)
 	log.Info("handling service event")
 
@@ -1814,13 +1814,13 @@ func (s *Scheduler) HandleServiceEvent(e *discoverd.Event) {
 func (s *Scheduler) HandleRouterServiceEvent(e *discoverd.Event) {
 	switch e.Kind {
 	case discoverd.EventKindUp, discoverd.EventKindUpdate:
-		id := e.Instance.Meta["FLYNN_JOB_ID"]
+		id := e.Instance.Meta["DRYCC_JOB_ID"]
 		if _, ok := s.routers[id]; !ok {
 			s.logger.Info("adding router", "router.id", id)
 			s.routers[id] = NewRouter(id, e.Instance.Addr, s.routerStreamEvents, s.logger)
 		}
 	case discoverd.EventKindDown:
-		id := e.Instance.Meta["FLYNN_JOB_ID"]
+		id := e.Instance.Meta["DRYCC_JOB_ID"]
 		if r, ok := s.routers[id]; ok {
 			s.logger.Info("removing router", "router.id", id)
 			r.Close()
@@ -2034,15 +2034,15 @@ func (s *Scheduler) HandleJobEvent(e *host.Event) {
 
 func (s *Scheduler) handleActiveJob(activeJob *host.ActiveJob) *Job {
 	hostJob := activeJob.Job
-	appID := hostJob.Metadata["flynn-controller.app"]
-	releaseID := hostJob.Metadata["flynn-controller.release"]
+	appID := hostJob.Metadata["drycc-controller.app"]
+	releaseID := hostJob.Metadata["drycc-controller.release"]
 
 	// if job has no app metadata, just ignore it
 	if appID == "" || releaseID == "" {
 		return nil
 	}
 
-	jobType := hostJob.Metadata["flynn-controller.type"]
+	jobType := hostJob.Metadata["drycc-controller.type"]
 
 	// lookup the job using the UUID part of the job ID (see the
 	// description of Job.ID)
@@ -2170,7 +2170,7 @@ func (s *Scheduler) handleJobStatus(job *Job, status host.JobStatus) {
 	}
 
 	// ensure jobs started as part of a formation change have a known formation
-	if job.metadata["flynn-controller.formation"] == "true" && job.Formation == nil {
+	if job.metadata["drycc-controller.formation"] == "true" && job.Formation == nil {
 		formation := s.formations.Get(job.AppID, job.ReleaseID)
 		if formation == nil {
 			ef, err := s.GetExpandedFormation(job.AppID, job.ReleaseID)

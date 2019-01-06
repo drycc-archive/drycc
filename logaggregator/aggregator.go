@@ -3,8 +3,8 @@ package main
 import (
 	"sync"
 
-	"github.com/flynn/flynn/logaggregator/buffer"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/logaggregator/buffer"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 )
 
 // Aggregator is a log aggregation server that collects syslog messages.

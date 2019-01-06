@@ -12,17 +12,17 @@ import (
 	"sync"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/typeconv"
+	ct "github.com/drycc/drycc/controller/types"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/typeconv"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 var sampleMessages = []logaggc.Message{
 	{
-		HostID:      "server1.flynn.local",
+		HostID:      "server1.drycc.local",
 		JobID:       "00000000000000000000000000000000",
 		Msg:         "a log message from a job with an empty type",
 		ProcessType: "",
@@ -31,7 +31,7 @@ var sampleMessages = []logaggc.Message{
 		Timestamp:   time.Unix(1425688100, 000000000).UTC(),
 	},
 	{
-		HostID:      "server1.flynn.local",
+		HostID:      "server1.drycc.local",
 		JobID:       "11111111111111111111111111111111",
 		Msg:         "a stdout log message",
 		ProcessType: "web",
@@ -40,7 +40,7 @@ var sampleMessages = []logaggc.Message{
 		Timestamp:   time.Unix(1425688201, 111111111).UTC(),
 	},
 	{
-		HostID:      "server2.flynn.local",
+		HostID:      "server2.drycc.local",
 		JobID:       "22222222222222222222222222222222",
 		Msg:         "a stderr log message",
 		ProcessType: "worker",
@@ -231,7 +231,7 @@ func (s *S) TestGetAppLogFollow(c *C) {
 	}
 
 	newMsg := &logaggc.Message{
-		HostID:      "server3.flynn.local",
+		HostID:      "server3.drycc.local",
 		JobID:       "33333333333333333333333333333333",
 		Msg:         "another stdout log message",
 		ProcessType: "web",
@@ -264,11 +264,11 @@ func (s *S) TestGetAppLogSSE(c *C) {
 	res.Body.Close()
 	c.Assert(err, IsNil)
 
-	expected := `data: {"event":"message","data":{"host_id":"server1.flynn.local","job_id":"00000000000000000000000000000000","msg":"a log message from a job with an empty type","source":"app","stream":"stdout","timestamp":"2015-03-07T00:28:20Z"}}` +
+	expected := `data: {"event":"message","data":{"host_id":"server1.drycc.local","job_id":"00000000000000000000000000000000","msg":"a log message from a job with an empty type","source":"app","stream":"stdout","timestamp":"2015-03-07T00:28:20Z"}}` +
 		"\n\n" +
-		`data: {"event":"message","data":{"host_id":"server1.flynn.local","job_id":"11111111111111111111111111111111","msg":"a stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:30:01.111111111Z"}}` +
+		`data: {"event":"message","data":{"host_id":"server1.drycc.local","job_id":"11111111111111111111111111111111","msg":"a stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:30:01.111111111Z"}}` +
 		"\n\n" +
-		`data: {"event":"message","data":{"host_id":"server2.flynn.local","job_id":"22222222222222222222222222222222","msg":"a stderr log message","process_type":"worker","source":"app","stream":"stderr","timestamp":"2015-03-07T00:35:21.222222222Z"}}` +
+		`data: {"event":"message","data":{"host_id":"server2.drycc.local","job_id":"22222222222222222222222222222222","msg":"a stderr log message","process_type":"worker","source":"app","stream":"stderr","timestamp":"2015-03-07T00:35:21.222222222Z"}}` +
 		"\n\n" +
 		`data: {"event":"eof"}` + "\n\n"
 
@@ -295,7 +295,7 @@ func (s *S) TestGetAppLogSSEFollow(c *C) {
 	defer res.Body.Close()
 
 	newMsg := &logaggc.Message{
-		HostID:      "server3.flynn.local",
+		HostID:      "server3.drycc.local",
 		JobID:       "33333333333333333333333333333333",
 		Msg:         "another stdout log message",
 		ProcessType: "web",
@@ -320,13 +320,13 @@ func (s *S) TestGetAppLogSSEFollow(c *C) {
 		}
 	}()
 
-	expected := `data: {"event":"message","data":{"host_id":"server1.flynn.local","job_id":"00000000000000000000000000000000","msg":"a log message from a job with an empty type","source":"app","stream":"stdout","timestamp":"2015-03-07T00:28:20Z"}}` +
+	expected := `data: {"event":"message","data":{"host_id":"server1.drycc.local","job_id":"00000000000000000000000000000000","msg":"a log message from a job with an empty type","source":"app","stream":"stdout","timestamp":"2015-03-07T00:28:20Z"}}` +
 		"\n\n" +
-		`data: {"event":"message","data":{"host_id":"server1.flynn.local","job_id":"11111111111111111111111111111111","msg":"a stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:30:01.111111111Z"}}` +
+		`data: {"event":"message","data":{"host_id":"server1.drycc.local","job_id":"11111111111111111111111111111111","msg":"a stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:30:01.111111111Z"}}` +
 		"\n\n" +
-		`data: {"event":"message","data":{"host_id":"server2.flynn.local","job_id":"22222222222222222222222222222222","msg":"a stderr log message","process_type":"worker","source":"app","stream":"stderr","timestamp":"2015-03-07T00:35:21.222222222Z"}}` +
+		`data: {"event":"message","data":{"host_id":"server2.drycc.local","job_id":"22222222222222222222222222222222","msg":"a stderr log message","process_type":"worker","source":"app","stream":"stderr","timestamp":"2015-03-07T00:35:21.222222222Z"}}` +
 		"\n\n" +
-		`data: {"event":"message","data":{"host_id":"server3.flynn.local","job_id":"33333333333333333333333333333333","msg":"another stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:35:33.333333333Z"}}` +
+		`data: {"event":"message","data":{"host_id":"server3.drycc.local","job_id":"33333333333333333333333333333333","msg":"another stdout log message","process_type":"web","source":"app","stream":"stdout","timestamp":"2015-03-07T00:35:33.333333333Z"}}` +
 		"\n\n" +
 		`data: {"event":"eof"}` + "\n\n"
 

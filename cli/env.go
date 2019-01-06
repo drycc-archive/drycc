@@ -7,17 +7,17 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("env", runEnv, `
-usage: flynn env [-t <proc>]
-       flynn env set [-t <proc>] <var>=<val>...
-       flynn env unset [-t <proc>] <var>...
-       flynn env get [-t <proc>] <var>
+usage: drycc env [-t <proc>]
+       drycc env set [-t <proc>] <var>=<val>...
+       drycc env unset [-t <proc>] <var>...
+       drycc env get [-t <proc>] <var>
 
 Manage app environment variables.
 
@@ -33,17 +33,17 @@ Commands:
 
 Examples:
 
-	$ flynn env set FOO=bar BAZ=foobar
+	$ drycc env set FOO=bar BAZ=foobar
 	Created release 5058ae7964f74c399a240bdd6e7d1bcb.
 
-	$ flynn env
+	$ drycc env
 	BAZ=foobar
 	FOO=bar
 
-	$ flynn env get -t web FOO
+	$ drycc env get -t web FOO
 	bar
 
-	$ flynn env unset FOO
+	$ drycc env unset FOO
 	Created release b1bbd9bc76d6436ea2fd245300bce72e.
 `)
 }

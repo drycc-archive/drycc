@@ -7,14 +7,14 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/flynn/flynn/controller/testutils"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/typeconv"
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/drycc/controller/testutils"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/typeconv"
+	. "github.com/drycc/go-check"
 	"github.com/inconshreveable/log15"
 )
 
@@ -771,7 +771,7 @@ func (TestSuite) TestScaleCriticalApp(c *C) {
 	s.waitJobStart()
 
 	// scale a critical app up
-	app := &ct.App{ID: "critical-app", Meta: map[string]string{"flynn-system-critical": "true"}}
+	app := &ct.App{ID: "critical-app", Meta: map[string]string{"drycc-system-critical": "true"}}
 	artifact := &ct.Artifact{ID: random.UUID()}
 	processes := map[string]int{"critical": 1}
 	release := NewRelease("critical-release-1", artifact, processes)
@@ -940,8 +940,8 @@ func (TestSuite) TestActiveJobSync(c *C) {
 		job := &host.Job{
 			ID: cluster.GenerateJobID(h.ID(), id),
 			Metadata: map[string]string{
-				"flynn-controller.app":     testAppID,
-				"flynn-controller.release": testReleaseID,
+				"drycc-controller.app":     testAppID,
+				"drycc-controller.release": testReleaseID,
 			},
 		}
 		h.AddJob(job)

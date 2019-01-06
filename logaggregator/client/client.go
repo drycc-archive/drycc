@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"time"
 
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/httpclient"
-	"github.com/flynn/flynn/pkg/httphelper"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/httpclient"
+	"github.com/drycc/drycc/pkg/httphelper"
 )
 
 // ErrNotFound is returned when a resource is not found (HTTP status 404).

@@ -1,4 +1,4 @@
-// Package cluster implements a client for the Flynn host service.
+// Package cluster implements a client for the Drycc host service.
 package cluster
 
 import (
@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/stream"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/stream"
 )
 
 // NewClient uses the default discoverd configuration to create a cluster
@@ -40,11 +40,11 @@ func newClient(services ServiceFunc, hc *http.Client) *Client {
 	if services == nil {
 		services = discoverd.NewService
 	}
-	s := services("flynn-host")
+	s := services("drycc-host")
 	return &Client{s: s, h: hc}
 }
 
-// A Client is used to discover members of the flynn-host cluster.
+// A Client is used to discover members of the drycc-host cluster.
 type Client struct {
 	s discoverd.Service
 	h *http.Client

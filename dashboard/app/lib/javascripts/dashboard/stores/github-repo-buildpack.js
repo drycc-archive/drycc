@@ -27,13 +27,13 @@ var buildpackRules = [
 		name: 'ruby',
 		match: buildpackMatchFn(/^Gemfile$/),
 		url: "https://github.com/heroku/heroku-buildpack-ruby",
-		docsURL: "https://flynn.io/docs/how-to-deploy-ruby"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-ruby"
 	},
 	{
 		name: 'node',
 		match: buildpackMatchFn(/^package\.json$/),
 		url: "https://github.com/heroku/heroku-buildpack-nodejs",
-		docsURL: "https://flynn.io/docs/how-to-deploy-nodejs"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-nodejs"
 	},
 	{
 		name: 'clojure',
@@ -44,25 +44,25 @@ var buildpackRules = [
 		name: 'python',
 		match: buildpackMatchFn(/^(requirements\.txt|setup\.py)$/),
 		url: "https://github.com/heroku/heroku-buildpack-python",
-		docsURL: "https://flynn.io/docs/how-to-deploy-python"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-python"
 	},
 	{
 		name: 'java',
 		match: buildpackMatchFn(/^pom\.xml$/),
 		url: "https://github.com/heroku/heroku-buildpack-java",
-		docsURL: "https://flynn.io/docs/how-to-deploy-java"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-java"
 	},
 	{
 		name: 'php',
 		match: buildpackMatchFn(/^(composer\.json|index\.php)$/),
 		url: "https://github.com/heroku/heroku-buildpack-php",
-		docsURL: "https://flynn.io/docs/how-to-deploy-php"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-php"
 	},
 	{
 		name: 'gradle',
 		match: buildpackMatchFn(/^(gradlew|build\.gradle|settings\.gradle)$/),
 		url: "https://github.com/heroku/heroku-buildpack-gradle",
-		docsURL: "https://flynn.io/docs/how-to-deploy-java"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-java"
 	},
 	{
 		name: 'scala',
@@ -87,7 +87,7 @@ var buildpackRules = [
 		name: 'go',
 		match: buildpackMatchFn(/\.go$/),
 		url: "https://github.com/kr/heroku-buildpack-go",
-		docsURL: "https://flynn.io/docs/how-to-deploy-go"
+		docsURL: "https://drycc.cc/docs/how-to-deploy-go"
 	}
 ];
 

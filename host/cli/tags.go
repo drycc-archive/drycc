@@ -6,17 +6,17 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("tags", runTags, `
-usage: flynn-host tags
-       flynn-host tags set <hostid> <var>=<val>...
-       flynn-host tags del <hostid> <var>...
+usage: drycc-host tags
+       drycc-host tags set <hostid> <var>=<val>...
+       drycc-host tags del <hostid> <var>...
 
-Manage flynn-host daemon tags.
+Manage drycc-host daemon tags.
 
 Commands:
 	With no arguments, shows a list of current tags.

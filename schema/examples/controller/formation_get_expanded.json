@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/formation_get_expanded#",
+  "id": "https://drycc.cc/schema/examples/controller/formation_get_expanded#",
   "title": "Get expanded formation",
   "description": "",
   "allOf": [

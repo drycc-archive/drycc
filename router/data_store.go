@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/router/types"
 	"github.com/jackc/pgx"
 	"golang.org/x/net/context"
 )

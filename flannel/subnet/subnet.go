@@ -12,8 +12,8 @@ import (
 
 	log "github.com/golang/glog"
 
-	"github.com/flynn/flynn/flannel/pkg/ip"
-	"github.com/flynn/flynn/flannel/pkg/task"
+	"github.com/drycc/drycc/flannel/pkg/ip"
+	"github.com/drycc/drycc/flannel/pkg/task"
 )
 
 const (

@@ -14,13 +14,13 @@ import (
 	"time"
 
 	units "github.com/docker/go-units"
-	controller "github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/resource"
-	host "github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/random"
+	controller "github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/resource"
+	host "github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/random"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -61,7 +61,7 @@ func (v *VMManager) NewInstance(c *VMConfig) (*Instance, error) {
 	}
 	if c.Out == nil {
 		var err error
-		c.Out, err = os.Create("flynn-" + inst.ID + ".log")
+		c.Out, err = os.Create("drycc-" + inst.ID + ".log")
 		if err != nil {
 			return nil, err
 		}
@@ -114,7 +114,7 @@ func (i *Instance) Start() error {
 
 	// stream job events so we can grab the IP once the job has started
 	events := make(chan *ct.Job)
-	stream, err := i.client.StreamJobEvents(os.Getenv("FLYNN_APP_ID"), events)
+	stream, err := i.client.StreamJobEvents(os.Getenv("DRYCC_APP_ID"), events)
 	if err != nil {
 		i.cleanup()
 		return err
@@ -123,7 +123,7 @@ func (i *Instance) Start() error {
 
 	// run the VM as a one-off job
 	newJob := &ct.NewJob{
-		ReleaseID: os.Getenv("FLYNN_RELEASE_ID"),
+		ReleaseID: os.Getenv("DRYCC_RELEASE_ID"),
 		Args:      []string{"/bin/run-vm.sh"},
 		Env: map[string]string{
 			"MEMORY": strconv.FormatInt(i.Memory/units.MiB, 10),
@@ -140,7 +140,7 @@ func (i *Instance) Start() error {
 	memLimit := 1*units.GiB + i.Memory
 	newJob.Resources.SetLimit(resource.TypeMemory, memLimit)
 
-	i.job, err = i.client.RunJobDetached(os.Getenv("FLYNN_APP_ID"), newJob)
+	i.job, err = i.client.RunJobDetached(os.Getenv("DRYCC_APP_ID"), newJob)
 	if err != nil {
 		i.cleanup()
 		return err
@@ -201,7 +201,7 @@ func (i *Instance) createCOW(image string, temp bool) (string, error) {
 
 func (i *Instance) Wait(timeout time.Duration, f func() error) error {
 	events := make(chan *ct.Job)
-	stream, err := i.client.StreamJobEvents(os.Getenv("FLYNN_APP_ID"), events)
+	stream, err := i.client.StreamJobEvents(os.Getenv("DRYCC_APP_ID"), events)
 	if err != nil {
 		return err
 	}
@@ -239,7 +239,7 @@ func (i *Instance) Shutdown() error {
 func (i *Instance) Kill() error {
 	defer i.cleanup()
 	return i.Wait(10*time.Second, func() error {
-		return i.client.DeleteJob(os.Getenv("FLYNN_APP_ID"), i.job.ID)
+		return i.client.DeleteJob(os.Getenv("DRYCC_APP_ID"), i.job.ID)
 	})
 }
 

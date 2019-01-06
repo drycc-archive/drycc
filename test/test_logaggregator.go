@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	c "github.com/drycc/go-check"
 )
 
 type LogAggregatorSuite struct {
@@ -72,7 +72,7 @@ func (s *LogAggregatorSuite) TestReplication(t *c.C) {
 		t.Errorf("unexpected number of aggregators: %d", len(aggregators))
 	} else if len(aggregators) == 2 {
 		wait := waitForAggregator(false)
-		x.flynn("/", "-a", "logaggregator", "scale", "app=1")
+		x.drycc("/", "-a", "logaggregator", "scale", "app=1")
 		wait()
 	}
 
@@ -133,7 +133,7 @@ func (s *LogAggregatorSuite) TestReplication(t *c.C) {
 
 	// start new logaggregator
 	wait = waitForAggregator(true)
-	x.flynn("/", "-a", "logaggregator", "scale", "app=2")
+	x.drycc("/", "-a", "logaggregator", "scale", "app=2")
 	wait()
 
 	// confirm that logs show up in the new aggregator

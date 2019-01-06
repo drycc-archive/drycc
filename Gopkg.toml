@@ -1,8 +1,8 @@
 required = [
   "github.com/golang/dep/cmd/dep",
   "github.com/jteeuwen/go-bindata/go-bindata",
-  "github.com/flynn/go-tuf/cmd/tuf",
-  "github.com/flynn/go-tuf/cmd/tuf-client",
+  "github.com/drycc/go-tuf/cmd/tuf",
+  "github.com/drycc/go-tuf/cmd/tuf-client",
 ]
 
 [prune]
@@ -25,7 +25,7 @@ required = [
 [[constraint]]
   branch = "master"
   name = "github.com/docker/docker"
-  source = "github.com/flynn-archive/docker"
+  source = "github.com/drycc-archive/docker"
 
 [[constraint]]
   name = "github.com/docker/go-units"
@@ -33,27 +33,27 @@ required = [
 
 [[constraint]]
   branch = "v1"
-  name = "github.com/flynn/go-check"
+  name = "github.com/drycc/go-check"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/flynn/go-docopt"
+  name = "github.com/drycc/go-docopt"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/flynn/go-p9p"
+  name = "github.com/drycc/go-p9p"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/flynn/go-tuf"
+  name = "github.com/drycc/go-tuf"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/flynn/que-go"
+  name = "github.com/drycc/que-go"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/flynn/tail"
+  name = "github.com/drycc/tail"
 
 [[constraint]]
   name = "github.com/golang/dep"

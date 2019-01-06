@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/fixer"
-	"github.com/flynn/flynn/pkg/cluster"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/fixer"
+	"github.com/drycc/drycc/pkg/cluster"
 	"github.com/inconshreveable/log15"
 )
 

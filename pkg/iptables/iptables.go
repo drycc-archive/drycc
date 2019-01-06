@@ -1,7 +1,7 @@
 package iptables
 
 // This package is originally from Docker and has been modified for use by the
-// Flynn project. See the NOTICE and LICENSE files for licensing and copyright
+// Drycc project. See the NOTICE and LICENSE files for licensing and copyright
 // details.
 
 import (

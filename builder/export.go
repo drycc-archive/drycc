@@ -14,20 +14,20 @@ import (
 	"strings"
 
 	"github.com/docker/go-units"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
-	"github.com/flynn/go-tuf"
-	tufdata "github.com/flynn/go-tuf/data"
-	"github.com/flynn/go-tuf/util"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
+	"github.com/drycc/go-tuf"
+	tufdata "github.com/drycc/go-tuf/data"
+	"github.com/drycc/go-tuf/util"
 	"github.com/inconshreveable/log15"
 )
 
 var cmdExport = Command{
 	Run: runExport,
 	Usage: `
-usage: flynn-builder export <tuf-dir>
+usage: drycc-builder export <tuf-dir>
 
-Export Flynn binaries, manifests & images to a TUF repository.
+Export Drycc binaries, manifests & images to a TUF repository.
 `[1:],
 }
 
@@ -58,7 +58,7 @@ func runExport(args *docopt.Args) error {
 
 	targetMeta, _ := json.Marshal(map[string]string{"version": version})
 	log := log15.New()
-	log.Info("exporting Flynn", "version", version, "tuf.repository", manifest.TUFConfig.Repository)
+	log.Info("exporting Drycc", "version", version, "tuf.repository", manifest.TUFConfig.Repository)
 	exporter := &Exporter{
 		dir:        dir,
 		tuf:        tufRepo,
@@ -68,7 +68,7 @@ func runExport(args *docopt.Args) error {
 		log:        log,
 	}
 	if err := exporter.Export(version); err != nil {
-		log.Error("error exporting Flynn", "err", err)
+		log.Error("error exporting Drycc", "err", err)
 		return err
 	}
 
@@ -94,12 +94,12 @@ func runExport(args *docopt.Args) error {
 
 }
 
-// determineVersion determines the version by running 'flynn-host version',
+// determineVersion determines the version by running 'drycc-host version',
 // potentially stripping off the '-<commit>' suffix
 func determineVersion() (string, error) {
-	out, err := exec.Command("build/bin/flynn-host", "version").CombinedOutput()
+	out, err := exec.Command("build/bin/drycc-host", "version").CombinedOutput()
 	if err != nil {
-		return "", fmt.Errorf("error getting flynn-host version: %s: %s", err, out)
+		return "", fmt.Errorf("error getting drycc-host version: %s: %s", err, out)
 	}
 	version := string(bytes.TrimSpace(out))
 	parts := strings.SplitN(version, "-", 2)
@@ -117,10 +117,10 @@ type Exporter struct {
 
 func (e *Exporter) Export(version string) error {
 	// add binaries and manifests to a versioned directory so that
-	// flynn-host can download them using a specific version
-	// e.g. build/bin/flynn-host        => v20161229.1/flynn-host.gz
+	// drycc-host can download them using a specific version
+	// e.g. build/bin/drycc-host        => v20161229.1/drycc-host.gz
 	//      build/manifests/images.json => v20161229.1/images.json.gz
-	for _, bin := range []string{"flynn-host", "flynn-init", "flynn-linux-amd64"} {
+	for _, bin := range []string{"drycc-host", "drycc-init", "drycc-linux-amd64"} {
 		target := filepath.Join(version, bin)
 		if err := e.ExportBinary(bin, target); err != nil {
 			return fmt.Errorf("error exporting %s: %s", bin, err)
@@ -133,19 +133,19 @@ func (e *Exporter) Export(version string) error {
 		}
 	}
 
-	// add the flynn-host binary at the top level so it can be found by the install script
-	if err := e.ExportBinary("flynn-host", "flynn-host"); err != nil {
-		return fmt.Errorf("error exporting top-level flynn-host: %s", err)
+	// add the drycc-host binary at the top level so it can be found by the install script
+	if err := e.ExportBinary("drycc-host", "drycc-host"); err != nil {
+		return fmt.Errorf("error exporting top-level drycc-host: %s", err)
 	}
 
-	// add the CLIs at the top-level for installation and 'flynn update'
+	// add the CLIs at the top-level for installation and 'drycc update'
 	bins := []string{
-		"flynn-linux-amd64",
-		"flynn-linux-386",
-		"flynn-darwin-amd64",
-		"flynn-freebsd-amd64",
-		"flynn-windows-amd64",
-		"flynn-windows-386",
+		"drycc-linux-amd64",
+		"drycc-linux-386",
+		"drycc-darwin-amd64",
+		"drycc-freebsd-amd64",
+		"drycc-windows-amd64",
+		"drycc-windows-386",
 	}
 	for _, bin := range bins {
 		if err := e.ExportBinary(bin, bin); err != nil {
@@ -277,7 +277,7 @@ func (e *Exporter) ExportLayer(uri string, layer *ct.ImageLayer) error {
 		return err
 	}
 
-	f, err = os.Open(fmt.Sprintf("/var/lib/flynn/layer-cache/%s.squashfs", layer.ID))
+	f, err = os.Open(fmt.Sprintf("/var/lib/drycc/layer-cache/%s.squashfs", layer.ID))
 	if err != nil {
 		return err
 	}

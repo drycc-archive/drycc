@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	dt "github.com/flynn/flynn/discoverd/types"
-	"github.com/flynn/flynn/pkg/httpclient"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/stream"
+	dt "github.com/drycc/drycc/discoverd/types"
+	"github.com/drycc/drycc/pkg/httpclient"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/stream"
 	"github.com/inconshreveable/log15"
 )
 

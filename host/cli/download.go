@@ -11,33 +11,33 @@ import (
 	"syscall"
 
 	"github.com/docker/go-units"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/downloader"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/manager"
-	"github.com/flynn/flynn/host/volume/zfs"
-	"github.com/flynn/flynn/pkg/tufconfig"
-	"github.com/flynn/flynn/pkg/tufutil"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
-	tuf "github.com/flynn/go-tuf/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/downloader"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/manager"
+	"github.com/drycc/drycc/host/volume/zfs"
+	"github.com/drycc/drycc/pkg/tufconfig"
+	"github.com/drycc/drycc/pkg/tufutil"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
+	tuf "github.com/drycc/go-tuf/client"
 	"github.com/inconshreveable/log15"
 )
 
 func init() {
 	Register("download", runDownload, `
-usage: flynn-host download [--repository=<uri>] [--tuf-db=<path>] [--config-dir=<dir>] [--bin-dir=<dir>] [--volpath=<path>]
+usage: drycc-host download [--repository=<uri>] [--tuf-db=<path>] [--config-dir=<dir>] [--bin-dir=<dir>] [--volpath=<path>]
 
 Options:
-  -r --repository=<uri>    TUF repository URI [default: https://dl.flynn.io/tuf]
-  -t --tuf-db=<path>       local TUF file [default: /etc/flynn/tuf.db]
-  -c --config-dir=<dir>    config directory [default: /etc/flynn]
+  -r --repository=<uri>    TUF repository URI [default: https://dl.drycc.cc/tuf]
+  -t --tuf-db=<path>       local TUF file [default: /etc/drycc/tuf.db]
+  -c --config-dir=<dir>    config directory [default: /etc/drycc]
   -b --bin-dir=<dir>       binary directory [default: /usr/local/bin]
-  -v --volpath=<path>      directory to create volumes in [default: /var/lib/flynn/volumes]
+  -v --volpath=<path>      directory to create volumes in [default: /var/lib/drycc/volumes]
 
-Download container images and Flynn binaries from a TUF repository.
+Download container images and Drycc binaries from a TUF repository.
 
-Set FLYNN_VERSION to download an explicit version.`)
+Set DRYCC_VERSION to download an explicit version.`)
 }
 
 func runDownload(args *docopt.Args) error {
@@ -54,7 +54,7 @@ func runDownload(args *docopt.Args) error {
 		})
 	})
 	if err := volMan.OpenDB(); err != nil {
-		log.Error("error opening volume database, make sure flynn-host is not running", "err", err)
+		log.Error("error opening volume database, make sure drycc-host is not running", "err", err)
 		return err
 	}
 
@@ -79,7 +79,7 @@ func runDownload(args *docopt.Args) error {
 
 	configDir := args.String["--config-dir"]
 
-	requestedVersion := os.Getenv("FLYNN_VERSION")
+	requestedVersion := os.Getenv("DRYCC_VERSION")
 	if requestedVersion == "" {
 		requestedVersion, err = getChannelVersion(configDir, client, log)
 		if err != nil {
@@ -97,11 +97,11 @@ func runDownload(args *docopt.Args) error {
 		return err
 	}
 
-	// use the requested version of flynn-host to download the images as
+	// use the requested version of drycc-host to download the images as
 	// the format changed in v20161106
 	if version.Release() != requestedVersion {
-		log.Info(fmt.Sprintf("executing %s flynn-host binary", requestedVersion))
-		binPath := filepath.Join(binDir, "flynn-host")
+		log.Info(fmt.Sprintf("executing %s drycc-host binary", requestedVersion))
+		binPath := filepath.Join(binDir, "drycc-host")
 		argv := append([]string{binPath}, os.Args[1:]...)
 		return syscall.Exec(binPath, argv, os.Environ())
 	}
@@ -136,7 +136,7 @@ func runDownload(args *docopt.Args) error {
 
 func tufHTTPOpts(name string) *tuf.HTTPRemoteOptions {
 	return &tuf.HTTPRemoteOptions{
-		UserAgent: fmt.Sprintf("flynn-host/%s %s-%s %s", version.String(), runtime.GOOS, runtime.GOARCH, name),
+		UserAgent: fmt.Sprintf("drycc-host/%s %s-%s %s", version.String(), runtime.GOOS, runtime.GOARCH, name),
 		Retries:   tufutil.DefaultHTTPRetries,
 	}
 }

@@ -3,7 +3,7 @@
   "variables": {
     "boot_command_prefix": "",
     "cpus": "4",
-    "flynn_repository": "https://dl.flynn.io",
+    "drycc_repository": "https://dl.drycc.cc",
     "headless": "false",
     "iso_checksum": "",
     "iso_checksum_type": "sha256",
@@ -21,7 +21,7 @@
         "/install/vmlinuz noapic ",
         "preseed/file=/floppy/preseed.cfg ",
         "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname=flynn ",
+        "hostname=drycc ",
         "grub-installer/bootdev=/dev/sda<wait> ",
         "fb=false debconf/frontend=noninteractive ",
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
@@ -53,7 +53,7 @@
         ]
       ],
       "virtualbox_version_file": ".vbox_version",
-      "vm_name": "flynn-base-{{ user `ubuntu_version` }}"
+      "vm_name": "drycc-base-{{ user `ubuntu_version` }}"
     }
   ],
   "provisioners": [
@@ -66,8 +66,8 @@
       "type": "shell",
       "script": "ubuntu/install.sh",
       "environment_vars": [
-        "FLYNN_REPOSITORY={{ user `flynn_repository` }}",
-        "FLYNN_VERSION={{ user `version` }}"
+        "DRYCC_REPOSITORY={{ user `drycc_repository` }}",
+        "DRYCC_VERSION={{ user `version` }}"
       ],
       "pause_before": "10s",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'"
@@ -76,7 +76,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "{{ user `output_dir` }}/flynn_{{ user `version` }}_ubuntu-{{ user `ubuntu_version` }}_{{ .Provider }}.box"
+      "output": "{{ user `output_dir` }}/drycc_{{ user `version` }}_ubuntu-{{ user `ubuntu_version` }}_{{ .Provider }}.box"
     }
   ]
 }

@@ -16,16 +16,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/exec"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/schedutil"
-	"github.com/flynn/flynn/pkg/tlscert"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/exec"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/schedutil"
+	"github.com/drycc/drycc/pkg/tlscert"
 	"github.com/inconshreveable/log15"
 )
 
@@ -123,7 +123,7 @@ func Boot(c *BootConfig) (*Cluster, error) {
 		return nil, err
 	}
 
-	app := &ct.App{Name: "flynn-" + random.String(4)}
+	app := &ct.App{Name: "drycc-" + random.String(4)}
 	log.Info("creating app", "name", app.Name)
 	if err := c.Client.CreateApp(app); err != nil {
 		log.Error("error creating app", "err", err)
@@ -142,8 +142,8 @@ func Boot(c *BootConfig) (*Cluster, error) {
 				Profiles: []host.JobProfile{host.JobProfileZFS},
 				Mounts: []host.Mount{
 					{
-						Location:  "/var/lib/flynn",
-						Target:    "/var/lib/flynn",
+						Location:  "/var/lib/drycc",
+						Target:    "/var/lib/drycc",
 						Writeable: true,
 					},
 				},
@@ -236,7 +236,7 @@ func bootCluster(c *BootConfig, cluster *Cluster, manifest io.Reader, log log15.
 		bootstrapArgs = append(bootstrapArgs, "--from-backup", c.Backup)
 	}
 	bootstrapArgs = append(bootstrapArgs, "-")
-	cmd := exec.CommandUsingHost(cluster.Host.Host, cluster.HostImage, append([]string{"flynn-host", "bootstrap"}, bootstrapArgs...)...)
+	cmd := exec.CommandUsingHost(cluster.Host.Host, cluster.HostImage, append([]string{"drycc-host", "bootstrap"}, bootstrapArgs...)...)
 	if c.Backup != "" {
 		cmd.Mounts = []host.Mount{{
 			Location: c.Backup,
@@ -285,8 +285,8 @@ func bootCluster(c *BootConfig, cluster *Cluster, manifest io.Reader, log log15.
 			return err
 		}
 		for _, job := range jobs {
-			app := job.Job.Metadata["flynn-controller.app_name"]
-			typ := job.Job.Metadata["flynn-controller.type"]
+			app := job.Job.Metadata["drycc-controller.app_name"]
+			typ := job.Job.Metadata["drycc-controller.type"]
 			if app == "controller" && typ == "web" {
 				domain = job.Job.Config.Env["DEFAULT_ROUTE_DOMAIN"]
 				key = job.Job.Config.Env["AUTH_KEY"]
@@ -365,7 +365,7 @@ loop:
 			}
 			switch event.Kind {
 			case discoverd.EventKindUp:
-				jobID := event.Instance.Meta["FLYNN_JOB_ID"]
+				jobID := event.Instance.Meta["DRYCC_JOB_ID"]
 				id, _ := cluster.ExtractUUID(jobID)
 				id = strings.Replace(id, "-", "", -1)
 				addr := event.Instance.Addr
@@ -385,7 +385,7 @@ loop:
 					return newHosts, nil
 				}
 			case discoverd.EventKindDown:
-				c.log.Info("host is down", "addr", event.Instance.Addr, "id", event.Instance.Meta["FLYNN_JOB_ID"])
+				c.log.Info("host is down", "addr", event.Instance.Addr, "id", event.Instance.Meta["DRYCC_JOB_ID"])
 				return nil, fmt.Errorf("a host failed to start: %v", event.Instance)
 			}
 		case <-timeoutCh:
@@ -431,7 +431,7 @@ func (c *Cluster) Destroy() error {
 	proc := c.Release.Processes["host"]
 	for _, host := range c.Hosts {
 		log.Info("running host cleanup", "job.id", host.JobID)
-		cmd := exec.CommandUsingHost(c.clusterHost, c.HostImage, "/usr/local/bin/cleanup-flynn-host.sh", host.JobID)
+		cmd := exec.CommandUsingHost(c.clusterHost, c.HostImage, "/usr/local/bin/cleanup-drycc-host.sh", host.JobID)
 		logR, logW := io.Pipe()
 		go func() {
 			buf := bufio.NewReader(logR)

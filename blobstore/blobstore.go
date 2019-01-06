@@ -12,15 +12,15 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/flynn/flynn/blobstore/backend"
-	"github.com/flynn/flynn/blobstore/data"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/version"
-	docopt "github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/blobstore/backend"
+	"github.com/drycc/drycc/blobstore/data"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/version"
+	docopt "github.com/drycc/go-docopt"
 )
 
 func errorResponse(w http.ResponseWriter, err error) {
@@ -112,7 +112,7 @@ func main() {
 	defer shutdown.Exit()
 
 	usage := `
-usage: flynn-blobstore <command> [<args>...]
+usage: drycc-blobstore <command> [<args>...]
 
 Commands:
         help        show usage for a specific command
@@ -120,7 +120,7 @@ Commands:
         migrate     move file blobs from default backend to a different backend
         server      run blobstore HTTP server
 
-See 'flynn-blobstore help <command>' for more information on a specific command.
+See 'drycc-blobstore help <command>' for more information on a specific command.
 `[1:]
 	args, _ := docopt.Parse(usage, nil, true, version.String(), true)
 
@@ -128,10 +128,10 @@ See 'flynn-blobstore help <command>' for more information on a specific command.
 	cmdArgs := args.All["<args>"].([]string)
 
 	if cmd == "help" {
-		if len(cmdArgs) == 0 { // `flynn-blobstore help`
+		if len(cmdArgs) == 0 { // `drycc-blobstore help`
 			fmt.Println(usage)
 			return
-		} else { // `flynn-blobstore help <command>`
+		} else { // `drycc-blobstore help <command>`
 			cmd = cmdArgs[0]
 			cmdArgs = []string{"--help"}
 		}
@@ -236,7 +236,7 @@ $$ LANGUAGE plpgsql`,
 	)
 
 	register("server", runServer, `
-usage: flynn-blobstore server
+usage: drycc-blobstore server
 
 Run blobstore HTTP server.
 `)
@@ -262,7 +262,7 @@ func runCommand(name string, args []string) (err error) {
 
 	cmd, ok := commands[name]
 	if !ok {
-		return fmt.Errorf("%s is not a flynn-blobstore command. See 'flynn-blobstore help'", name)
+		return fmt.Errorf("%s is not a drycc-blobstore command. See 'drycc-blobstore help'", name)
 	}
 	parsedArgs, err := docopt.Parse(cmd.usage, argv, true, "", false)
 	if err != nil {

@@ -29,7 +29,7 @@ main() {
   create_groups
   add_apt_sources
   install_packages
-  install_flynn
+  install_drycc
   apt_cleanup
   packer_cleanup
 
@@ -98,7 +98,7 @@ install_vbox_guest_additions() {
 }
 
 change_hostname() {
-  local hostname="flynn"
+  local hostname="drycc"
 
   echo "${hostname}" > /etc/hostname
   echo "127.0.1.1 ${hostname}" >> /etc/hosts
@@ -155,22 +155,22 @@ install_packages() {
   sed 's/#user_allow_other/user_allow_other/' -i /etc/fuse.conf
 }
 
-install_flynn() {
-  local repo="${FLYNN_REPOSITORY:-"https://dl.flynn.io"}"
+install_drycc() {
+  local repo="${DRYCC_REPOSITORY:-"https://dl.drycc.cc"}"
 
-  local script="install-flynn"
-  if [[ -n "${FLYNN_VERSION}" ]]; then
-    script="${script}-${FLYNN_VERSION}"
+  local script="install-drycc"
+  if [[ -n "${DRYCC_VERSION}" ]]; then
+    script="${script}-${DRYCC_VERSION}"
   fi
 
   bash -es -- -r "${repo}" < <(curl -sL --fail "${repo}/${script}")
 
   case "${DISTRIB_RELEASE}" in
     14.04)
-      sed -i 's/start on/#start on/' /etc/init/flynn-host.conf
+      sed -i 's/start on/#start on/' /etc/init/drycc-host.conf
       ;;
     16.04)
-      systemctl disable flynn-host
+      systemctl disable drycc-host
       ;;
   esac
 }

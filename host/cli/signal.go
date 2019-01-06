@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("signal", runSignal, `
-usage: flynn-host signal ID SIGNAL
+usage: drycc-host signal ID SIGNAL
 
 Signal a job`)
 }

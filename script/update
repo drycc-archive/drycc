@@ -9,7 +9,7 @@ usage() {
   cat <<USAGE >&2
 usage: $0 [options] APP
 
-Update a Flynn system app.
+Update a Drycc system app.
 
 OPTIONS:
   -h, --help               Show this message
@@ -32,15 +32,15 @@ main() {
   local config="$(mktemp)"
   trap "rm -f ${config}" EXIT
 
-  local image_name="flynn/${app}"
+  local image_name="drycc/${app}"
   local image_id="$(jq -r ".\"${image_name}\"" "${ROOT}/version.json")"
   if [[ -z "${image_id}" ]]; then
     fail "could not determine ID for image ${image_name} in version.json"
   fi
 
-  alias flynn="${ROOT}/cli/bin/flynn"
-  flynn -a "${app}" release show --json | jq -r 'del(.id)' > "${config}"
-  flynn -a "${app}" release add --file "${config}" "https://dl.flynn.io/tuf?name=${image_name}&id=${image_id}"
+  alias drycc="${ROOT}/cli/bin/drycc"
+  drycc -a "${app}" release show --json | jq -r 'del(.id)' > "${config}"
+  drycc -a "${app}" release add --file "${config}" "https://dl.drycc.cc/tuf?name=${image_name}&id=${image_id}"
 }
 
 main $@

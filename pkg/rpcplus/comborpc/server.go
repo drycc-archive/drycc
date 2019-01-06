@@ -6,8 +6,8 @@ import (
 	"mime"
 	"net/http"
 
-	"github.com/flynn/flynn/pkg/rpcplus"
-	"github.com/flynn/flynn/pkg/rpcplus/jsonrpc"
+	"github.com/drycc/drycc/pkg/rpcplus"
+	"github.com/drycc/drycc/pkg/rpcplus/jsonrpc"
 )
 
 type Server struct {
@@ -29,7 +29,7 @@ func (server *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var serve func(conn io.ReadWriteCloser)
 	accept, _, _ := mime.ParseMediaType(req.Header.Get("Accept"))
 	switch accept {
-	case "application/vnd.flynn.rpc-hijack+json":
+	case "application/vnd.drycc.rpc-hijack+json":
 		serve = func(conn io.ReadWriteCloser) {
 			codec := jsonrpc.NewServerCodec(conn)
 			server.s.ServeCodec(codec)

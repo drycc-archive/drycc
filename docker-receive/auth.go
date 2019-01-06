@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	auth.Register("flynn", auth.InitFunc(newAuth))
+	auth.Register("drycc", auth.InitFunc(newAuth))
 }
 
 func newAuth(options map[string]interface{}) (auth.AccessController, error) {

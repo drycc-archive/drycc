@@ -5,9 +5,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/flynn/flynn/logaggregator/client"
+	"github.com/drycc/drycc/logaggregator/client"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 // Hook gocheck up to the "go test" runner

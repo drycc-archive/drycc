@@ -13,12 +13,12 @@ import (
 	"runtime"
 	"time"
 
-	cfg "github.com/flynn/flynn/cli/config"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/tufconfig"
-	"github.com/flynn/flynn/pkg/tufutil"
-	"github.com/flynn/flynn/pkg/version"
-	tuf "github.com/flynn/go-tuf/client"
+	cfg "github.com/drycc/drycc/cli/config"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/tufconfig"
+	"github.com/drycc/drycc/pkg/tufutil"
+	"github.com/drycc/drycc/pkg/version"
+	tuf "github.com/drycc/go-tuf/client"
 	"github.com/kardianos/osext"
 	"gopkg.in/inconshreveable/go-update.v0"
 )
@@ -50,7 +50,7 @@ func (u *Updater) backgroundRun() {
 		return
 	}
 	// TODO(titanous): logger isn't on Windows. Replace with proper error reports.
-	l := exec.Command("logger", "-tflynn")
+	l := exec.Command("logger", "-tdrycc")
 	c := exec.Command(self, "update")
 	if w, err := l.StdinPipe(); err == nil && l.Start() == nil {
 		c.Stdout = w
@@ -83,7 +83,7 @@ func (u *Updater) update() error {
 	}
 	plat := fmt.Sprintf("%s-%s", runtime.GOOS, runtime.GOARCH)
 	opts := &tuf.HTTPRemoteOptions{
-		UserAgent: fmt.Sprintf("flynn-cli/%s %s", version.String(), plat),
+		UserAgent: fmt.Sprintf("drycc-cli/%s %s", version.String(), plat),
 		Retries:   tufutil.DefaultHTTPRetries,
 	}
 	remote, err := tuf.HTTPRemoteStore(tufconfig.Repository, opts)
@@ -95,7 +95,7 @@ func (u *Updater) update() error {
 		return err
 	}
 
-	name := fmt.Sprintf("/flynn-%s.gz", plat)
+	name := fmt.Sprintf("/drycc-%s.gz", plat)
 
 	latestVersion, err := tufutil.GetVersion(client, name)
 	if err != nil {

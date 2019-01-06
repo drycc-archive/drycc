@@ -7,10 +7,10 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/logmux"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/shutdown"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/logmux"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/shutdown"
 )
 
 func NewDiscoverdManager(backend Backend, sinkManager *logmux.SinkManager, hostID, publishAddr string, tags map[string]string) *DiscoverdManager {
@@ -68,7 +68,7 @@ func (d *DiscoverdManager) heartbeat(url string) error {
 		d.hb.SetClient(disc)
 		return nil
 	}
-	hb, err := disc.AddServiceAndRegisterInstance("flynn-host", d.inst)
+	hb, err := disc.AddServiceAndRegisterInstance("drycc-host", d.inst)
 	if err != nil {
 		return err
 	}

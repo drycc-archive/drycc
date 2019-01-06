@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	ct "github.com/flynn/flynn/controller/types"
+	ct "github.com/drycc/drycc/controller/types"
 	"github.com/gorilla/sessions"
 )
 

@@ -14,13 +14,13 @@ import (
 	"strings"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/httpclient"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/stream"
-	"github.com/flynn/flynn/router/types"
+	ct "github.com/drycc/drycc/controller/types"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/httpclient"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/stream"
+	"github.com/drycc/drycc/router/types"
 )
 
 // Client is a client for the v1 of the controller API.
@@ -722,7 +722,7 @@ func (c *Client) ExpectedScalingEvents(actual, expected map[string]int, releaseP
 // and returning a ReadWriteCloser stream, which can then be used for
 // communicating with the job.
 func (c *Client) RunJobAttached(appID string, job *ct.NewJob) (httpclient.ReadWriteCloser, error) {
-	return c.Hijack("POST", fmt.Sprintf("/apps/%s/jobs", appID), http.Header{"Upgrade": {"flynn-attach/0"}}, job)
+	return c.Hijack("POST", fmt.Sprintf("/apps/%s/jobs", appID), http.Header{"Upgrade": {"drycc-attach/0"}}, job)
 }
 
 // RunJobDetached runs a new job under the specified app, returning the job's

@@ -7,35 +7,35 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("mongodb", runMongodb, `
-usage: flynn mongodb mongo [--] [<argument>...]
-       flynn mongodb dump [-q] [-f <file>]
-       flynn mongodb restore [-q] [-f <file>]
+usage: drycc mongodb mongo [--] [<argument>...]
+       drycc mongodb dump [-q] [-f <file>]
+       drycc mongodb restore [-q] [-f <file>]
 
 Options:
 	-f, --file=<file>  name of dump file
 	-q, --quiet        don't print progress
 
 Commands:
-	mongodb  Open a console to a Flynn mongodb database. Any valid arguments to mongo may be provided.
+	mongodb  Open a console to a Drycc mongodb database. Any valid arguments to mongo may be provided.
 	dump     Dump a mongo database. If file is not specified, will dump to stdout.
 	restore  Restore a database dump. If file is not specified, will restore from stdin.
 
 Examples:
 
-    $ flynn mongodb mongo
+    $ drycc mongodb mongo
 
-    $ flynn mongodb mongo -- --eval "db.users.find()"
+    $ drycc mongodb mongo -- --eval "db.users.find()"
 
-    $ flynn mongodb dump -f db.dump
+    $ drycc mongodb dump -f db.dump
 
-    $ flynn mongodb restore -f db.dump
+    $ drycc mongodb restore -f db.dump
 `)
 }
 
@@ -64,9 +64,9 @@ func getAppMongodbRunConfig(client controller.Client) (*runConfig, error) {
 }
 
 func getMongodbRunConfig(client controller.Client, app string, appRelease *ct.Release) (*runConfig, error) {
-	mongodbApp := appRelease.Env["FLYNN_MONGO"]
+	mongodbApp := appRelease.Env["DRYCC_MONGO"]
 	if mongodbApp == "" {
-		return nil, fmt.Errorf("No mongodb database found. Provision one with `flynn resource add mongodb`")
+		return nil, fmt.Errorf("No mongodb database found. Provision one with `drycc resource add mongodb`")
 	}
 
 	mongodbRelease, err := client.GetAppRelease(mongodbApp)
@@ -130,7 +130,7 @@ func runMongodbDump(args *docopt.Args, client controller.Client, config *runConf
 
 func configMongodbDump(config *runConfig) {
 	config.Args = []string{
-		"/bin/dump-flynn-mongodb",
+		"/bin/dump-drycc-mongodb",
 		"--host", config.Env["MONGO_HOST"],
 		"-u", config.Env["MONGO_USER"],
 		"-p", config.Env["MONGO_PWD"],
@@ -178,7 +178,7 @@ func runMongodbRestore(args *docopt.Args, client controller.Client, config *runC
 
 func mongodbRestore(client controller.Client, config *runConfig) error {
 	config.Args = []string{
-		"/bin/restore-flynn-mongodb",
+		"/bin/restore-drycc-mongodb",
 		"--host", config.Env["MONGO_HOST"],
 		"-u", config.Env["MONGO_USER"],
 		"-p", config.Env["MONGO_PWD"],

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/flynn/flynn/pkg/testutils"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/pkg/testutils"
+	. "github.com/drycc/go-check"
 )
 
 type ZfsTransmitTests struct {

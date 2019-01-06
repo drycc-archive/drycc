@@ -3,12 +3,12 @@ package main
 import (
 	"io"
 
-	tu "github.com/flynn/flynn/controller/testutils"
-	ct "github.com/flynn/flynn/controller/types"
-	host "github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/random"
-	. "github.com/flynn/go-check"
+	tu "github.com/drycc/drycc/controller/testutils"
+	ct "github.com/drycc/drycc/controller/types"
+	host "github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/random"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) createTestJob(c *C, in *ct.Job) *ct.Job {
@@ -212,17 +212,17 @@ func (s *S) TestRunJobDetached(c *C) {
 		job := j.Job
 		c.Assert(res.ID, Equals, job.ID)
 		c.Assert(job.Metadata, DeepEquals, map[string]string{
-			"flynn-controller.app":      app.ID,
-			"flynn-controller.app_name": app.Name,
-			"flynn-controller.release":  release.ID,
+			"drycc-controller.app":      app.ID,
+			"drycc-controller.app_name": app.Name,
+			"drycc-controller.release":  release.ID,
 			"foo": "baz",
 		})
 		c.Assert(job.Config.Args, DeepEquals, []string{"foo", "bar"})
 		c.Assert(job.Config.Env, DeepEquals, map[string]string{
-			"FLYNN_APP_ID":       app.ID,
-			"FLYNN_RELEASE_ID":   release.ID,
-			"FLYNN_PROCESS_TYPE": "",
-			"FLYNN_JOB_ID":       job.ID,
+			"DRYCC_APP_ID":       app.ID,
+			"DRYCC_RELEASE_ID":   release.ID,
+			"DRYCC_PROCESS_TYPE": "",
+			"DRYCC_JOB_ID":       job.ID,
 			"FOO":                "baz",
 			"JOB":                "true",
 			"RELEASE":            "true",
@@ -297,17 +297,17 @@ func (s *S) TestRunJobAttached(c *C) {
 		job := j.Job
 		c.Assert(job.ID, Equals, jobID)
 		c.Assert(job.Metadata, DeepEquals, map[string]string{
-			"flynn-controller.app":      app.ID,
-			"flynn-controller.app_name": app.Name,
-			"flynn-controller.release":  release.ID,
+			"drycc-controller.app":      app.ID,
+			"drycc-controller.app_name": app.Name,
+			"drycc-controller.release":  release.ID,
 			"foo": "baz",
 		})
 		c.Assert(job.Config.Args, DeepEquals, []string{"foo", "bar"})
 		c.Assert(job.Config.Env, DeepEquals, map[string]string{
-			"FLYNN_APP_ID":       app.ID,
-			"FLYNN_RELEASE_ID":   release.ID,
-			"FLYNN_PROCESS_TYPE": "",
-			"FLYNN_JOB_ID":       job.ID,
+			"DRYCC_APP_ID":       app.ID,
+			"DRYCC_RELEASE_ID":   release.ID,
+			"DRYCC_PROCESS_TYPE": "",
+			"DRYCC_JOB_ID":       job.ID,
 			"FOO":                "baz",
 			"JOB":                "true",
 			"RELEASE":            "true",

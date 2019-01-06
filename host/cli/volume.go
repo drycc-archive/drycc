@@ -10,34 +10,34 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("volume", runVolume, `
-usage: flynn-host volume list
-       flynn-host volume create [--provider=<provider>] <host>
-       flynn-host volume delete ID...
-       flynn-host volume gc
+usage: drycc-host volume list
+       drycc-host volume create [--provider=<provider>] <host>
+       drycc-host volume delete ID...
+       drycc-host volume gc
 
 Commands:
-    list    Display a list of all volumes of known Flynn hosts
+    list    Display a list of all volumes of known Drycc hosts
     create  Creates a data volume on a host
     delete  Deletes volumes, destroying any data stored on them
     gc      Garbage collect currently unused volumes
 
 Examples:
 
-    $ flynn-host volume list
+    $ drycc-host volume list
 
-    $ flynn-host volume create --provider default host0
+    $ drycc-host volume create --provider default host0
 
-    $ flynn-host volume destroy 102fad07-07a3-4841-bded-d9e8a3eedbd6
+    $ drycc-host volume destroy 102fad07-07a3-4841-bded-d9e8a3eedbd6
 
-    $ flynn-host volume gc
+    $ drycc-host volume gc
 `)
 }
 
@@ -105,7 +105,7 @@ outer:
 			continue outer
 		}
 		// don't delete system images
-		if v.Volume.Meta["flynn.system-image"] == "true" {
+		if v.Volume.Meta["drycc.system-image"] == "true" {
 			continue
 		}
 		if err := v.Host.DestroyVolume(v.Volume.ID); err != nil {

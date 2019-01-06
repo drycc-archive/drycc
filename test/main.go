@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/test/arg"
-	"github.com/flynn/flynn/test/cluster/client"
-	"github.com/flynn/go-check"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/test/arg"
+	"github.com/drycc/drycc/test/cluster/client"
+	"github.com/drycc/go-check"
 )
 
 var args *arg.Args
@@ -72,7 +72,7 @@ func main() {
 }
 
 func setupGitreceive() error {
-	// Unencrypted SSH private key for the flynn-test GitHub account.
+	// Unencrypted SSH private key for the drycc-test GitHub account.
 	// Omits header/footer to avoid any GitHub auto-revoke key crawlers
 	sshKey := `MIIEpAIBAAKCAQEA2UnQ/17TfzQRt4HInuP1SYz/tSNaCGO3NDIPLydVu8mmxuKT
 zlJtH3pz3uWpMEKdZtSjV+QngJL8OFzanQVZtRBJjF2m+cywHJoZA5KsplMon+R+
@@ -100,7 +100,7 @@ xg5quQKBgQCEL95Di6WD+155gEG2NtqeAOWhgxqAbGjFjfpV+pVBksBCrWOHcBJp
 QAvAdwDIZpqRWWMcLS7zSDrzn3ZscuHCMxSOe40HbrVdDUee24/I4YQ+R8EcuzcA
 3IV9ai+Bxs6PvklhXmarYxJl62LzPLyv0XFscGRes/2yIIxNfNzFug==`
 
-	out, err := flynnCmd("/", "-a", "gitreceive", "env", "set",
+	out, err := dryccCmd("/", "-a", "gitreceive", "env", "set",
 		"SSH_CLIENT_HOSTS=github.com,192.30.252.131 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==",
 		fmt.Sprintf("SSH_CLIENT_KEY=-----BEGIN RSA PRIVATE KEY-----\n%s\n-----END RSA PRIVATE KEY-----\n", sshKey)).CombinedOutput()
 	if err != nil {
@@ -110,7 +110,7 @@ QAvAdwDIZpqRWWMcLS7zSDrzn3ZscuHCMxSOe40HbrVdDUee24/I4YQ+R8EcuzcA
 }
 
 func setupDockerPush() error {
-	if out, err := flynnCmd("/", "docker", "login").CombinedOutput(); err != nil {
+	if out, err := dryccCmd("/", "docker", "login").CombinedOutput(); err != nil {
 		return fmt.Errorf("%s: %q", err, out)
 	}
 	return nil
@@ -123,26 +123,26 @@ type CmdResult struct {
 	Err       error
 }
 
-func flynnEnv(path string) []string {
+func dryccEnv(path string) []string {
 	env := os.Environ()
 	res := make([]string, 0, len(env)+1)
 	for _, v := range env {
-		if !strings.HasPrefix(v, "FLYNNRC=") {
+		if !strings.HasPrefix(v, "DRYCCRC=") {
 			res = append(res, v)
 		}
 	}
-	res = append(res, "FLYNNRC="+path)
+	res = append(res, "DRYCCRC="+path)
 	return res
 }
 
-func flynnCmd(dir string, cmdArgs ...string) *exec.Cmd {
+func dryccCmd(dir string, cmdArgs ...string) *exec.Cmd {
 	cmd := exec.Command(args.CLI, cmdArgs...)
 	cmd.Dir = dir
 	return cmd
 }
 
-func flynn(t *check.C, dir string, args ...string) *CmdResult {
-	return run(t, flynnCmd(dir, args...))
+func drycc(t *check.C, dir string, args ...string) *CmdResult {
+	return run(t, dryccCmd(dir, args...))
 }
 
 func debug(t *check.C, v ...interface{}) {

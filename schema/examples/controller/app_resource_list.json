@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/app_resource_list#",
+  "id": "https://drycc.cc/schema/examples/controller/app_resource_list#",
   "title": "List app resources",
   "description": "",
   "allOf": [

@@ -8,14 +8,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/cache"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/testutil"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/testutils/postgres"
-	"github.com/flynn/flynn/router/schema"
-	"github.com/flynn/flynn/router/types"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/discoverd/cache"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/testutil"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/testutils/postgres"
+	"github.com/drycc/drycc/router/schema"
+	"github.com/drycc/drycc/router/types"
+	. "github.com/drycc/go-check"
 	"github.com/jackc/pgx"
 )
 

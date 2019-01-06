@@ -3,11 +3,11 @@
 case $1 in
   redis)
     shift
-    exec /bin/flynn-redis $*
+    exec /bin/drycc-redis $*
     ;;
   api)
     shift
-    exec /bin/flynn-redis-api $*
+    exec /bin/drycc-redis-api $*
     ;;
   *)
     echo "Usage: $0 {redis|api}"

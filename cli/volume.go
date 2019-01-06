@@ -8,17 +8,17 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("volume", runVolume, `
-usage: flynn volume
-       flynn volume show [--json] <id>
-       flynn volume decommission <id>
+usage: drycc volume
+       drycc volume show [--json] <id>
+       drycc volume decommission <id>
 
 Manage cluster volumes.
 

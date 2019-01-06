@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 func (s *LogAggregatorTestSuite) BenchmarkReplaySnapshot(c *C) {

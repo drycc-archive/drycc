@@ -5,15 +5,15 @@ layout: docs
 
 # Ruby
 
-Flynn supports deploying Ruby, Rack, and Rails applications using a variety of Ruby
+Drycc supports deploying Ruby, Rack, and Rails applications using a variety of Ruby
 interpreters, namely MRI, [JRuby](http://www.jruby.org), and [Rubinius](http://rubini.us).
 
-Flynn uses the [Ruby buildpack](https://github.com/heroku/heroku-buildpack-ruby)
+Drycc uses the [Ruby buildpack](https://github.com/heroku/heroku-buildpack-ruby)
 to detect, compile, and release Ruby applications.
 
 ## Detection
 
-Flynn detects that an application requires Ruby by the presence of a `Gemfile` in
+Drycc detects that an application requires Ruby by the presence of a `Gemfile` in
 the root directory. It then uses [Bundler](https://bundler.io) (a Ruby dependency
 management tool) to determine, download, and install the dependencies of the application.
 
@@ -37,7 +37,7 @@ to install the necessary dependencies, and Bundler would write a snapshot of all
 of the gems and versions that it installed to `Gemfile.lock`.
 
 The `Gemfile.lock` needs to be present when you deploy your application so that
-Flynn can determine what gems to install. **The deployment
+Drycc can determine what gems to install. **The deployment
 will fail if this file is missing**.
 
 *For more information on the `Gemfile` format, see the [Bundler Gemfile page](http://bundler.io/gemfile.html).*
@@ -45,7 +45,7 @@ will fail if this file is missing**.
 #### Environment-Specific
 
 There are some gems you may use locally that don't need to be installed in
-production. Flynn calls `bundle install` with `--without development:test`, which
+production. Drycc calls `bundle install` with `--without development:test`, which
 will skip installing any gems in the `development` or `test` groups in
 the `Gemfile`.
 
@@ -109,7 +109,7 @@ libraries that are useful when compiling Ruby native extensions, for example:
 * `libxml2-dev`
 * `libxslt-dev`
 
-*For a full list, see the [base image Dockerfile](https://github.com/flynn/flynn/blob/master/util/cedarish/Dockerfile).*
+*For a full list, see the [base image Dockerfile](https://github.com/drycc/drycc/blob/master/util/cedarish/Dockerfile).*
 
 ## Process Types
 
@@ -207,10 +207,10 @@ $ foreman start
 
 ## Framework Detection
 
-Different Ruby frameworks require different configuration, so Flynn will detect the presence
+Different Ruby frameworks require different configuration, so Drycc will detect the presence
 of a framework and configure it as required.
 
-Here are the rules Flynn uses to detect various frameworks, along with their default process
+Here are the rules Drycc uses to detect various frameworks, along with their default process
 types (i.e. the process types if there is no `Procfile` present):
 
 ### Ruby
@@ -291,11 +291,11 @@ served by any other means.
 
 ## Run Jobs
 
-If you need to run Rake tasks or start a Rails console inside your app, use `flynn run`. For example:
+If you need to run Rake tasks or start a Rails console inside your app, use `drycc run`. For example:
 
 ```
-$ flynn run rake db:migrate
-$ flynn run rails console
+$ drycc run rake db:migrate
+$ drycc run rails console
 ```
 
-*See [our command line docs](/docs/cli#run) for more information on the `flynn run` command*
+*See [our command line docs](/docs/cli#run) for more information on the `drycc run` command*

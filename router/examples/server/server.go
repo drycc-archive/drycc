@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/flynn/flynn/discoverd/client"
+	"github.com/drycc/drycc/discoverd/client"
 )
 
 func main() {

@@ -11,19 +11,19 @@ issues](#reporting-issues) section.
 
 Security is extraordinarily important to us.
 
-Because Flynn is an integrated platform that we control end-to-end we are able
+Because Drycc is an integrated platform that we control end-to-end we are able
 to implement many best practices by default and deploy technologies that would
 be extremely difficult for users to take advantage of on their own.
 
-Now that we've reached the point where Flynn is stable enough for the majority
-of users in production, we are focusing on making Flynn secure by default.
+Now that we've reached the point where Drycc is stable enough for the majority
+of users in production, we are focusing on making Drycc secure by default.
 
 Until we reach the point where everything is secure by default, it's important
-to understand what the current security properties of Flynn are.
+to understand what the current security properties of Drycc are.
 
 ## Distribution Security
 
-All binaries that we provide including `flynn-host`, the `flynn` CLI tool, and
+All binaries that we provide including `drycc-host`, the `drycc` CLI tool, and
 container images are distributed securely using the [The Update
 Framework](http://theupdateframework.com). TUF includes a robust, role-based
 signature system and protects against many attacks including downgrades and CDN
@@ -34,11 +34,11 @@ signed, as signatures are not supported by Vagrant.
 
 ## Internal Communication
 
-Flynn uses several ports to communicate internally, and currently there is no
+Drycc uses several ports to communicate internally, and currently there is no
 authentication system for internal communication, so access to these ports must
 not be exposed to the Internet. A firewall must be configured so that the only
-Flynn ports accessible are 80 and 443 to prevent compromise. Access to these
-internal Flynn ports is equivalent to root access, so be careful.
+Drycc ports accessible are 80 and 443 to prevent compromise. Access to these
+internal Drycc ports is equivalent to root access, so be careful.
 
 Access to the controller and dashboard is available via HTTPS over port 443, and
 a randomly generated bearer token is used for authentication. The TLS
@@ -62,23 +62,23 @@ generated certificates and trust bootstrapping.
 
 ## Applications
 
-Applications run within Flynn are not fully sandboxed and have access to
-internal Flynn APIs that can be used to gain root access on the server. Do not
-run untrusted code in Flynn.
+Applications run within Drycc are not fully sandboxed and have access to
+internal Drycc APIs that can be used to gain root access on the server. Do not
+run untrusted code in Drycc.
 
-There may be other unknown security flaws in Flynn. For the time being we do not
-recommend running Flynn in environments where there is access to sensitive data
+There may be other unknown security flaws in Drycc. For the time being we do not
+recommend running Drycc in environments where there is access to sensitive data
 or services.
 
 We are currently working to implement and improve basic security practices in
-Flynn so that it is secure by default, inside and outside. After that, the sky
+Drycc so that it is secure by default, inside and outside. After that, the sky
 is the limit. Expect to see industry-leading security policies and practices
-baked into Flynn in the future.
+baked into Drycc in the future.
 
 ## Reporting Issues
 
-If you discover a security flaw in Flynn that is not explicitly acknowledged
-here, please email us at [security@flynn.io](mailto:security@flynn.io)
+If you discover a security flaw in Drycc that is not explicitly acknowledged
+here, please email us at [security@drycc.cc](mailto:security@drycc.cc)
 immediately. We will acknowledge your email as soon as we receive it, within 24
 hours, and provide a more detailed response within 48 hours clearly indicating
 next steps. If you have the ability to use PGP, you can encrypt your email using
@@ -89,17 +89,17 @@ progress being made towards a fix and release. These updates will be sent
 frequently, usually at least every 24-48 hours.
 
 If you do not get a reply to your initial email within 48 hours, please contact
-[a member of the Flynn team](https://github.com/orgs/flynn/people) directly and
+[a member of the Drycc team](https://github.com/orgs/drycc/people) directly and
 ask them to put the security team in touch with you immediately.
 
-If you believe an [existing issue](https://github.com/flynn/flynn/issues) is
+If you believe an [existing issue](https://github.com/drycc/drycc/issues) is
 security-related, please send an email to
-[security@flynn.io](mailto:security@flynn.io) with the issue number and
+[security@drycc.cc](mailto:security@drycc.cc) with the issue number and
 a description of why it should be treated as a security issue.
 
 ## Disclosure Process
 
-Flynn uses the following coordinated security disclosure process for security
+Drycc uses the following coordinated security disclosure process for security
 issues:
 
 1. Once a security report is received, it is assigned to a primary handler. This
@@ -133,7 +133,7 @@ The best way to receive security announcements is to subscribe to the release
 announcements mailing list. Any messages related to a security issue will have
 the word `security` in the subject.
 
-<form action="https://flynn.us7.list-manage.com/subscribe/post?u=9600741fc187618e1baa39a58&id=8aadb709f3" method="post" target="_blank" novalidate class="mailing-list-form">
+<form action="https://drycc.us7.list-manage.com/subscribe/post?u=9600741fc187618e1baa39a58&id=8aadb709f3" method="post" target="_blank" novalidate class="mailing-list-form">
   <label>Email Address&nbsp;
     <input type="email" name="EMAIL" placeholder="you@example.com">
   </label>
@@ -145,7 +145,7 @@ the word `security` in the subject.
 ```text
 pub   4096R/6913B2EF 2015-11-04 [expires: 2018-11-01]
       Key fingerprint = C334 DB91 6744 BD00 B347  0A86 0281 AD75 6913 B2EF
-uid                  Flynn Security Team <security@flynn.io>
+uid                  Drycc Security Team <security@drycc.cc>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 

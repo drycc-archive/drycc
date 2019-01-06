@@ -18,19 +18,19 @@ import (
 	"time"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/cli/config"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	flynnexec "github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/typeconv"
-	tc "github.com/flynn/flynn/test/cluster"
-	"github.com/flynn/flynn/test/cluster2"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/cli/config"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	dryccexec "github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/typeconv"
+	tc "github.com/drycc/drycc/test/cluster"
+	"github.com/drycc/drycc/test/cluster2"
+	c "github.com/drycc/go-check"
 	"github.com/inconshreveable/log15"
 )
 
@@ -59,7 +59,7 @@ type Cluster struct {
 	cluster    *cluster.Client
 	config     *config.Config
 	controller controller.Client
-	flynnrc    string
+	dryccrc    string
 	log        log15.Logger
 }
 
@@ -79,7 +79,7 @@ func (x *Cluster) runDebugShell() {
 	debugf(x.t, `
 
 *****
-starting bash shell with both 'flynn-host' and 'flynn' configured
+starting bash shell with both 'drycc-host' and 'drycc' configured
 to debug test failure in cluster %q
 
 run 'exit' when you're done
@@ -89,11 +89,11 @@ run 'exit' when you're done
 	cmd := exec.Command("bash", "--norc")
 	cmd.Env = []string{
 		fmt.Sprintf("DISCOVERD=http://%s:1111", x.IP),
-		fmt.Sprintf("FLYNNRC=%s", x.flynnrc),
+		fmt.Sprintf("DRYCCRC=%s", x.dryccrc),
 		fmt.Sprintf(`PS1=\033[0;36mtest-debug@%s\$\033[0m `, x.App.Name),
 	}
 	for _, env := range os.Environ() {
-		if strings.HasPrefix(env, "DISCOVERD=") || strings.HasPrefix(env, "FLYNNRC=") || strings.HasPrefix(env, "PS1=") {
+		if strings.HasPrefix(env, "DISCOVERD=") || strings.HasPrefix(env, "DRYCCRC=") || strings.HasPrefix(env, "PS1=") {
 			continue
 		}
 		cmd.Env = append(cmd.Env, env)
@@ -104,9 +104,9 @@ run 'exit' when you're done
 	cmd.Run()
 }
 
-func (x *Cluster) flynn(dir string, cmdArgs ...string) *CmdResult {
+func (x *Cluster) drycc(dir string, cmdArgs ...string) *CmdResult {
 	cmd := exec.Command(args.CLI, cmdArgs...)
-	cmd.Env = flynnEnv(x.flynnrc)
+	cmd.Env = dryccEnv(x.dryccrc)
 	cmd.Dir = dir
 	return run(x.t, cmd)
 }
@@ -115,22 +115,22 @@ func (x *Cluster) setKey(newKey string) {
 	for _, c := range x.config.Clusters {
 		c.Key = newKey
 	}
-	x.t.Assert(x.config.SaveTo(x.flynnrc), c.IsNil)
+	x.t.Assert(x.config.SaveTo(x.dryccrc), c.IsNil)
 	x.controller.SetKey(newKey)
 }
 
 func (x *Cluster) collectDebugInfo() {
-	cmd := flynnexec.CommandUsingHost(
+	cmd := dryccexec.CommandUsingHost(
 		x.Host.Host,
 		x.HostImage,
-		"flynn-host",
+		"drycc-host",
 		"collect-debug-info",
-		"--log-dir", filepath.Join("/var/lib/flynn", x.Host.JobID, "logs"),
+		"--log-dir", filepath.Join("/var/lib/drycc", x.Host.JobID, "logs"),
 	)
 	cmd.Env = map[string]string{"DISCOVERD": fmt.Sprintf("http://%s:1111", x.IP)}
 	cmd.Mounts = []host.Mount{{
-		Location: "/var/lib/flynn",
-		Target:   "/var/lib/flynn",
+		Location: "/var/lib/drycc",
+		Target:   "/var/lib/drycc",
 	}}
 	// stream output to the log
 	logR, logW := io.Pipe()
@@ -195,7 +195,7 @@ func (h *Helper) bootClusterWithConfig(t *c.C, conf *cluster2.BootConfig) *Clust
 		Cluster:   s,
 		t:         t,
 		discoverd: discoverd.NewClientWithURL(fmt.Sprintf("http://%s:1111", s.IP)),
-		flynnrc:   filepath.Join(t.MkDir(), ".flynnrc"),
+		dryccrc:   filepath.Join(t.MkDir(), ".dryccrc"),
 		log:       conf.Logger,
 	}
 	x.cluster = cluster.NewClientWithServices(x.discoverd.Service)
@@ -205,9 +205,9 @@ func (h *Helper) bootClusterWithConfig(t *c.C, conf *cluster2.BootConfig) *Clust
 
 	Hostnames.Add(t, s.IP, "controller."+s.Domain, "git."+s.Domain, "docker."+s.Domain, "dashboard."+s.Domain)
 
-	t.Assert(x.flynn("/", "cluster", "add", "--tls-pin", s.Pin, s.Domain, s.Domain, s.Key), Succeeds)
+	t.Assert(x.drycc("/", "cluster", "add", "--tls-pin", s.Pin, s.Domain, s.Domain, s.Key), Succeeds)
 
-	x.config, err = config.ReadFile(x.flynnrc)
+	x.config, err = config.ReadFile(x.dryccrc)
 	t.Assert(err, c.IsNil)
 
 	return x
@@ -215,7 +215,7 @@ func (h *Helper) bootClusterWithConfig(t *c.C, conf *cluster2.BootConfig) *Clust
 
 type clusterProxy struct {
 	addr string
-	cmd  *flynnexec.Cmd
+	cmd  *dryccexec.Cmd
 }
 
 func (c *clusterProxy) Stop() error {
@@ -226,7 +226,7 @@ func (c *clusterProxy) Stop() error {
 // network and proxying to the given internal address (without this there is
 // no way for the tests to access internal services like blobstore.discoverd)
 func (h *Helper) clusterProxy(x *Cluster, addr string) (*clusterProxy, error) {
-	cmd := flynnexec.CommandUsingHost(
+	cmd := dryccexec.CommandUsingHost(
 		x.Host.Host,
 		h.createArtifactWithClient(x.t, "test-apps", x.controller),
 		"/bin/proxy",
@@ -572,20 +572,20 @@ func (h *Helper) buildHTTPDockerImage(t *c.C, repo string, lines ...string) {
 func (h *Helper) testBuildCaching(t *c.C, x *Cluster) {
 	r := h.newGitRepo(t, "build-cache")
 	r.cluster = x
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
 	r.git("commit", "-m", "bump", "--allow-empty")
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, Succeeds)
 	t.Assert(push, c.Not(OutputContains), "cached")
 
 	r.git("commit", "-m", "bump", "--allow-empty")
-	push = r.git("push", "flynn", "master")
+	push = r.git("push", "drycc", "master")
 	t.Assert(push, SuccessfulOutputContains, "cached: 0")
 
 	r.git("commit", "-m", "bump", "--allow-empty")
-	push = r.git("push", "flynn", "master")
+	push = r.git("push", "drycc", "master")
 	t.Assert(push, SuccessfulOutputContains, "cached: 1")
 }
 
@@ -624,18 +624,18 @@ func (h *Helper) newGitRepoWithTrace(t *c.C, nameOrURL string, trace bool) *gitR
 	return r
 }
 
-func (r *gitRepo) flynn(args ...string) *CmdResult {
+func (r *gitRepo) drycc(args ...string) *CmdResult {
 	if r.cluster != nil {
-		return r.cluster.flynn(r.dir, args...)
+		return r.cluster.drycc(r.dir, args...)
 	}
-	return flynn(r.t, r.dir, args...)
+	return drycc(r.t, r.dir, args...)
 }
 
 func (r *gitRepo) git(args ...string) *CmdResult {
 	cmd := exec.Command("git", args...)
 	cmd.Env = os.Environ()
 	if r.cluster != nil {
-		cmd.Env = flynnEnv(r.cluster.flynnrc)
+		cmd.Env = dryccEnv(r.cluster.dryccrc)
 	}
 	if r.trace {
 		cmd.Env = append(cmd.Env, "GIT_TRACE=1", "GIT_TRACE_PACKET=1", "GIT_CURL_VERBOSE=1")
@@ -672,12 +672,12 @@ type cliTestApp struct {
 	t        *c.C
 }
 
-func (a *cliTestApp) flynn(args ...string) *CmdResult {
-	return flynn(a.t, "/", append([]string{"-a", a.name}, args...)...)
+func (a *cliTestApp) drycc(args ...string) *CmdResult {
+	return drycc(a.t, "/", append([]string{"-a", a.name}, args...)...)
 }
 
-func (a *cliTestApp) flynnCmd(args ...string) *exec.Cmd {
-	return flynnCmd("/", append([]string{"-a", a.name}, args...)...)
+func (a *cliTestApp) dryccCmd(args ...string) *exec.Cmd {
+	return dryccCmd("/", append([]string{"-a", a.name}, args...)...)
 }
 
 func (a *cliTestApp) waitFor(events ct.JobEvents) string {
@@ -697,7 +697,7 @@ func (a *cliTestApp) waitForService(name string) {
 }
 
 func (a *cliTestApp) sh(cmd string) *CmdResult {
-	return a.flynn("run", "sh", "-c", cmd)
+	return a.drycc("run", "sh", "-c", cmd)
 }
 
 func (a *cliTestApp) cleanup() {

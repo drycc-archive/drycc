@@ -49,9 +49,9 @@ Node.js apps can be deployed without a `Procfile`. If no `Procfile` is present, 
 
 ## Run Jobs
 
-Besides the usual utilities, `npm` and `node` are in `PATH` and are available directly via `flynn run`.
+Besides the usual utilities, `npm` and `node` are in `PATH` and are available directly via `drycc run`.
 
 ```
-$ flynn run node -v
+$ drycc run node -v
 v0.10.32
 ```

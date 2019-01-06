@@ -3,15 +3,15 @@ package main
 import (
 	"log"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("provider", runProvider, `
-usage: flynn provider
-       flynn provider add <name> <url>
+usage: drycc provider
+       drycc provider add <name> <url>
 
 Manage resource providers associated with the controller.
 

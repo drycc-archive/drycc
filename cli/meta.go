@@ -4,35 +4,35 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("meta", runMeta, `
-usage: flynn meta
-       flynn meta set <var>=<val>...
-       flynn meta unset <var>...
+usage: drycc meta
+       drycc meta set <var>=<val>...
+       drycc meta unset <var>...
 
 Manage metadata for an application.
 
 Examples:
 
-	$ flynn meta
+	$ drycc meta
 	KEY  VALUE
 	foo  bar
 
-	$ flynn meta set foo=baz bar=qux
+	$ drycc meta set foo=baz bar=qux
 
-	$ flynn meta
+	$ drycc meta
 	KEY  VALUE
 	foo  baz
 	bar  qux
 
-	$ flynn meta unset foo
+	$ drycc meta unset foo
 
-	$ flynn meta
+	$ drycc meta
 	KEY  VALUE
 	bar  qux
 `)

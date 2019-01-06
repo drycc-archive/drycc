@@ -6,14 +6,14 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/go-docopt"
 )
 
 var cmdRun = Command{
 	Run: runRun,
 	Usage: `
-usage: flynn-builder run <args>...
+usage: drycc-builder run <args>...
 
 Run a command and generate an image layer.
 `[1:],

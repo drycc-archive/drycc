@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 var nopHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/app_create_error#",
+  "id": "https://drycc.cc/schema/examples/controller/app_create_error#",
   "title": "Create invalid app",
   "description": "",
   "allOf": [

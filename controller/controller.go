@@ -13,22 +13,22 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/flynn/flynn/controller/name"
-	"github.com/flynn/flynn/controller/schema"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/discoverd/client"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/status"
-	routerc "github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
-	"github.com/flynn/que-go"
+	"github.com/drycc/drycc/controller/name"
+	"github.com/drycc/drycc/controller/schema"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/discoverd/client"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/status"
+	routerc "github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
+	"github.com/drycc/que-go"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"github.com/inconshreveable/log15"
@@ -39,7 +39,7 @@ var logger = log15.New("component", "controller")
 var ErrNotFound = errors.New("controller: resource not found")
 var ErrShutdown = errors.New("controller: shutting down")
 
-var schemaRoot = "/etc/flynn-controller/jsonschema"
+var schemaRoot = "/etc/drycc-controller/jsonschema"
 
 func main() {
 	defer shutdown.Exit()
@@ -358,7 +358,7 @@ func muxHandler(main http.Handler, authIDs, authKeys []string) http.Handler {
 			if len(password) == len(k) && subtle.ConstantTimeCompare([]byte(password), []byte(k)) == 1 {
 				authed = true
 				if len(authIDs) == len(authKeys) {
-					r.Header.Set("Flynn-Auth-Key-ID", authIDs[i])
+					r.Header.Set("Drycc-Auth-Key-ID", authIDs[i])
 				}
 				break
 			}

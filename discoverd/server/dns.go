@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/random"
 	"github.com/miekg/dns"
 	"github.com/vanillahsu/go_reuseport"
 )

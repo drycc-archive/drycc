@@ -21,7 +21,7 @@ var AppsList = React.createClass({
 					if (assertEqual(app.id, selectedAppId)) {
 						classes.push("selected");
 					}
-					if (assertEqual(app.meta["flynn-system-app"], "true")) {
+					if (assertEqual(app.meta["drycc-system-app"], "true")) {
 						classes.push("system-application");
 					}
 					return (

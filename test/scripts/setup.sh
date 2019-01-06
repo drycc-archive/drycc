@@ -10,13 +10,13 @@ MEMORY="600G"
 
 main() {
   info "getting controller key"
-  local controller_key="$(flynn -a controller env get AUTH_KEY)"
+  local controller_key="$(drycc -a controller env get AUTH_KEY)"
   if [[ -z "${controller_key}" ]]; then
     fail "failed to get the controller key"
   fi
 
   info "creating app: ${APP}"
-  flynn create --remote "" "${APP}" || true
+  drycc create --remote "" "${APP}" || true
   local app_id="$(controller_get "/apps/${APP}" | jq -r .id)"
   if [[ -z "${app_id}" ]]; then
     fail "failed to get app ID"
@@ -38,17 +38,17 @@ main() {
   set_app_release "${app_id}" "${release}" >/dev/null
 
   info "adding PostgreSQL database"
-  if ! flynn -a "${APP}" resource | grep -q "postgres"; then
-    flynn -a "${APP}" resource add postgres
+  if ! drycc -a "${APP}" resource | grep -q "postgres"; then
+    drycc -a "${APP}" resource add postgres
   fi
 
   info "setting ${MEMORY} memory limit"
-  flynn -a "${APP}" limit set runner "memory=${MEMORY}"
+  drycc -a "${APP}" limit set runner "memory=${MEMORY}"
 
   cat <<EOF
 
 The CI app is created, but you need to set the following environment
-variables with 'flynn -a ${APP} env set KEY=VAL':
+variables with 'drycc -a ${APP} env set KEY=VAL':
 
 * AUTH_KEY
 * BLOBSTORE_S3_CONFIG
@@ -58,7 +58,7 @@ variables with 'flynn -a ${APP} env set KEY=VAL':
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY
 
-Once set, scale up the 'runner' process with 'flynn -a ${APP} scale runner=1'.
+Once set, scale up the 'runner' process with 'drycc -a ${APP} scale runner=1'.
 
 EOF
   info "setup finished!"
@@ -122,7 +122,7 @@ controller_req() {
     )
   fi
 
-  flynn -a blobstore run curl "${flags[@]}" "http://controller.discoverd${path}"
+  drycc -a blobstore run curl "${flags[@]}" "http://controller.discoverd${path}"
 }
 
 new_release_json() {
@@ -146,8 +146,8 @@ new_release_json() {
       }],
       "mounts": [
         {
-          "location":  "/opt/flynn-test",
-          "target":    "/opt/flynn-test",
+          "location":  "/opt/drycc-test",
+          "target":    "/opt/drycc-test",
           "writeable": true
         }
       ],

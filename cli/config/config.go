@@ -11,11 +11,11 @@ import (
 	"runtime"
 
 	"github.com/BurntSushi/toml"
-	"github.com/flynn/flynn/controller/client"
+	"github.com/drycc/drycc/controller/client"
 	"github.com/mitchellh/go-homedir"
 )
 
-var ErrNoDockerPushURL = errors.New("ERROR: Docker push URL not configured, set it with 'flynn docker set-push-url'")
+var ErrNoDockerPushURL = errors.New("ERROR: Docker push URL not configured, set it with 'drycc docker set-push-url'")
 
 type Cluster struct {
 	Name          string `json:"name"`
@@ -64,19 +64,19 @@ func HomeDir() string {
 
 func Dir() string {
 	if runtime.GOOS == "windows" {
-		return filepath.Join(os.Getenv("APPDATA"), "flynn")
+		return filepath.Join(os.Getenv("APPDATA"), "drycc")
 	}
-	return filepath.Join(HomeDir(), ".flynn")
+	return filepath.Join(HomeDir(), ".drycc")
 }
 
 func DefaultPath() string {
-	if p := os.Getenv("FLYNNRC"); p != "" {
+	if p := os.Getenv("DRYCCRC"); p != "" {
 		return p
 	}
 	if runtime.GOOS == "windows" {
-		return filepath.Join(Dir(), "flynnrc")
+		return filepath.Join(Dir(), "dryccrc")
 	}
-	return filepath.Join(HomeDir(), ".flynnrc")
+	return filepath.Join(HomeDir(), ".dryccrc")
 }
 
 func ReadFile(path string) (*Config, error) {
@@ -103,13 +103,13 @@ func (c *Config) Add(s *Cluster, force bool) error {
 		var m string
 		switch {
 		case existing.Name == s.Name:
-			m = fmt.Sprintf("Cluster %q already exists in ~/.flynnrc", s.Name)
+			m = fmt.Sprintf("Cluster %q already exists in ~/.dryccrc", s.Name)
 		case existing.GitURL != "" && existing.GitURL == s.GitURL:
-			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.flynnrc", s.GitURL)
+			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.dryccrc", s.GitURL)
 		case existing.ControllerURL == s.ControllerURL:
-			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.flynnrc", s.ControllerURL)
+			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.dryccrc", s.ControllerURL)
 		case existing.DockerPushURL != "" && existing.DockerPushURL == s.DockerPushURL:
-			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.flynnrc", s.DockerPushURL)
+			m = fmt.Sprintf("A cluster with the URL %q already exists in ~/.dryccrc", s.DockerPushURL)
 		}
 		if m != "" {
 			if conflictIdx != -1 && conflictIdx != i {

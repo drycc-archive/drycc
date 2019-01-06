@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/flynn/flynn/controller/schema"
-	ct "github.com/flynn/flynn/controller/types"
-	dockerreceive "github.com/flynn/flynn/docker-receive/utils"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/pinkerton"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/que-go"
+	"github.com/drycc/drycc/controller/schema"
+	ct "github.com/drycc/drycc/controller/types"
+	dockerreceive "github.com/drycc/drycc/docker-receive/utils"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/pinkerton"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/que-go"
 	"github.com/jackc/pgx"
 	"golang.org/x/net/context"
 )
@@ -225,7 +225,7 @@ func (r *ReleaseRepo) Delete(app *ct.App, release *ct.Release) error {
 		}
 
 		// don't delete system images
-		if artifact.Meta["flynn.system-image"] == "true" {
+		if artifact.Meta["drycc.system-image"] == "true" {
 			continue
 		}
 

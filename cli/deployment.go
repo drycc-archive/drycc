@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("deployment", runDeployments, `
-usage: flynn deployment
-       flynn deployment timeout [<timeout>]
+usage: drycc deployment
+       drycc deployment timeout [<timeout>]
 
 Manage app deployments
 
@@ -23,16 +23,16 @@ Commands:
 
 Examples:
 
-	$ flynn deployment
+	$ drycc deployment
 	ID                                    STATUS    CREATED             FINISHED
 	a6d470d6-9638-4d74-ae71-91c3d9887714  running   4 seconds ago
 	39f8b98b-2aed-40a5-9423-ae174b3fb7a9  complete  16 seconds ago      14 seconds ago
 	f415ae79-0b41-4a49-bc42-d4f90c5a36c5  failed    About a minute ago  About a minute ago
 	8901a4ba-8d0a-4c84-a467-bfc095aaa75d  complete  4 minutes ago       4 minutes ago
 
-	$ flynn deployment timeout 150
+	$ drycc deployment timeout 150
 
-	$ flynn deployment timeout
+	$ drycc deployment timeout
 	150
 `)
 }

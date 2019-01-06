@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/provider_resource_get#",
+  "id": "https://drycc.cc/schema/examples/controller/provider_resource_get#",
   "title": "Get resource",
   "description": "",
   "allOf": [

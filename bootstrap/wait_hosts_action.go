@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	discoverd "github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/cluster"
+	discoverd "github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/cluster"
 )
 
 type WaitHostsAction struct{}
@@ -31,7 +31,7 @@ outer:
 		if err != nil {
 			goto wait
 		}
-		instances, err = disc.Service("flynn-host").Instances()
+		instances, err = disc.Service("drycc-host").Instances()
 		if err != nil {
 			goto wait
 		}

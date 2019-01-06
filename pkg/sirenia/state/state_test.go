@@ -23,11 +23,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/appliance/postgresql/pgxlog"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/iotool"
-	"github.com/flynn/flynn/pkg/sirenia/simulator"
-	"github.com/flynn/flynn/pkg/sirenia/state"
+	"github.com/drycc/drycc/appliance/postgresql/pgxlog"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/iotool"
+	"github.com/drycc/drycc/pkg/sirenia/simulator"
+	"github.com/drycc/drycc/pkg/sirenia/state"
 	"github.com/kylelemons/godebug/pretty"
 )
 

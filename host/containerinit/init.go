@@ -32,13 +32,13 @@ import (
 	"time"
 
 	sigutil "github.com/docker/docker/pkg/signal"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/discoverd/health"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/rpcplus"
-	"github.com/flynn/flynn/pkg/rpcplus/fdrpc"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/discoverd/health"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/rpcplus"
+	"github.com/drycc/drycc/pkg/rpcplus/fdrpc"
 	"github.com/inconshreveable/log15"
 	"github.com/kr/pty"
 )
@@ -584,7 +584,7 @@ func containerInitApp(c *Config, logFile *os.File) error {
 
 	// Console setup.  Hook up the container app's stdin/stdout/stderr to
 	// either a pty or pipes.  The FDs for the controlling side of the
-	// pty/pipes will be passed to flynn-host later via a UNIX socket.
+	// pty/pipes will be passed to drycc-host later via a UNIX socket.
 	if c.TTY {
 		log.Debug("creating PTY")
 		ptyMaster, ptySlave, err := pty.Open()
@@ -608,7 +608,7 @@ func containerInitApp(c *Config, logFile *os.File) error {
 		}
 	} else {
 		// We copy through a socketpair (rather than using cmd.StdoutPipe directly) to make
-		// it easier for flynn-host to do non-blocking I/O (via net.FileConn) so that no
+		// it easier for drycc-host to do non-blocking I/O (via net.FileConn) so that no
 		// read(2) calls can succeed after closing the logs during an update.
 		//
 		// We also don't assign the socketpair directly to fd 1 because that prevents jobs
@@ -676,7 +676,7 @@ func containerInitApp(c *Config, logFile *os.File) error {
 
 	go runRPCServer()
 
-	// Wait for flynn-host to tell us to start
+	// Wait for drycc-host to tell us to start
 	init.mtx.Unlock() // Allow calls
 	log.Debug("waiting to be resumed")
 	<-init.resume

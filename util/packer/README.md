@@ -1,8 +1,8 @@
 # Packer Templates
 
 This directory contains Packer templates for building machine images that
-represent an Ubuntu target system for Flynn. These are essentially stock images
-of Ubuntu 16.04 with Flynn installed.
+represent an Ubuntu target system for Drycc. These are essentially stock images
+of Ubuntu 16.04 with Drycc installed.
 
 ## Usage
 
@@ -15,7 +15,7 @@ Currently supports:
  * VirtualBox
  * VMWare Fusion
 
-To build just a VirtualBox image for use with the Flynn Vagrantfile:
+To build just a VirtualBox image for use with the Drycc Vagrantfile:
 
 ```
 $ packer build -only=virtualbox-iso -var-file ubuntu-xenial.json ubuntu.json

@@ -28,13 +28,13 @@ var GithubAuth = React.createClass({
 							</div>
 						) : null}
 
-						<p>If you’d like to deploy GitHub repos with Flynn, you’ll need to generate an application token for your account. This access is limited, read-only, and can be revoked at any time on the <ExternalLink href="https://github.com/settings/applications">GitHub control panel</ExternalLink>.</p>
+						<p>If you’d like to deploy GitHub repos with Drycc, you’ll need to generate an application token for your account. This access is limited, read-only, and can be revoked at any time on the <ExternalLink href="https://github.com/settings/applications">GitHub control panel</ExternalLink>.</p>
 
 						<ol>
 							<li>
 								<ExternalLink href={Config.github_token_url + QueryParams.serializeParams([{
 									scopes: "repo,read:org,read:public_key",
-									description: "Flynn Dashboard"
+									description: "Drycc Dashboard"
 								}])} className="btn-green connect-with-github" onClick={this.__handleGenerateTokenBtnClick}>
 									<i className="icn-github-mark" />
 									Generate Token
@@ -48,7 +48,7 @@ var GithubAuth = React.createClass({
 							</li>
 
 							<li>
-								<p>Once you create a key, be sure to copy it into the field below. Once you’ve pasted the key, click the Save button to add the key to Flynn.</p>
+								<p>Once you create a key, be sure to copy it into the field below. Once you’ve pasted the key, click the Save button to add the key to Drycc.</p>
 
 								<label>
 									<span className="text">Token</span>

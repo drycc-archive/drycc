@@ -3,7 +3,7 @@ package rfc5424
 import (
 	"bytes"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) TestStructuredData(c *C) {

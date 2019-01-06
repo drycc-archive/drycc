@@ -5,7 +5,7 @@ layout: docs
 
 # Go
 
-Go apps are supported on Flynn by the [Go
+Go apps are supported on Drycc by the [Go
 buildpack](https://github.com/heroku/heroku-buildpack-go).
 
 ## Detection
@@ -23,7 +23,7 @@ application can be reproducibly deployed.
 
 To save dependencies using [godep](https://github.com/tools/godep), run `godep
 save` in your app directory and commit the `Godeps` and `vendor` directories.
-When you deploy to Flynn, the packages in the `Godeps` directory will be used.
+When you deploy to Drycc, the packages in the `Godeps` directory will be used.
 
 ### Go Version
 
@@ -50,7 +50,7 @@ The process types your app supports are declared in a `Procfile` in the root
 directory, which contains one line per type in the format `TYPE: COMMAND`.
 
 For example: if you have a main package in the root of your repository, and the
-package path is `github.com/flynn/myserver`, the binary will be named
+package path is `github.com/drycc/myserver`, the binary will be named
 `myserver`, and you should have something like this in your `Procfile`:
 
 ```text

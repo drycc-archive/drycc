@@ -13,18 +13,18 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/resource"
-	host "github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/resource"
+	host "github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	cmd := register("run", runRun, `
-usage: flynn run [-d] [-r <release>] [-e <entrypoint>] [-l] [--limits <limits>] [--profiles <profiles>] [--mounts-from <proc>] [--] <command> [<argument>...]
+usage: drycc run [-d] [-r <release>] [-e <entrypoint>] [-l] [--limits <limits>] [--profiles <profiles>] [--mounts-from <proc>] [--] <command> [<argument>...]
 
 Run a job.
 
@@ -33,7 +33,7 @@ Options:
 	-r <release>          id of release to run (defaults to current app release)
 	-e <entrypoint>       [DEPRECATED] overwrite the default entrypoint of the release's image
 	-l, --enable-log      send output to log streams
-	--limits <limits>     comma separated limits for the run job (see "flynn limit -h" for format)
+	--limits <limits>     comma separated limits for the run job (see "drycc limit -h" for format)
 	--profiles=<profiles> job profiles (comma separated)
 	--mounts-from <proc>  process type to copy mounts from
 `)

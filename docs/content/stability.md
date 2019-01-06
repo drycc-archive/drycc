@@ -19,31 +19,31 @@ Production-grade software also has stable lifecycle tooling including the
 ability to update, monitor, debug, backup, and restore without having a negative
 impact on uptime. We promise this is the only way we'll ever use the term._
 
-Developers and organizations around the world are using Flynn in production
-today. They're using Flynn in different ways based on their own needs and
-assessments. The best way to know if Flynn is right for you is to try it.
+Developers and organizations around the world are using Drycc in production
+today. They're using Drycc in different ways based on their own needs and
+assessments. The best way to know if Drycc is right for you is to try it.
 
 We believe users should be able to choose the balance of stability and features
 that is right for them. We are committed to transparency so you can decide which
-features of Flynn to use at different times in different ways based on your own
+features of Drycc to use at different times in different ways based on your own
 specific needs.
 
 ## Release Channels
 
 We currently have two release channels: nightly and stable.
 
-For details on current releases visit the [Flynn releases
-site](https://releases.flynn.io).
+For details on current releases visit the [Drycc releases
+site](https://releases.drycc.cc).
 
 Nightly updates will include all the bleeding edge changes that have just been
-merged into Flynn. These changes have all passed code review and our CI system,
+merged into Drycc. These changes have all passed code review and our CI system,
 but may not be fully tested in "the real world".
 
 Stable updates are released on the third Tuesday of each month with changes that
 have had more time to stabilize. [Security updates](/docs/security) are provided
 for the current and previous stable channel release.
 
-Flynn currently has some [security considerations](/docs/security) that you
+Drycc currently has some [security considerations](/docs/security) that you
 should take into account when evaluating it.
 
 Currently we do not recommend using the built-in database appliances for
@@ -55,7 +55,7 @@ optimized for demanding use cases.
 If you'd like to receive email about each month's stable release and security
 updates, subscribe here:
 
-<form action="https://flynn.us7.list-manage.com/subscribe/post?u=9600741fc187618e1baa39a58&id=8aadb709f3" method="post" target="_blank" novalidate class="mailing-list-form">
+<form action="https://drycc.us7.list-manage.com/subscribe/post?u=9600741fc187618e1baa39a58&id=8aadb709f3" method="post" target="_blank" novalidate class="mailing-list-form">
   <label>Email Address&nbsp;
     <input type="email" name="EMAIL" placeholder="you@example.com">
   </label>

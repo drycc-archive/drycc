@@ -3,11 +3,11 @@ package main
 import (
 	"net/http"
 
-	"github.com/flynn/flynn/controller/schema"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	routerc "github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/controller/schema"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	routerc "github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
 	"golang.org/x/net/context"
 )
 

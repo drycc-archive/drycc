@@ -13,14 +13,14 @@ end
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "flynn-base"
-  config.vm.box_url = "https://dl.flynn.io/vagrant/flynn-base.json"
+  config.vm.box = "drycc-base"
+  config.vm.box_url = "https://dl.drycc.cc/vagrant/drycc-base.json"
   config.vm.box_version = "> 0"
 
-  config.vm.synced_folder ".", "/home/vagrant/go/src/github.com/flynn/flynn", create: true, group: "vagrant", owner: "vagrant"
+  config.vm.synced_folder ".", "/home/vagrant/go/src/github.com/drycc/drycc", create: true, group: "vagrant", owner: "vagrant"
 
   if Vagrant.has_plugin?("vagrant-vbguest")
-    # vagrant-vbguest can cause the VM to not start: https://github.com/flynn/flynn/issues/2874
+    # vagrant-vbguest can cause the VM to not start: https://github.com/drycc/drycc/issues/2874
     config.vbguest.auto_update = false
   end
 
@@ -47,11 +47,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     grep '^export GOPATH' ~/.bashrc || echo export GOPATH=~/go >> ~/.bashrc
     grep '^export DISCOVERD' ~/.bashrc || echo export DISCOVERD="192.0.2.200:1111" >> ~/.bashrc
-    grep '^export GOROOT' ~/.bashrc || echo export GOROOT=~/go/src/github.com/flynn/flynn/build/_go >> ~/.bashrc
-    grep '^export PATH' ~/.bashrc || echo export PATH=~/go/bin:~/go/src/github.com/flynn/flynn/build/_go/bin:~/go/src/github.com/flynn/flynn/build/bin:~/go/src/github.com/flynn/flynn/script:\\\$PATH: >> ~/.bashrc
+    grep '^export GOROOT' ~/.bashrc || echo export GOROOT=~/go/src/github.com/drycc/drycc/build/_go >> ~/.bashrc
+    grep '^export PATH' ~/.bashrc || echo export PATH=~/go/bin:~/go/src/github.com/drycc/drycc/build/_go/bin:~/go/src/github.com/drycc/drycc/build/bin:~/go/src/github.com/drycc/drycc/script:\\\$PATH: >> ~/.bashrc
 
-    # Install Docker 1.9.1 for building Flynn images
-    ~/go/src/github.com/flynn/flynn/util/docker/install.sh
+    # Install Docker 1.9.1 for building Drycc images
+    ~/go/src/github.com/drycc/drycc/util/docker/install.sh
 
     # For script unit tests
     tmpdir=$(mktemp --directory)
@@ -87,10 +87,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #
     # Override these in script/custom-vagrant if you use git to make
     # real commits in the VM.
-    git config --global user.email "flynn.dev@example.com"
-    git config --global user.name "Flynn Dev"
+    git config --global user.email "drycc.dev@example.com"
+    git config --global user.name "Drycc Dev"
 
-    grep ^cd ~/.bashrc || echo cd ~/go/src/github.com/flynn/flynn >> ~/.bashrc
+    grep ^cd ~/.bashrc || echo cd ~/go/src/github.com/drycc/drycc >> ~/.bashrc
     sudo chown -R vagrant:vagrant ~/go
   SCRIPT
 

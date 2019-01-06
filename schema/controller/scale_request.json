@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/scale_request#",
+  "id": "https://drycc.cc/schema/controller/scale_request#",
   "title": "Scale Request",
   "description": "A scale request initiates a formation update",
   "sortIndex": 21,

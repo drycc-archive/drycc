@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/release#",
+  "id": "https://drycc.cc/schema/controller/release#",
   "title": "Release",
   "description": "",
   "sortIndex": 11,

@@ -16,7 +16,7 @@ var ErrNoSuchVolume = errors.New("no such volume")
 	Volumes may also support additional features for their section of the filesystem, such
 	storage quotas, read-only mounts, snapshotting operation, etc.
 
-	The Flynn host service maintains a locally persistent knowledge
+	The Drycc host service maintains a locally persistent knowledge
 	of mounts, and supplies this passively to the orchestration API.
 	The host service does *not* perform services such as garbage collection of unmounted
 	volumes (how is it to know whether you still want that data preserved for a future job?)

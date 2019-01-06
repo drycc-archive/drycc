@@ -14,12 +14,12 @@ import (
 	"text/template"
 	"time"
 
-	mongodbxlog "github.com/flynn/flynn/appliance/mongodb/xlog"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/flynn/pkg/sirenia/xlog"
+	mongodbxlog "github.com/drycc/drycc/appliance/mongodb/xlog"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/drycc/pkg/sirenia/xlog"
 	"github.com/inconshreveable/log15"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -464,7 +464,7 @@ func (p *Process) isUserCreated() (bool, error) {
 
 	session.SetMode(mgo.Monotonic, true)
 
-	n, err := session.DB("admin").C("system.users").Find(bson.M{"user": "flynn"}).Count()
+	n, err := session.DB("admin").C("system.users").Find(bson.M{"user": "drycc"}).Count()
 	if err != nil {
 		if merr, ok := err.(*mgo.QueryError); ok && merr.Code == 13 {
 			return false, nil
@@ -485,7 +485,7 @@ func (p *Process) createUser() error {
 	session.SetMode(mgo.Monotonic, true)
 
 	if err := session.DB("admin").Run(bson.D{
-		{"createUser", "flynn"},
+		{"createUser", "drycc"},
 		{"pwd", p.Password},
 		{"roles", []bson.M{{"role": "root", "db": "admin"}, {"role": "dbOwner", "db": "admin"}}},
 	}, nil); err != nil {
@@ -769,12 +769,12 @@ func (p *Process) userExists() (bool, error) {
 		Ok    int    `bson:"ok"`
 	}
 
-	if err := session.DB("admin").Run(bson.D{{"usersInfo", bson.M{"user": "flynn", "db": "admin"}}}, &userInfo); err != nil {
+	if err := session.DB("admin").Run(bson.D{{"usersInfo", bson.M{"user": "drycc", "db": "admin"}}}, &userInfo); err != nil {
 		return false, err
 	}
 
 	for _, u := range userInfo.Users {
-		if u.User == "flynn" && u.Database == "admin" {
+		if u.User == "drycc" && u.Database == "admin" {
 			return true, nil
 		}
 	}
@@ -864,7 +864,7 @@ func (p *Process) waitForSync(downstream *discoverd.Instance) {
 	go p.waitForSyncInner(downstream, stopCh, doneCh)
 }
 
-// DialInfo returns dial info for connecting to the local process as the "flynn" user.
+// DialInfo returns dial info for connecting to the local process as the "drycc" user.
 func (p *Process) DialInfo() *mgo.DialInfo {
 	localhost := net.JoinHostPort("localhost", p.Port)
 	info := &mgo.DialInfo{
@@ -876,7 +876,7 @@ func (p *Process) DialInfo() *mgo.DialInfo {
 	if p.securityEnabled() {
 		info.Addrs = []string{p.addr()}
 		info.Database = "admin"
-		info.Username = "flynn"
+		info.Username = "drycc"
 		info.Password = p.Password
 	}
 	return info

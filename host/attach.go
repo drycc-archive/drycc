@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/flynn/flynn/host/types"
+	"github.com/drycc/drycc/host/types"
 	"github.com/julienschmidt/httprouter"
 	"github.com/inconshreveable/log15"
 )
@@ -43,7 +43,7 @@ func (h *attachHandler) ServeHTTP(w http.ResponseWriter, req *http.Request, _ ht
 		return
 	}
 	w.Header().Set("Connection", "upgrade")
-	w.Header().Set("Upgrade", "flynn-attach/0")
+	w.Header().Set("Upgrade", "drycc-attach/0")
 	w.WriteHeader(http.StatusSwitchingProtocols)
 
 	conn, _, err := w.(http.Hijacker).Hijack()

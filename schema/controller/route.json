@@ -1,5 +1,5 @@
 {
-  "id": "https://flynn.io/schema/controller/route#",
+  "id": "https://drycc.cc/schema/controller/route#",
   "allOf": [
     {
       "sortIndex": 14,
@@ -11,6 +11,6 @@
         "schema/examples/controller/route_delete#"
       ]
     },
-    { "$ref": "https://flynn.io/schema/router/route#" }
+    { "$ref": "https://drycc.cc/schema/router/route#" }
   ]
 }

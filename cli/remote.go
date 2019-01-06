@@ -4,16 +4,16 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/flynn/flynn/controller/client"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("remote", runRemote, `
-usage: flynn remote add [<remote>] [-y]
+usage: drycc remote add [<remote>] [-y]
 
 Create a git remote that allows deploying the application via git.
-If a name for the remote is not provided 'flynn' will be used.
+If a name for the remote is not provided 'drycc' will be used.
 
 Note that the -a <app> option must be given so the remote to add is known.
 
@@ -22,11 +22,11 @@ Options:
 
 Examples:
 
-	$ flynn -a turkeys-stupefy-perry remote add
-	Created remote flynn with url https://git.dev.localflynn.com/turkeys-stupefy-perry.git
+	$ drycc -a turkeys-stupefy-perry remote add
+	Created remote drycc with url https://git.dev.localdrycc.com/turkeys-stupefy-perry.git
 
-	$ flynn -a turkeys-stupefy-perry remote add staging
-	Created remote staging with url https://git.dev.localflynn.com/turkeys-stupefy-perry.git
+	$ drycc -a turkeys-stupefy-perry remote add staging
+	Created remote staging with url https://git.dev.localdrycc.com/turkeys-stupefy-perry.git
 `)
 }
 
@@ -38,7 +38,7 @@ func runRemote(args *docopt.Args, client controller.Client) error {
 
 	remote := args.String["<remote>"]
 	if remote == "" {
-		remote = "flynn"
+		remote = "drycc"
 	}
 
 	if !inGitRepo() {

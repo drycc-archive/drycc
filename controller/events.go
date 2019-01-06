@@ -9,11 +9,11 @@ import (
 	"strings"
 	"sync"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/ctxhelper"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/sse"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/ctxhelper"
+	"github.com/drycc/drycc/pkg/httphelper"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/sse"
 	"github.com/jackc/pgx"
 	"golang.org/x/net/context"
 )

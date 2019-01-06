@@ -1,8 +1,8 @@
 # controller
 
-This is the Flynn Controller. It is loosely inspired by the [Heroku Platform
+This is the Drycc Controller. It is loosely inspired by the [Heroku Platform
 API](https://devcenter.heroku.com/articles/platform-api-reference) and enables
-management of applications running on Flynn via an HTTP API.
+management of applications running on Drycc via an HTTP API.
 
 The controller depends on PostgreSQL and is typically booted by
 [bootstrap](/bootstrap).

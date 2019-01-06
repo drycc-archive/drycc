@@ -24,16 +24,16 @@ import (
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
 	"github.com/docker/go-units"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/tufutil"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
-	tuf "github.com/flynn/go-tuf/client"
-	tufdata "github.com/flynn/go-tuf/data"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/tufutil"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
+	tuf "github.com/drycc/go-tuf/client"
+	tufdata "github.com/drycc/go-tuf/data"
 	"github.com/golang/groupcache/singleflight"
 	"github.com/tent/canonical-json-go"
 	"github.com/inconshreveable/log15"
@@ -42,14 +42,14 @@ import (
 var cmdBuild = Command{
 	Run: runBuild,
 	Usage: `
-usage: flynn-builder build [options]
+usage: drycc-builder build [options]
 
 options:
   -x, --version=<version>   version to use [default: dev]
   -t, --tuf-db=<path>       path to TUF database [default: build/tuf.db]
   -v, --verbose             be verbose
 
-Build Flynn images using builder/manifest.json.
+Build Drycc images using builder/manifest.json.
 `[1:],
 }
 
@@ -216,7 +216,7 @@ func runBuild(args *docopt.Args) error {
 	}
 	log := newLogger(tty, debugLog, args.Bool["--verbose"])
 
-	log.Info("building Flynn", "version", args.String["--version"], "log", debugLog)
+	log.Info("building Drycc", "version", args.String["--version"], "log", debugLog)
 
 	log.Info("initialising TUF client", "db", args.String["--tuf-db"])
 	tufClient, err := newTUFClient(manifest.TUFConfig, args.String["--tuf-db"])
@@ -271,7 +271,7 @@ func newTUFClient(config *TUFConfig, dbPath string) (*tuf.Client, error) {
 		return nil, fmt.Errorf("error creating local TUF client: %s", err)
 	}
 	opts := &tuf.HTTPRemoteOptions{
-		UserAgent: fmt.Sprintf("flynn-builder/%s", version.String()),
+		UserAgent: fmt.Sprintf("drycc-builder/%s", version.String()),
 		Retries:   tufutil.DefaultHTTPRetries,
 	}
 	remote, err := tuf.HTTPRemoteStore(config.Repository, opts)
@@ -480,7 +480,7 @@ func (b *Builder) BuildImage(image *Image) error {
 					return err
 				}
 				inputs = append(inputs, i...)
-				run = append(run, fmt.Sprintf("go build -o %s %s", l.GoBuild[dir], filepath.Join("github.com/flynn/flynn", dir)))
+				run = append(run, fmt.Sprintf("go build -o %s %s", l.GoBuild[dir], filepath.Join("github.com/drycc/drycc", dir)))
 			}
 			dirs = make([]string, 0, len(l.CGoBuild))
 			for dir := range l.CGoBuild {
@@ -493,7 +493,7 @@ func (b *Builder) BuildImage(image *Image) error {
 					return err
 				}
 				inputs = append(inputs, i...)
-				run = append(run, fmt.Sprintf("cgo build -o %s %s", l.CGoBuild[dir], filepath.Join("github.com/flynn/flynn", dir)))
+				run = append(run, fmt.Sprintf("cgo build -o %s %s", l.CGoBuild[dir], filepath.Join("github.com/drycc/drycc", dir)))
 			}
 		}
 
@@ -576,7 +576,7 @@ func (b *Builder) BuildImage(image *Image) error {
 	}
 	imageURL := fmt.Sprintf("%s?name=%s&target=/images/%s.json", b.tufConfig.Repository, image.ID, manifest.ID())
 	artifact := &ct.Artifact{
-		Type:             ct.ArtifactTypeFlynn,
+		Type:             ct.ArtifactTypeDrycc,
 		URI:              imageURL,
 		RawManifest:      manifest.RawManifest(),
 		Hashes:           manifest.Hashes(),
@@ -584,8 +584,8 @@ func (b *Builder) BuildImage(image *Image) error {
 		LayerURLTemplate: layerURLTemplate,
 		Meta: map[string]string{
 			"manifest.id":        manifest.ID(),
-			"flynn.component":    image.ID,
-			"flynn.system-image": "true",
+			"drycc.component":    image.ID,
+			"drycc.system-image": "true",
 		},
 	}
 	b.artifactsMtx.Lock()
@@ -627,8 +627,8 @@ func (b *Builder) WriteManifests(manifests map[string]string, tufRepository stri
 				return nil
 			}
 			artifact.Meta = map[string]string{
-				"flynn.component":    name,
-				"flynn.system-image": "true",
+				"drycc.component":    name,
+				"drycc.system-image": "true",
 			}
 			data, err := json.Marshal(artifact)
 			if err != nil {
@@ -675,7 +675,7 @@ func (b *Builder) Artifact(name string) (*ct.Artifact, error) {
 	return artifact, nil
 }
 
-// GetCachedLayer gets a layer either from the local /var/lib/flynn/layer-cache
+// GetCachedLayer gets a layer either from the local /var/lib/drycc/layer-cache
 // directory or from the TUF repository, returning a nil layer for a cache miss
 func (b *Builder) GetCachedLayer(name, id string) (*ct.ImageLayer, error) {
 	// first check the local cache
@@ -735,7 +735,7 @@ func (b *Builder) BuildLayer(l *Layer, id, name string, run []string, env map[st
 	// create a shared directory containing the inputs so we can ensure the
 	// job only accesses declared inputs (thus enforcing the correctness of
 	// the generated layer ID)
-	dir, err := ioutil.TempDir("", "flynn-build-mnt")
+	dir, err := ioutil.TempDir("", "drycc-build-mnt")
 	if err != nil {
 		return nil, err
 	}
@@ -777,10 +777,10 @@ func (b *Builder) BuildLayer(l *Layer, id, name string, run []string, env map[st
 		}
 	}
 
-	// copy the flynn-builder binary into the shared directory so we can
+	// copy the drycc-builder binary into the shared directory so we can
 	// run it inside the job
-	if err := copyFile(os.Args[0], "bin/flynn-builder"); err != nil {
-		b.log.Error("error copying flynn-builder binary", "err", err)
+	if err := copyFile(os.Args[0], "bin/drycc-builder"); err != nil {
+		b.log.Error("error copying drycc-builder binary", "err", err)
 		return nil, err
 	}
 
@@ -791,23 +791,23 @@ func (b *Builder) BuildLayer(l *Layer, id, name string, run []string, env map[st
 		},
 		Resources: resource.Defaults(),
 		Metadata: map[string]string{
-			"flynn-controller.app_name": "builder",
-			"flynn-controller.type":     name,
+			"drycc-controller.app_name": "builder",
+			"drycc-controller.type":     name,
 		},
 	}
 	cmd := exec.Cmd{Job: job}
 
 	// run bash inside the job, passing the commands via stdin
-	job.Config.Args = []string{"/mnt/bin/flynn-builder", "run", "bash", "-exs"}
+	job.Config.Args = []string{"/mnt/bin/drycc-builder", "run", "bash", "-exs"}
 	job.Config.Stdin = true
 	cmd.Stdin = strings.NewReader(strings.Join(run, "\n"))
 
-	// set FLYNN_VERSION which will be assigned to the pkg/version.version
+	// set DRYCC_VERSION which will be assigned to the pkg/version.version
 	// constant using ldflags when building Go binaries.
 	//
 	// This is not treated as an input because we only want to build a new
 	// binary with the given version if the build inputs have changed.
-	job.Config.Env["FLYNN_VERSION"] = b.version
+	job.Config.Env["DRYCC_VERSION"] = b.version
 
 	// run the job in the host network to avoid a kernel bug which causes
 	// subsequent jobs to block waiting on the lo network device to become
@@ -937,14 +937,14 @@ func (b *Builder) GoInputsFor(platform GoPlatform) *GoInputs {
 	return g
 }
 
-const layerURLTemplate = "file:///var/lib/flynn/layer-cache/{id}.squashfs"
+const layerURLTemplate = "file:///var/lib/drycc/layer-cache/{id}.squashfs"
 
 func (b *Builder) layerPath(id string) string {
-	return fmt.Sprintf("/var/lib/flynn/layer-cache/%s.squashfs", id)
+	return fmt.Sprintf("/var/lib/drycc/layer-cache/%s.squashfs", id)
 }
 
 func (b *Builder) layerConfigPath(id string) string {
-	return fmt.Sprintf("/var/lib/flynn/layer-cache/%s.json", id)
+	return fmt.Sprintf("/var/lib/drycc/layer-cache/%s.json", id)
 }
 
 // generateLayerID generates a layer ID from a set of all inputs required to

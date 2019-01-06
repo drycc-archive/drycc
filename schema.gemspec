@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../schema/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'flynn-schema/version'
+require 'drycc-schema/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "flynn-schema"
-  gem.version       = FlynnSchema::VERSION
+  gem.name          = "drycc-schema"
+  gem.version       = DryccSchema::VERSION
   gem.authors       = ["Jesse Stuart"]
   gem.email         = ["jesse@jessestuart.ca"]
-  gem.description   = %q{Flynn JSON schemas}
-  gem.summary       = %q{Flynn JSON schemas}
+  gem.description   = %q{Drycc JSON schemas}
+  gem.summary       = %q{Drycc JSON schemas}
   gem.homepage      = ""
 
   gem.files         = `git ls-files schema`.split($/)

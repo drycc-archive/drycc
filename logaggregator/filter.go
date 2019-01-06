@@ -3,9 +3,9 @@ package main
 import (
 	"bytes"
 
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
 )
 
 type Filter interface {

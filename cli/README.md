@@ -1,6 +1,6 @@
-# Flynn Command-Line Interface
+# Drycc Command-Line Interface
 
-flynn-cli is the command-line client for the [controller](/controller). It provides
+drycc-cli is the command-line client for the [controller](/controller). It provides
 access to many functions related to deploying and managing applications.
 
 ## Installation
@@ -12,13 +12,13 @@ are available.
 To install the latest release on OS X or Linux, run this command in a terminal:
 
 ```text
-L=/usr/local/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
+L=/usr/local/bin/drycc && curl -sSL -A "`uname -sp`" https://dl.drycc.cc/cli | zcat >$L && chmod +x $L
 ```
 
 To install the latest release on Windows, run this command in PowerShell:
 
 ```text
-(New-Object Net.WebClient).DownloadString('https://dl.flynn.io/cli.ps1') | iex
+(New-Object Net.WebClient).DownloadString('https://dl.drycc.cc/cli.ps1') | iex
 ```
 
 
@@ -27,11 +27,11 @@ To install the latest release on Windows, run this command in PowerShell:
 The basic usage is:
 
 ```text
-flynn [-a app] <command> [options] [arguments]
+drycc [-a app] <command> [options] [arguments]
 ```
 
-For a list of commands and usage instructions, run `flynn help`.
+For a list of commands and usage instructions, run `drycc help`.
 
 ## Credits
 
-flynn-cli is a fork of Heroku's [hk](https://github.com/heroku/hk).
+drycc-cli is a fork of Heroku's [hk](https://github.com/heroku/hk).

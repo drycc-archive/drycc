@@ -6,10 +6,10 @@ import (
 	"net"
 	"sync"
 
-	"github.com/flynn/flynn/flannel/backend"
-	"github.com/flynn/flynn/flannel/pkg/ip"
-	"github.com/flynn/flynn/flannel/pkg/task"
-	"github.com/flynn/flynn/flannel/subnet"
+	"github.com/drycc/drycc/flannel/backend"
+	"github.com/drycc/drycc/flannel/pkg/ip"
+	"github.com/drycc/drycc/flannel/pkg/task"
+	"github.com/drycc/drycc/flannel/subnet"
 	log "github.com/golang/glog"
 )
 

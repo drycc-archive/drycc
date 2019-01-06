@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/common#",
+  "id": "https://drycc.cc/schema/common#",
   "definitions": {
     "id": {
       "description": "unique identifier",

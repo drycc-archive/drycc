@@ -10,17 +10,17 @@ import (
 	"strings"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/typeconv"
-	routerc "github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/typeconv"
+	routerc "github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
+	c "github.com/drycc/go-check"
 )
 
 type SchedulerSuite struct {
@@ -84,7 +84,7 @@ func (s *SchedulerSuite) TestScaleTags(t *c.C) {
 	client := x.controller
 	res, err := client.GetAppLog("controller", &logagg.LogOpts{
 		Follow:      true,
-		JobID:       leader.Meta["FLYNN_JOB_ID"],
+		JobID:       leader.Meta["DRYCC_JOB_ID"],
 		ProcessType: typeconv.StringPtr("scheduler"),
 		Lines:       typeconv.IntPtr(0),
 	})
@@ -114,7 +114,7 @@ func (s *SchedulerSuite) TestScaleTags(t *c.C) {
 
 	// watch service events so we can wait for tag changes
 	events := make(chan *discoverd.Event)
-	stream, err := x.discoverd.Service("flynn-host").Watch(events)
+	stream, err := x.discoverd.Service("drycc-host").Watch(events)
 	t.Assert(err, c.IsNil)
 	defer stream.Close()
 	waitServiceEvent := func(kind discoverd.EventKind) *discoverd.Event {
@@ -519,9 +519,9 @@ func (s *SchedulerSuite) TestJobRestartBackoffPolicy(t *c.C) {
 func (s *SchedulerSuite) TestTCPApp(t *c.C) {
 	app, _ := s.createApp(t)
 
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "echoer=1"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "echoer=1"), Succeeds)
 
-	newRoute := flynn(t, "/", "-a", app.Name, "route", "add", "tcp", "-s", "echo-service")
+	newRoute := drycc(t, "/", "-a", app.Name, "route", "add", "tcp", "-s", "echo-service")
 	t.Assert(newRoute, Succeeds)
 	t.Assert(newRoute.Output, Matches, `.+ on port \d+`)
 	str := strings.Split(strings.TrimSpace(string(newRoute.Output)), " ")
@@ -629,18 +629,18 @@ loop:
 			if job.Status != host.StatusRunning {
 				continue
 			}
-			appID := job.Job.Metadata["flynn-controller.app"]
+			appID := job.Job.Metadata["drycc-controller.app"]
 			if appID != app.ID {
 				continue
 			}
-			releaseID := job.Job.Metadata["flynn-controller.release"]
+			releaseID := job.Job.Metadata["drycc-controller.release"]
 			if releaseID != currentReleaseID {
 				continue
 			}
 			if _, ok := actual[releaseID]; !ok {
 				actual[releaseID] = make(map[string]int)
 			}
-			typ := job.Job.Metadata["flynn-controller.type"]
+			typ := job.Job.Metadata["drycc-controller.type"]
 			actual[releaseID][typ]++
 		}
 	}
@@ -727,15 +727,15 @@ loop:
 			if job.Status != host.StatusRunning {
 				continue
 			}
-			appID := job.Job.Metadata["flynn-controller.app"]
+			appID := job.Job.Metadata["drycc-controller.app"]
 			if appID != app.ID {
 				continue
 			}
-			releaseID := job.Job.Metadata["flynn-controller.release"]
+			releaseID := job.Job.Metadata["drycc-controller.release"]
 			if _, ok := actual[releaseID]; !ok {
 				actual[releaseID] = make(map[string]int)
 			}
-			typ := job.Job.Metadata["flynn-controller.type"]
+			typ := job.Job.Metadata["drycc-controller.type"]
 			actual[releaseID][typ]++
 		}
 	}
@@ -902,14 +902,14 @@ func (s *SchedulerSuite) TestPersistentVolumes(t *c.C) {
 
 	// create an app with a Redis resource
 	app, _ := s.createAppWithClient(t, x.controller)
-	t.Assert(x.flynn("/", "-a", app.Name, "resource", "add", "redis"), Succeeds)
+	t.Assert(x.drycc("/", "-a", app.Name, "resource", "add", "redis"), Succeeds)
 
 	// check the Redis volume exists
 	release, err := x.controller.GetAppRelease(app.ID)
 	t.Assert(err, c.IsNil)
-	redisApp, ok := release.Env["FLYNN_REDIS"]
+	redisApp, ok := release.Env["DRYCC_REDIS"]
 	if !ok {
-		t.Fatal("missing FLYNN_REDIS")
+		t.Fatal("missing DRYCC_REDIS")
 	}
 	redisRelease, err := x.controller.GetAppRelease(redisApp)
 	t.Assert(err, c.IsNil)
@@ -924,7 +924,7 @@ func (s *SchedulerSuite) TestPersistentVolumes(t *c.C) {
 	// write some Redis data to disk
 	data := random.String(32)
 	redis := func(args ...string) *CmdResult {
-		return x.flynn("/", append([]string{"-a", app.Name, "redis", "redis-cli", "--"}, args...)...)
+		return x.drycc("/", append([]string{"-a", app.Name, "redis", "redis-cli", "--"}, args...)...)
 	}
 	t.Assert(redis("SET", "data", data), Succeeds)
 	t.Assert(redis("SAVE"), Succeeds)

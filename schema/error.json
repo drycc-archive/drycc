@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/error#",
+  "id": "https://drycc.cc/schema/error#",
   "title": "Error",
   "description": "",
   "sortIndex": 14,

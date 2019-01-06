@@ -16,30 +16,30 @@ import (
 
 	"github.com/docker/docker/pkg/term"
 	"github.com/docker/go-units"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/dialer"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/tufutil"
-	"github.com/flynn/flynn/pkg/version"
-	"github.com/flynn/go-docopt"
-	tuf "github.com/flynn/go-tuf/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/dialer"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/tufutil"
+	"github.com/drycc/drycc/pkg/version"
+	"github.com/drycc/go-docopt"
+	tuf "github.com/drycc/go-tuf/client"
 	"github.com/inconshreveable/log15"
 )
 
 func init() {
 	Register("update", runUpdate, `
-usage: flynn-host update [options]
+usage: drycc-host update [options]
 
 Options:
-  -r --repository=<uri>    image repository URI [default: https://dl.flynn.io/tuf]
-  -t --tuf-db=<path>       local TUF file [default: /etc/flynn/tuf.db]
+  -r --repository=<uri>    image repository URI [default: https://dl.drycc.cc/tuf]
+  -t --tuf-db=<path>       local TUF file [default: /etc/drycc/tuf.db]
   -b --bin-dir=<dir>       directory to download binaries to [default: /usr/local/bin]
-  -c --config-dir=<dir>    directory to download config files to [default: /etc/flynn]
+  -c --config-dir=<dir>    directory to download config files to [default: /etc/drycc]
   --is-latest              internal flag (skip updating local tuf DB and re-execing latest binary)
   --is-tempfile            internal flag (binary is a temp file which requires removal)
 
-Update Flynn components`)
+Update Drycc components`)
 }
 
 // minVersion is the minimum version that can be updated from.
@@ -49,9 +49,9 @@ Update Flynn components`)
 var minVersion = "v20161108.0"
 
 var ErrIncompatibleVersion = fmt.Errorf(`
-Versions prior to %s cannot be updated in-place to this version of Flynn.
+Versions prior to %s cannot be updated in-place to this version of Drycc.
 In order to update to this version a cluster backup/restore is required.
-Please see the updating documentation at https://flynn.io/docs/production#backup/restore.
+Please see the updating documentation at https://drycc.cc/docs/production#backup/restore.
 `[1:], minVersion)
 
 func runUpdate(args *docopt.Args) error {
@@ -200,29 +200,29 @@ func runUpdate(args *docopt.Args) error {
 	}
 
 	log.Info("validating binaries")
-	flynnHost, ok := binaries["flynn-host"]
+	dryccHost, ok := binaries["drycc-host"]
 	if !ok {
-		return fmt.Errorf("missing flynn-host binary")
+		return fmt.Errorf("missing drycc-host binary")
 	}
-	flynnInit, ok := binaries["flynn-init"]
+	dryccInit, ok := binaries["drycc-init"]
 	if !ok {
-		return fmt.Errorf("missing flynn-init binary")
+		return fmt.Errorf("missing drycc-init binary")
 	}
 
-	log.Info("updating flynn-host daemon on all hosts")
+	log.Info("updating drycc-host daemon on all hosts")
 	if err := eachHost(func(host *cluster.Host, log log15.Logger) error {
 		// TODO(lmars): handle daemons using custom flags (e.g. --state=/foo)
 		_, err := host.Update(
-			flynnHost,
+			dryccHost,
 			"daemon",
 			"--id", host.ID(),
-			"--flynn-init", flynnInit,
+			"--drycc-init", dryccInit,
 		)
 		if err != nil {
 			log.Error("error updating binaries", "err", err)
 			return err
 		}
-		log.Info("flynn-host updated successfully")
+		log.Info("drycc-host updated successfully")
 		return nil
 	}); err != nil {
 		return err
@@ -261,7 +261,7 @@ func runUpdate(args *docopt.Args) error {
 	return nil
 }
 
-// updateAndExecLatest updates the tuf DB, downloads the latest flynn-host
+// updateAndExecLatest updates the tuf DB, downloads the latest drycc-host
 // binary to a temp file and execs it.
 //
 // Latest snapshot errors are ignored because, even though we may have the
@@ -279,10 +279,10 @@ func updateAndExecLatest(configDir string, client *tuf.Client, log log15.Logger)
 		return err
 	}
 
-	log.Info(fmt.Sprintf("downloading %s flynn-host binary", version))
-	gzTmp, err := tufutil.Download(client, path.Join(version, "flynn-host.gz"))
+	log.Info(fmt.Sprintf("downloading %s drycc-host binary", version))
+	gzTmp, err := tufutil.Download(client, path.Join(version, "drycc-host.gz"))
 	if err != nil {
-		log.Error("error downloading latest flynn-host binary", "err", err)
+		log.Error("error downloading latest drycc-host binary", "err", err)
 		return err
 	}
 	defer gzTmp.Close()
@@ -294,7 +294,7 @@ func updateAndExecLatest(configDir string, client *tuf.Client, log log15.Logger)
 	}
 	defer gz.Close()
 
-	tmp, err := ioutil.TempFile("", "flynn-host")
+	tmp, err := ioutil.TempFile("", "drycc-host")
 	if err != nil {
 		log.Error("error creating temp file", "err", err)
 		return err
@@ -302,7 +302,7 @@ func updateAndExecLatest(configDir string, client *tuf.Client, log log15.Logger)
 	_, err = io.Copy(tmp, gz)
 	tmp.Close()
 	if err != nil {
-		log.Error("error decompressing gzipped flynn-host binary", "err", err)
+		log.Error("error decompressing gzipped drycc-host binary", "err", err)
 		return err
 	}
 	if err := os.Chmod(tmp.Name(), 0755); err != nil {
@@ -310,7 +310,7 @@ func updateAndExecLatest(configDir string, client *tuf.Client, log log15.Logger)
 		return err
 	}
 
-	log.Info("executing latest flynn-host binary")
+	log.Info("executing latest drycc-host binary")
 	argv := []string{tmp.Name()}
 	argv = append(argv, os.Args[1:]...)
 	argv = append(argv, "--is-latest")

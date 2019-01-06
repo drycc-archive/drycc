@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/pkg/random"
 )
 
 type GenRandomAction struct {

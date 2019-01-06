@@ -11,17 +11,17 @@ import (
 	"path/filepath"
 	"syscall"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/host/volume/manager"
-	"github.com/flynn/flynn/pkg/tufutil"
-	tuf "github.com/flynn/go-tuf/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/host/volume/manager"
+	"github.com/drycc/drycc/pkg/tufutil"
+	tuf "github.com/drycc/go-tuf/client"
 )
 
 var binaries = []string{
-	"flynn-host",
-	"flynn-linux-amd64",
-	"flynn-init",
+	"drycc-host",
+	"drycc-linux-amd64",
+	"drycc-init",
 }
 
 var config = []string{
@@ -39,8 +39,8 @@ func New(client *tuf.Client, vman *volumemanager.Manager, version string) *Downl
 	return &Downloader{client, vman, version}
 }
 
-// DownloadBinaries downloads the Flynn binaries using the tuf client to the
-// given dir with the version suffixed (e.g. /usr/local/bin/flynn-host.v20150726.0)
+// DownloadBinaries downloads the Drycc binaries using the tuf client to the
+// given dir with the version suffixed (e.g. /usr/local/bin/drycc-host.v20150726.0)
 // and updates non-versioned symlinks.
 func (d *Downloader) DownloadBinaries(dir string) (map[string]string, error) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -57,14 +57,14 @@ func (d *Downloader) DownloadBinaries(dir string) (map[string]string, error) {
 		}
 		paths[bin] = path
 	}
-	// symlink flynn to flynn-linux-amd64
-	if err := symlink("flynn-linux-amd64", filepath.Join(dir, "flynn")); err != nil {
+	// symlink drycc to drycc-linux-amd64
+	if err := symlink("drycc-linux-amd64", filepath.Join(dir, "drycc")); err != nil {
 		return nil, err
 	}
 	return paths, nil
 }
 
-// DownloadConfig downloads the Flynn config files using the tuf client to the
+// DownloadConfig downloads the Drycc config files using the tuf client to the
 // given dir.
 func (d *Downloader) DownloadConfig(dir string) (map[string]string, error) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -119,7 +119,7 @@ func (d *Downloader) DownloadImages(dir string, info chan *ct.ImagePullInfo) err
 
 func (d *Downloader) downloadImage(artifact *ct.Artifact, info chan *ct.ImagePullInfo) error {
 	info <- &ct.ImagePullInfo{
-		Name:     artifact.Meta["flynn.component"],
+		Name:     artifact.Meta["drycc.component"],
 		Type:     ct.ImagePullTypeImage,
 		Artifact: artifact,
 	}
@@ -131,7 +131,7 @@ func (d *Downloader) downloadImage(artifact *ct.Artifact, info chan *ct.ImagePul
 			}
 
 			info <- &ct.ImagePullInfo{
-				Name:  artifact.Meta["flynn.component"],
+				Name:  artifact.Meta["drycc.component"],
 				Type:  ct.ImagePullTypeLayer,
 				Layer: layer,
 			}
@@ -211,7 +211,7 @@ func (d *Downloader) downloadGzippedFile(name, dir string, versionSuffix bool) (
 
 	if versionSuffix {
 		// symlink the non-versioned path to the versioned path
-		// e.g. flynn-host -> flynn-host.v20150726.0
+		// e.g. drycc-host -> drycc-host.v20150726.0
 		link := filepath.Join(dir, name)
 		if err := symlink(filepath.Base(dst), link); err != nil {
 			return "", err

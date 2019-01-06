@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/status"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/status"
+	c "github.com/drycc/go-check"
 )
 
 type HealthcheckSuite struct {
@@ -41,7 +41,7 @@ func (s *HealthcheckSuite) TestChecker(t *c.C) {
 		Create: true,
 		Check:  &host.HealthCheck{Type: "tcp"},
 	})
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "ping=1"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "ping=1"), Succeeds)
 	_, err := s.discoverdClient(t).Instances("ping-checker", 10*time.Second)
 	t.Assert(err, c.IsNil)
 }
@@ -52,7 +52,7 @@ func (s *HealthcheckSuite) TestWithoutChecker(t *c.C) {
 		Name:   "ping-without-checker",
 		Create: true,
 	})
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "ping=1"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "ping=1"), Succeeds)
 	// make sure app is registered and unregistered when the process terminates
 	_, err := s.discoverdClient(t).Instances("ping-without-checker", 3*time.Second)
 	t.Assert(err, c.IsNil)
@@ -62,7 +62,7 @@ func (s *HealthcheckSuite) TestWithoutChecker(t *c.C) {
 	t.Assert(err, c.IsNil)
 	defer stream.Close()
 
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "ping=0"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "ping=0"), Succeeds)
 
 outer:
 	for {
@@ -85,7 +85,7 @@ func (s *HealthcheckSuite) TestFailure(t *c.C) {
 		Create: true,
 		Check:  &host.HealthCheck{Type: "tcp"},
 	})
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "printer=1"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "printer=1"), Succeeds)
 	// confirm that it's never registered
 	_, err := s.discoverdClient(t).Instances("healthcheck-failure", 5*time.Second)
 	t.Assert(err, c.NotNil)
@@ -102,7 +102,7 @@ func (s *HealthcheckSuite) TestKillDown(t *c.C) {
 	t.Assert(err, c.IsNil)
 	defer watcher.Close()
 
-	t.Assert(flynn(t, "/", "-a", app.Name, "scale", "printer=1"), Succeeds)
+	t.Assert(drycc(t, "/", "-a", app.Name, "scale", "printer=1"), Succeeds)
 	// make sure we get a killdown event in the first 10-30s and the job marked
 	// as failed
 	err = watcher.WaitFor(ct.JobEvents{"printer": {"down": 1}}, scaleTimeout, nil)

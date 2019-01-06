@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
 )
 
 var ErrNotFound = errors.New("slug not found")
@@ -41,7 +41,7 @@ func migrate() error {
 		return err
 	}
 
-	log.Printf("converting %d active slugs to Flynn images", len(artifacts))
+	log.Printf("converting %d active slugs to Drycc images", len(artifacts))
 	for i, artifact := range artifacts {
 		log.Printf("converting slug %s (%d/%d)", artifact.ID, i+1, len(artifacts))
 		newID, err := convert(slugbuilder, artifact.URI)
@@ -76,11 +76,11 @@ func migrate() error {
 func getSlugbuilderArtifact(db *postgres.DB) (*ct.Artifact, error) {
 	sql := `
 SELECT manifest, layer_url_template FROM artifacts
-WHERE meta->>'flynn.component' = 'slugbuilder'
+WHERE meta->>'drycc.component' = 'slugbuilder'
 ORDER BY created_at DESC LIMIT 1
 `
 	artifact := &ct.Artifact{
-		Type: ct.ArtifactTypeFlynn,
+		Type: ct.ArtifactTypeDrycc,
 	}
 	var layerURLTemplate *string
 	if err := db.QueryRow(sql).Scan(&artifact.RawManifest, &layerURLTemplate); err != nil {

@@ -3,7 +3,7 @@ package testutils
 import (
 	"os"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 /*

@@ -6,8 +6,8 @@ toc_min_level: 2
 
 # Dashboard
 
-Flynn comes with a web dashboard that supports managing apps and databases
-running on Flynn. After installing Flynn, you can reach the dashboard at
+Drycc comes with a web dashboard that supports managing apps and databases
+running on Drycc. After installing Drycc, you can reach the dashboard at
 `https://dashboard.$CLUSTER_DOMAIN`.
 
 An ephemeral CA certificate is used to secure access to the dashboard, for more
@@ -22,11 +22,11 @@ to generate an API token and link it.
 
 ## Login Token
 
-A secret bearer token used to access the dashboard is generated when Flynn is
+A secret bearer token used to access the dashboard is generated when Drycc is
 installed. The bootstrap command will provide a login token upon completion. If
 you lost the token, you can retrieve it using the CLI:
 
 ```text
-$ flynn -a dashboard env get LOGIN_TOKEN
+$ drycc -a dashboard env get LOGIN_TOKEN
 0ff8d3b563d24c0d02fd25394eb86136
 ```

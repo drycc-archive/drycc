@@ -13,13 +13,13 @@ import (
 	"github.com/docker/distribution/manifest"
 	"github.com/docker/distribution/registry/handlers"
 	"github.com/docker/distribution/registry/middleware/repository"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/docker-receive/blobstore"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/version"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/docker-receive/blobstore"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/version"
 )
 
 // main is a modified version of the registry main function:
@@ -36,7 +36,7 @@ func main() {
 		context.GetLogger(ctx).Fatalln(err)
 	}
 
-	release, err := client.GetRelease(os.Getenv("FLYNN_RELEASE_ID"))
+	release, err := client.GetRelease(os.Getenv("DRYCC_RELEASE_ID"))
 	if err != nil {
 		context.GetLogger(ctx).Fatalln(err)
 	}
@@ -47,7 +47,7 @@ func main() {
 
 	authKey := os.Getenv("AUTH_KEY")
 
-	middleware.Register("flynn", repositoryMiddleware(client, artifact, authKey))
+	middleware.Register("drycc", repositoryMiddleware(client, artifact, authKey))
 
 	config := configuration.Configuration{
 		Version: configuration.CurrentVersion,
@@ -57,11 +57,11 @@ func main() {
 		},
 		Middleware: map[string][]configuration.Middleware{
 			"repository": {
-				{Name: "flynn"},
+				{Name: "drycc"},
 			},
 		},
 		Auth: configuration.Auth{
-			"flynn": configuration.Parameters{
+			"drycc": configuration.Parameters{
 				"auth_key": authKey,
 			},
 		},
@@ -92,7 +92,7 @@ func repositoryMiddleware(client controller.Client, artifact *ct.Artifact, authK
 }
 
 // repository is a repository middleware which returns a custom ManifestService
-// in order to create Flynn artifacts when image manifests are pushed
+// in order to create Drycc artifacts when image manifests are pushed
 type repository struct {
 	distribution.Repository
 
@@ -138,7 +138,7 @@ func (m *manifestService) Put(manifest *manifest.SignedManifest) error {
 }
 
 func (m *manifestService) runArtifactJob(dgst digest.Digest) error {
-	url := fmt.Sprintf("http://flynn:%s@docker-receive.discoverd?name=%s&id=%s", m.authKey, m.repository.Name(), dgst)
+	url := fmt.Sprintf("http://drycc:%s@docker-receive.discoverd?name=%s&id=%s", m.authKey, m.repository.Name(), dgst)
 	cmd := exec.Command(m.artifact, "/bin/docker-artifact", url)
 	cmd.Env = map[string]string{
 		"CONTROLLER_KEY": os.Getenv("CONTROLLER_KEY"),

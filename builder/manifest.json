@@ -1,30 +1,20 @@
 {
   "tuf": {
-    "repository": "https://dl.flynn.io/tuf",
-    "root_keys": [
-      {"keytype":"ed25519","keyval":{"public":"6cfda23aa48f530aebd5b9c01030d06d02f25876b5508d681675270027af4731"}}
-    ]
+    "repository": "https://dl.drycc.cc/tuf",
+    "root_keys": [{"keytype":"ed25519","keyval":{"public":"2f4b1468b47ff4b10b300c0aa90376bca823d7495c68762d1ff64135ee8fc87a"}}]
   },
   "base_layer": {
     "type":   "squashfs",
-    "id":     "4b6eb1c283dac64590f32a38e61cc448fb3ca499946d41dba51edab97b46a10e",
-    "url":    "https://dl.flynn.io/tuf/targets/layers/8804e92cba40018baec15a29dae84d210c0fe57da12654aa53928fb4c4a2ff6a65158906d4f3d044a282ec61d59fd340694f48130023bce22243279a6af3d900.4b6eb1c283dac64590f32a38e61cc448fb3ca499946d41dba51edab97b46a10e.squashfs",
-    "size":   62631936,
-    "hashes": {"sha512_256": "066e1829132a8571b7a1c59e86b54340b22cfa47427725c322ca21ec63946ec5"}
+    "id":     "d53164df59b808d95ad2426b1ab1302dd6f66487455040e379e3176842336aa4",
+    "url":    "http://dl.drycc.cc/tuf/targets/layers/005390032f9ad67035f1af84773d78f6774114e65248e36bb380966172f62707df72829678cb06046c931b25b0b601a15fa2241ad4bce19fb998229a542181b1.d53164df59b808d95ad2426b1ab1302dd6f66487455040e379e3176842336aa4.squashfs",
+    "size":   43823104,
+    "hashes": {"sha512_256": "2c21d6971a2c32dbf2d82f8012f378050c7fb126e6d966a70142f92f3dc0b144"}
   },
   "images": [
     {
-      "id": "ubuntu-trusty",
+      "id": "ubuntu",
       "layers": [{
-        "script": "builder/img/ubuntu-trusty.sh",
-        "inputs": ["builder/ubuntu-setup.sh"],
-        "limits": { "temp_disk": "1G" }
-      }]
-    },
-    {
-      "id": "ubuntu-xenial",
-      "layers": [{
-        "script": "builder/img/ubuntu-xenial.sh",
+        "script": "builder/img/base.sh",
         "inputs": ["builder/ubuntu-setup.sh"],
         "limits": { "temp_disk": "1G" },
         "linux_capabilities": ["CAP_SYS_ADMIN"]
@@ -39,7 +29,7 @@
     },
     {
       "id": "go",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [{
         "script": "builder/img/go.sh",
         "inputs": ["builder/go-wrapper.sh"],
@@ -51,7 +41,7 @@
       "base": "go",
       "layers": [{
         "gobuild": {
-          "builder": "/bin/flynn-builder"
+          "builder": "/bin/drycc-builder"
         }
       }]
     },
@@ -61,8 +51,8 @@
       "layers": [{
         "gobuild": {
           "vendor/github.com/golang/dep/cmd/dep": "/bin/dep",
-          "vendor/github.com/flynn/go-tuf/cmd/tuf": "/bin/tuf",
-          "vendor/github.com/flynn/go-tuf/cmd/tuf-client": "/bin/tuf-client"
+          "vendor/github.com/drycc/go-tuf/cmd/tuf": "/bin/tuf",
+          "vendor/github.com/drycc/go-tuf/cmd/tuf-client": "/bin/tuf-client"
         }
       }]
     },
@@ -100,7 +90,7 @@
     },
     {
       "id": "host",
-      "base": "ubuntu-xenial",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "host-packages",
@@ -110,27 +100,27 @@
         {
           "name": "host-binaries",
           "env": {
-            "FLYNN_VERSION": "{{ .Version }}",
+            "DRYCC_VERSION": "{{ .Version }}",
             "TUF_ROOT_KEYS": "{{ .TUFRootKeys }}"
           },
           "cgobuild": {
-            "host": "/usr/local/bin/flynn-host"
+            "host": "/usr/local/bin/drycc-host"
           },
           "gobuild": {
-            "host/flynn-init": "/usr/local/bin/flynn-init"
+            "host/drycc-init": "/usr/local/bin/drycc-init"
           },
           "copy": {
             "util/ca-certs/ca-certs.pem": "/etc/ssl/certs/ca-certs.pem",
             "host/zfs-mknod.sh":          "/usr/local/bin/zfs-mknod",
             "host/udev.rules":            "/lib/udev/rules.d/10-local.rules",
-            "host/start.sh":              "/usr/local/bin/start-flynn-host.sh",
-            "host/cleanup.sh":            "/usr/local/bin/cleanup-flynn-host.sh"
+            "host/start.sh":              "/usr/local/bin/start-drycc-host.sh",
+            "host/cleanup.sh":            "/usr/local/bin/cleanup-drycc-host.sh"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/usr/local/bin/start-flynn-host.sh"
+          "/usr/local/bin/start-drycc-host.sh"
         ]
       }
     },
@@ -139,12 +129,12 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "controller":           "/bin/flynn-controller",
-          "controller/scheduler": "/bin/flynn-scheduler",
-          "controller/worker":    "/bin/flynn-worker"
+          "controller":           "/bin/drycc-controller",
+          "controller/scheduler": "/bin/drycc-scheduler",
+          "controller/worker":    "/bin/drycc-worker"
         },
         "copy": {
-          "controller/start.sh":        "/bin/start-flynn-controller",
+          "controller/start.sh":        "/bin/start-drycc-controller",
           "util/ca-certs/ca-certs.pem": "/etc/ssl/certs/ca-certs.pem"
         },
         "inputs": [
@@ -153,13 +143,13 @@
           "schema/router/*.json"
         ],
         "run": [
-          "mkdir -p /etc/flynn-controller",
-          "cp -r schema /etc/flynn-controller/jsonschema"
+          "mkdir -p /etc/drycc-controller",
+          "cp -r schema /etc/drycc-controller/jsonschema"
         ]
       }],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-controller"
+          "/bin/start-drycc-controller"
         ]
       }
     },
@@ -168,18 +158,18 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "controller/examples": "/bin/flynn-controller-examples"
+          "controller/examples": "/bin/drycc-controller-examples"
         }
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-controller-examples"
+          "/bin/drycc-controller-examples"
         ]
       }
     },
     {
       "id": "postgres",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "postgres-packages",
@@ -190,23 +180,23 @@
         {
           "name": "postgres-binaries",
           "gobuild": {
-            "appliance/postgresql/cmd/flynn-postgres":     "/bin/flynn-postgres",
-            "appliance/postgresql/cmd/flynn-postgres-api": "/bin/flynn-postgres-api"
+            "appliance/postgresql/cmd/drycc-postgres":     "/bin/drycc-postgres",
+            "appliance/postgresql/cmd/drycc-postgres-api": "/bin/drycc-postgres-api"
           },
           "copy": {
-            "appliance/postgresql/start.sh": "/bin/start-flynn-postgres"
+            "appliance/postgresql/start.sh": "/bin/start-drycc-postgres"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-postgres"
+          "/bin/start-drycc-postgres"
         ]
       }
     },
     {
       "id": "mariadb",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "mariadb-packages",
@@ -217,23 +207,23 @@
         {
           "name": "mariadb-binaries",
           "gobuild": {
-            "appliance/mariadb/cmd/flynn-mariadb":     "/bin/flynn-mariadb",
-            "appliance/mariadb/cmd/flynn-mariadb-api": "/bin/flynn-mariadb-api"
+            "appliance/mariadb/cmd/drycc-mariadb":     "/bin/drycc-mariadb",
+            "appliance/mariadb/cmd/drycc-mariadb-api": "/bin/drycc-mariadb-api"
           },
           "copy": {
-            "appliance/mariadb/start.sh": "/bin/start-flynn-mariadb"
+            "appliance/mariadb/start.sh": "/bin/start-drycc-mariadb"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-mariadb"
+          "/bin/start-drycc-mariadb"
         ]
       }
     },
     {
       "id": "mongodb",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "mongodb-packages",
@@ -244,25 +234,25 @@
         {
           "name": "mongodb-binaries",
           "gobuild": {
-            "appliance/mongodb/cmd/flynn-mongodb":     "/bin/flynn-mongodb",
-            "appliance/mongodb/cmd/flynn-mongodb-api": "/bin/flynn-mongodb-api"
+            "appliance/mongodb/cmd/drycc-mongodb":     "/bin/drycc-mongodb",
+            "appliance/mongodb/cmd/drycc-mongodb-api": "/bin/drycc-mongodb-api"
           },
           "copy": {
-            "appliance/mongodb/start.sh":   "/bin/start-flynn-mongodb",
-            "appliance/mongodb/dump.sh":    "/bin/dump-flynn-mongodb",
-            "appliance/mongodb/restore.sh": "/bin/restore-flynn-mongodb"
+            "appliance/mongodb/start.sh":   "/bin/start-drycc-mongodb",
+            "appliance/mongodb/dump.sh":    "/bin/dump-drycc-mongodb",
+            "appliance/mongodb/restore.sh": "/bin/restore-drycc-mongodb"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-mongodb"
+          "/bin/start-drycc-mongodb"
         ]
       }
     },
     {
       "id": "redis",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "redis-packages",
@@ -273,28 +263,28 @@
         {
           "name": "redis-binaries",
           "gobuild": {
-            "appliance/redis/cmd/flynn-redis":     "/bin/flynn-redis",
-            "appliance/redis/cmd/flynn-redis-api": "/bin/flynn-redis-api"
+            "appliance/redis/cmd/drycc-redis":     "/bin/drycc-redis",
+            "appliance/redis/cmd/drycc-redis-api": "/bin/drycc-redis-api"
           },
           "copy": {
-            "appliance/redis/start.sh":   "/bin/start-flynn-redis",
-            "appliance/redis/dump.sh":    "/bin/dump-flynn-redis",
-            "appliance/redis/restore.sh": "/bin/restore-flynn-redis"
+            "appliance/redis/start.sh":   "/bin/start-drycc-redis",
+            "appliance/redis/dump.sh":    "/bin/dump-drycc-redis",
+            "appliance/redis/restore.sh": "/bin/restore-drycc-redis"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-redis"
+          "/bin/start-drycc-redis"
         ]
       }
     },
     {
       "id": "blobstore",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [{
         "gobuild": {
-          "blobstore": "/bin/flynn-blobstore"
+          "blobstore": "/bin/drycc-blobstore"
         },
         "copy": {
           "util/ca-certs/ca-certs.pem": "/etc/ssl/certs/ca-certs.pem"
@@ -302,7 +292,7 @@
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-blobstore", "server"
+          "/bin/drycc-blobstore", "server"
         ]
       }
     },
@@ -311,7 +301,7 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "router": "/bin/flynn-router"
+          "router": "/bin/drycc-router"
         },
         "copy": {
           "util/ca-certs/ca-certs.pem": "/etc/ssl/certs/ca-certs.pem"
@@ -319,7 +309,7 @@
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-router"
+          "/bin/drycc-router"
         ]
       }
     },
@@ -328,18 +318,18 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "router/example-generator": "/bin/flynn-router-examples"
+          "router/example-generator": "/bin/drycc-router-examples"
         }
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-router-examples"
+          "/bin/drycc-router-examples"
         ]
       }
     },
     {
       "id": "gitreceive",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "gitreceive-packages",
@@ -349,22 +339,22 @@
           "name": "gitreceive-binaries",
           "gobuild": {
             "gitreceive":          "/bin/gitreceived",
-            "gitreceive/receiver": "/bin/flynn-receiver"
+            "gitreceive/receiver": "/bin/drycc-receiver"
           },
           "copy": {
-            "gitreceive/start.sh": "/bin/start-flynn-receiver"
+            "gitreceive/start.sh": "/bin/start-drycc-receiver"
           }
         }
       ],
       "entrypoint": {
         "args": [
-          "/bin/start-flynn-receiver"
+          "/bin/start-drycc-receiver"
         ]
       }
     },
     {
       "id": "docker-receive",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [{
         "gobuild": {
           "docker-receive":          "/bin/docker-receive",
@@ -397,7 +387,7 @@
     },
     {
       "id": "taffy",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "taffy-packages",
@@ -407,7 +397,7 @@
           "name": "taffy-binaries",
           "gobuild": {
             "taffy":               "/bin/taffy",
-            "gitreceive/receiver": "/bin/flynn-receiver"
+            "gitreceive/receiver": "/bin/drycc-receiver"
           }
         }
       ],
@@ -419,7 +409,7 @@
     },
     {
       "id": "cedarish",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [{
         "script": "util/cedarish/img/build.sh",
         "limits": { "temp_disk": "2G" },
@@ -530,13 +520,13 @@
           "cp /bindata.go dashboard"
         ],
         "gobuild": {
-          "dashboard": "/bin/flynn-dashboard"
+          "dashboard": "/bin/drycc-dashboard"
         },
         "limits": { "temp_disk": "1G" }
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-dashboard"
+          "/bin/drycc-dashboard"
         ]
       }
     },
@@ -545,12 +535,12 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "status": "/bin/flynn-status"
+          "status": "/bin/drycc-status"
         }
       }],
       "entrypoint": {
         "args": [
-          "/bin/flynn-status"
+          "/bin/drycc-status"
         ]
       }
     },
@@ -573,7 +563,7 @@
       "base": "busybox",
       "layers": [{
         "gobuild": {
-          "util/release": "/bin/flynn-release"
+          "util/release": "/bin/drycc-release"
         }
       }]
     },
@@ -615,7 +605,7 @@
     },
     {
       "id": "test",
-      "base": "ubuntu-trusty",
+      "base": "ubuntu",
       "layers": [
         {
           "name": "test-packages",
@@ -625,14 +615,14 @@
         {
           "name": "test-binaries",
           "cgobuild": {
-            "test":                  "/bin/flynn-test",
-            "test/runner":           "/bin/flynn-test-runner"
+            "test":                  "/bin/drycc-test",
+            "test/runner":           "/bin/drycc-test-runner"
           },
           "gobuild": {
-            "test/util/file-server": "/bin/flynn-test-file-server"
+            "test/util/file-server": "/bin/drycc-test-file-server"
           },
           "copy": {
-            "test/run.sh":           "/bin/run-flynn-test.sh",
+            "test/run.sh":           "/bin/run-drycc-test.sh",
             "test/vm.sh":            "/bin/run-vm.sh",
             "test/scripts/start.sh": "/test/bin/start-runner.sh",
             "test/rootfs/build.sh":  "/test/rootfs/build.sh",
@@ -648,7 +638,7 @@
       ],
       "entrypoint": {
         "args": [
-          "/bin/run-flynn-test.sh"
+          "/bin/run-drycc-test.sh"
         ]
       }
     },
@@ -657,7 +647,7 @@
       "base": "busybox",
       "layers": [
         {
-          "build_with": "ubuntu-trusty",
+          "build_with": "ubuntu",
           "name": "test-apps-minio",
           "script": "test/apps/minio.sh"
         },
@@ -681,12 +671,12 @@
     "cli": {
       "layers": [{
         "env": {
-          "FLYNN_VERSION": "{{ .Version }}",
+          "DRYCC_VERSION": "{{ .Version }}",
           "TUF_ROOT_KEYS":  "{{ .TUFRootKeys }}",
           "TUF_REPOSITORY": "{{ .TUFRepository }}"
         },
         "gobuild": {
-          "cli": "/bin/flynn-${GOOS}-${GOARCH}"
+          "cli": "/bin/drycc-${GOOS}-${GOARCH}"
         },
         "limits": { "temp_disk": "1G" }
       }]

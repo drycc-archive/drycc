@@ -17,10 +17,10 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/attempt"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/attempt"
+	c "github.com/drycc/go-check"
 	"github.com/kr/pty"
 )
 
@@ -37,22 +37,22 @@ var Attempts = attempt.Strategy{
 
 func (s *GitDeploySuite) TestEnvDir(t *c.C) {
 	r := s.newGitRepo(t, "env-dir")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "FOO=bar", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "FOO=bar", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, SuccessfulOutputContains, "bar")
 }
 
 func (s *GitDeploySuite) TestEmptyRelease(t *c.C) {
 	r := s.newGitRepo(t, "empty-release")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, Succeeds)
 
-	run := r.flynn("run", "echo", "foo")
+	run := r.drycc("run", "echo", "foo")
 	t.Assert(run, Succeeds)
 	t.Assert(run, Outputs, "foo\n")
 }
@@ -63,79 +63,79 @@ func (s *GitDeploySuite) TestBuildCaching(t *c.C) {
 
 func (s *GitDeploySuite) TestAppRecreation(t *c.C) {
 	r := s.newGitRepo(t, "empty")
-	t.Assert(r.flynn("create", "-y", "app-recreation"), Succeeds)
+	t.Assert(r.drycc("create", "-y", "app-recreation"), Succeeds)
 	r.git("commit", "-m", "bump", "--allow-empty")
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
-	t.Assert(r.flynn("delete", "-y"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
+	t.Assert(r.drycc("delete", "-y"), Succeeds)
 
 	// recreate app and push again, it should work
-	t.Assert(r.flynn("create", "-y", "app-recreation"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
-	t.Assert(r.flynn("delete", "-y"), Succeeds)
+	t.Assert(r.drycc("create", "-y", "app-recreation"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
+	t.Assert(r.drycc("delete", "-y"), Succeeds)
 }
 
 func (s *GitDeploySuite) TestGoBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "go-flynn-example", []string{"postgres"})
+	s.runBuildpackTest(t, "go-drycc-example", []string{"postgres"})
 }
 
 func (s *GitDeploySuite) TestNodejsBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "nodejs-flynn-example", nil)
+	s.runBuildpackTest(t, "nodejs-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestPhpBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "php-flynn-example", nil)
+	s.runBuildpackTest(t, "php-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestRubyBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "ruby-flynn-example", nil)
+	s.runBuildpackTest(t, "ruby-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestJavaBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "java-flynn-example", nil)
+	s.runBuildpackTest(t, "java-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestClojureBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "clojure-flynn-example", nil)
+	s.runBuildpackTest(t, "clojure-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestPlayBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "play-flynn-example", nil)
+	s.runBuildpackTest(t, "play-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestPythonBuildpack(t *c.C) {
-	s.runBuildpackTest(t, "python-flynn-example", nil)
+	s.runBuildpackTest(t, "python-drycc-example", nil)
 }
 
 func (s *GitDeploySuite) TestStaticBuildpack(t *c.C) {
-	s.runBuildpackTestWithResponsePattern(t, "static-flynn-example", nil, `Hello, Flynn!`)
+	s.runBuildpackTestWithResponsePattern(t, "static-drycc-example", nil, `Hello, Drycc!`)
 }
 
 func (s *GitDeploySuite) TestPushTwice(t *c.C) {
-	r := s.newGitRepo(t, "https://github.com/flynn-examples/nodejs-flynn-example")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	r := s.newGitRepo(t, "https://github.com/drycc-examples/nodejs-drycc-example")
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 	t.Assert(r.git("commit", "-m", "second", "--allow-empty"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 }
 
 func (s *GitDeploySuite) runBuildpackTest(t *c.C, name string, resources []string) {
-	s.runBuildpackTestWithResponsePattern(t, name, resources, `Hello from Flynn on port \d+`)
+	s.runBuildpackTestWithResponsePattern(t, name, resources, `Hello from Drycc on port \d+`)
 }
 
 func (s *GitDeploySuite) runBuildpackTestWithResponsePattern(t *c.C, name string, resources []string, pat string) {
-	r := s.newGitRepo(t, "https://github.com/flynn-examples/"+name)
+	r := s.newGitRepo(t, "https://github.com/drycc-examples/"+name)
 
-	t.Assert(r.flynn("create", name), Outputs, fmt.Sprintf("Created %s\n", name))
+	t.Assert(r.drycc("create", name), Outputs, fmt.Sprintf("Created %s\n", name))
 
 	for _, resource := range resources {
-		t.Assert(r.flynn("resource", "add", resource), Succeeds)
+		t.Assert(r.drycc("resource", "add", resource), Succeeds)
 	}
 
 	watcher, err := s.controllerClient(t).WatchJobEvents(name, "")
 	t.Assert(err, c.IsNil)
 	defer watcher.Close()
 
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, SuccessfulOutputContains, "Creating release")
 	t.Assert(push, SuccessfulOutputContains, "Scaling initial release to web=1")
 	t.Assert(push, SuccessfulOutputContains, "* [new branch]      master -> master")
@@ -145,7 +145,7 @@ func (s *GitDeploySuite) runBuildpackTestWithResponsePattern(t *c.C, name string
 	watcher.WaitFor(ct.JobEvents{"web": {ct.JobStateUp: 1}}, scaleTimeout, nil)
 
 	route := name + ".dev"
-	newRoute := r.flynn("route", "add", "http", route)
+	newRoute := r.drycc("route", "add", "http", route)
 	t.Assert(newRoute, Succeeds)
 
 	err = Attempts.Run(func() error {
@@ -179,15 +179,15 @@ func (s *GitDeploySuite) runBuildpackTestWithResponsePattern(t *c.C, name string
 	})
 	t.Assert(err, c.IsNil)
 
-	t.Assert(r.flynn("scale", "web=0"), Succeeds)
+	t.Assert(r.drycc("scale", "web=0"), Succeeds)
 }
 
 func (s *GitDeploySuite) TestRunQuoting(t *c.C) {
 	r := s.newGitRepo(t, "empty")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
-	run := r.flynn("run", "bash", "-c", "echo 'foo bar'")
+	run := r.drycc("run", "bash", "-c", "echo 'foo bar'")
 	t.Assert(run, Succeeds)
 	t.Assert(run, Outputs, "foo bar\n")
 }
@@ -197,11 +197,11 @@ func (s *GitDeploySuite) TestRunQuoting(t *c.C) {
 // contained a config directory because the bare repo had a config file in it.
 func (s *GitDeploySuite) TestConfigDir(t *c.C) {
 	r := s.newGitRepo(t, "config-dir")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 }
 
-// TestLargeRepo ensures that there is no regression for https://github.com/flynn/flynn/issues/1799
+// TestLargeRepo ensures that there is no regression for https://github.com/drycc/drycc/issues/1799
 func (s *GitDeploySuite) TestLargeRepo(t *c.C) {
 	r := s.newGitRepo(t, "")
 
@@ -218,22 +218,22 @@ func (s *GitDeploySuite) TestLargeRepo(t *c.C) {
 	// push the repo
 	t.Assert(r.git("add", "random"), Succeeds)
 	t.Assert(r.git("commit", "-m", "data"), Succeeds)
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), OutputContains, "Unable to select a buildpack")
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), OutputContains, "Unable to select a buildpack")
 }
 
 func (s *GitDeploySuite) TestPrivateSSHKeyClone(t *c.C) {
 	r := s.newGitRepo(t, "private-clone")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=git@github.com:kr/heroku-buildpack-inline.git"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=git@github.com:kr/heroku-buildpack-inline.git"), Succeeds)
 
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, Succeeds)
 }
 
 func (s *GitDeploySuite) TestGitSubmodules(t *c.C) {
 	r := s.newGitRepo(t, "empty")
-	t.Assert(r.git("submodule", "add", "https://github.com/flynn-examples/go-flynn-example.git"), Succeeds)
+	t.Assert(r.git("submodule", "add", "https://github.com/drycc-examples/go-drycc-example.git"), Succeeds)
 
 	// use a private SSH URL to test ssh client key
 	gmPath := filepath.Join(r.dir, ".gitmodules")
@@ -244,27 +244,27 @@ func (s *GitDeploySuite) TestGitSubmodules(t *c.C) {
 	t.Assert(err, c.IsNil)
 
 	t.Assert(r.git("commit", "-am", "Add Submodule"), Succeeds)
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
-	t.Assert(r.flynn("run", "ls", "go-flynn-example"), SuccessfulOutputContains, "main.go")
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
+	t.Assert(r.drycc("run", "ls", "go-drycc-example"), SuccessfulOutputContains, "main.go")
 
 	// deploy again to test cached repo
 	t.Assert(r.git("commit", "-m", "foo", "--allow-empty"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
-	t.Assert(r.flynn("run", "ls", "go-flynn-example"), SuccessfulOutputContains, "main.go")
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
+	t.Assert(r.drycc("run", "ls", "go-drycc-example"), SuccessfulOutputContains, "main.go")
 }
 
 func (s *GitDeploySuite) TestCancel(t *c.C) {
 	r := s.newGitRepo(t, "cancel-hang")
-	t.Assert(r.flynn("create", "cancel-hang"), Succeeds)
-	t.Assert(r.flynn("env", "set", "FOO=bar", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create", "cancel-hang"), Succeeds)
+	t.Assert(r.drycc("env", "set", "FOO=bar", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
 	// start watching for slugbuilder events
 	watcher, err := s.controllerClient(t).WatchJobEvents("cancel-hang", "")
 	t.Assert(err, c.IsNil)
 
 	// start push
-	cmd := exec.Command("git", "push", "flynn", "master")
+	cmd := exec.Command("git", "push", "drycc", "master")
 	// put the command in its own process group (to emulate the way shells handle Ctrl-C)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Dir = r.dir
@@ -315,11 +315,11 @@ func (s *GitDeploySuite) TestCrashingApp(t *c.C) {
 	// create a crashing app
 	r := s.newGitRepo(t, "crash")
 	app := "crashing-app"
-	t.Assert(r.flynn("create", app), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create", app), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
 	// check the push is rejected as the job won't start
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, c.Not(Succeeds))
 	t.Assert(push, OutputContains, "web job failed to start")
 
@@ -333,18 +333,18 @@ func (s *GitDeploySuite) TestCrashingApp(t *c.C) {
 
 func (s *GitDeploySuite) TestSlugignore(t *c.C) {
 	r := s.newGitRepo(t, "slugignore")
-	t.Assert(r.flynn("create", "slugignore"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create", "slugignore"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
-	run := r.flynn("run", "ls")
+	run := r.drycc("run", "ls")
 	t.Assert(run, Succeeds)
 	t.Assert(run, Outputs, "existing\n")
 }
 
 func (s *GitDeploySuite) TestNonMasterPush(t *c.C) {
 	r := s.newGitRepo(t, "empty")
-	t.Assert(r.flynn("create"), Succeeds)
-	push := r.git("push", "flynn", "master:foo")
+	t.Assert(r.drycc("create"), Succeeds)
+	push := r.git("push", "drycc", "master:foo")
 	t.Assert(push, c.Not(Succeeds))
 	t.Assert(push, OutputContains, "push must include a change to the master branch")
 }
@@ -353,28 +353,28 @@ func (s *GitDeploySuite) TestProcfileChange(t *c.C) {
 	for _, strategy := range []string{"all-at-once", "one-by-one"} {
 		r := s.newGitRepo(t, "http")
 		name := "procfile-change-" + strategy
-		t.Assert(r.flynn("create", name), Succeeds)
+		t.Assert(r.drycc("create", name), Succeeds)
 		t.Assert(s.controllerClient(t).UpdateApp(&ct.App{ID: name, Strategy: strategy}), c.IsNil)
-		t.Assert(r.git("push", "flynn", "master"), Succeeds)
+		t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
 		// add a new web process type
 		t.Assert(r.sh("echo new-web: http >> Procfile"), Succeeds)
 		t.Assert(r.git("commit", "-a", "-m", "add new-web process"), Succeeds)
-		t.Assert(r.git("push", "flynn", "master"), Succeeds)
-		t.Assert(r.flynn("scale", "new-web=1"), Succeeds)
+		t.Assert(r.git("push", "drycc", "master"), Succeeds)
+		t.Assert(r.drycc("scale", "new-web=1"), Succeeds)
 
 		// remove the new web process type
 		t.Assert(r.sh("sed -i '/new-web: http/d' Procfile"), Succeeds)
 		t.Assert(r.git("commit", "-a", "-m", "remove new-web process"), Succeeds)
-		t.Assert(r.git("push", "flynn", "master"), Succeeds)
+		t.Assert(r.git("push", "drycc", "master"), Succeeds)
 	}
 }
 
 func (s *GitDeploySuite) TestCustomPort(t *c.C) {
 	r := s.newGitRepo(t, "http")
 	name := "custom-port"
-	t.Assert(r.flynn("create", name), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create", name), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
 	// Update release with a different port
 	cc := s.controllerClient(t)
@@ -389,7 +389,7 @@ func (s *GitDeploySuite) TestCustomPort(t *c.C) {
 
 	// Deploy again, check that port stays the same
 	t.Assert(r.git("commit", "-m", "foo", "--allow-empty"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 	release, err = cc.GetAppRelease(app.ID)
 	t.Assert(err, c.IsNil)
 	t.Assert(release.Processes["web"].Ports[0].Port, c.Equals, 9090)
@@ -397,18 +397,18 @@ func (s *GitDeploySuite) TestCustomPort(t *c.C) {
 
 func (s *GitDeploySuite) TestDevStdout(t *c.C) {
 	r := s.newGitRepo(t, "empty-release")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
-	t.Assert(r.git("push", "flynn", "master"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.git("push", "drycc", "master"), Succeeds)
 
 	// check slug jobs can write to /dev/stdout and /dev/stderr
 	for _, dev := range []string{"/dev/stdout", "/dev/stderr"} {
 		// check without a TTY
 		echoFoo := fmt.Sprintf("echo foo > %s", dev)
-		t.Assert(r.flynn("run", "bash", "-c", echoFoo), SuccessfulOutputContains, "foo")
+		t.Assert(r.drycc("run", "bash", "-c", echoFoo), SuccessfulOutputContains, "foo")
 
 		// check with a TTY
-		cmd := flynnCmd(r.dir, "run", "bash", "-c", echoFoo)
+		cmd := dryccCmd(r.dir, "run", "bash", "-c", echoFoo)
 		master, slave, err := pty.Open()
 		t.Assert(err, c.IsNil)
 		defer master.Close()
@@ -427,14 +427,14 @@ func (s *GitDeploySuite) TestDevStdout(t *c.C) {
 
 func (s *GitDeploySuite) TestSourceVersion(t *c.C) {
 	r := s.newGitRepoWithoutTrace(t, "source-version")
-	t.Assert(r.flynn("create"), Succeeds)
-	t.Assert(r.flynn("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
+	t.Assert(r.drycc("create"), Succeeds)
+	t.Assert(r.drycc("env", "set", "BUILDPACK_URL=https://github.com/kr/heroku-buildpack-inline"), Succeeds)
 
 	res := r.git("rev-parse", "HEAD")
 	t.Assert(res, Succeeds)
 	commit := strings.TrimSpace(res.Output)
 	t.Assert(commit, c.HasLen, 40)
 
-	push := r.git("push", "flynn", "master")
+	push := r.git("push", "drycc", "master")
 	t.Assert(push, SuccessfulOutputContains, fmt.Sprintf("SOURCE_VERSION: %s", commit))
 }

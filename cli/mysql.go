@@ -7,35 +7,35 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("mysql", runMysql, `
-usage: flynn mysql console [--] [<argument>...]
-       flynn mysql dump [-q] [-f <file>]
-       flynn mysql restore [-q] [-f <file>]
+usage: drycc mysql console [--] [<argument>...]
+       drycc mysql dump [-q] [-f <file>]
+       drycc mysql restore [-q] [-f <file>]
 
 Options:
 	-f, --file=<file>  name of dump file
 	-q, --quiet        don't print progress
 
 Commands:
-	console  Open a console to a Flynn mysql database. Any valid arguments to mysql may be provided.
+	console  Open a console to a Drycc mysql database. Any valid arguments to mysql may be provided.
 	dump     Dump a mysql database. If file is not specified, will dump to stdout.
 	restore  Restore a database dump. If file is not specified, will restore from stdin.
 
 Examples:
 
-    $ flynn mysql console
+    $ drycc mysql console
 
-    $ flynn mysql console -- -e "CREATE DATABASE db"
+    $ drycc mysql console -- -e "CREATE DATABASE db"
 
-    $ flynn mysql dump -f db.dump
+    $ drycc mysql dump -f db.dump
 
-    $ flynn mysql restore -f db.dump
+    $ drycc mysql restore -f db.dump
 `)
 }
 
@@ -65,9 +65,9 @@ func getAppMysqlRunConfig(client controller.Client) (*runConfig, error) {
 }
 
 func getMysqlRunConfig(client controller.Client, appName string, appRelease *ct.Release) (*runConfig, error) {
-	app := appRelease.Env["FLYNN_MYSQL"]
+	app := appRelease.Env["DRYCC_MYSQL"]
 	if app == "" {
-		return nil, fmt.Errorf("No mysql database found. Provision one with `flynn resource add mysql`")
+		return nil, fmt.Errorf("No mysql database found. Provision one with `drycc resource add mysql`")
 	}
 
 	release, err := client.GetAppRelease(app)

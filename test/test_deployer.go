@@ -3,12 +3,12 @@ package main
 import (
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/attempt"
-	"github.com/flynn/flynn/pkg/stream"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/attempt"
+	"github.com/drycc/drycc/pkg/stream"
+	c "github.com/drycc/go-check"
 )
 
 type DeployerSuite struct {
@@ -71,7 +71,7 @@ func (s *DeployerSuite) createDeployment(t *c.C, process, strategy, service stri
 					t.Fatalf("service discovery stream closed unexpectedly")
 				}
 				if event.Kind == discoverd.EventKindUp {
-					if id, ok := event.Instance.Meta["FLYNN_RELEASE_ID"]; !ok || id != release.ID {
+					if id, ok := event.Instance.Meta["DRYCC_RELEASE_ID"]; !ok || id != release.ID {
 						continue
 					}
 					debugf(t, "got %s service up event", service)

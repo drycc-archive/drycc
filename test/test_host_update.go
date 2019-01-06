@@ -6,14 +6,14 @@ import (
 	"syscall"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/types"
-	logaggc "github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/dialer"
-	"github.com/flynn/flynn/pkg/exec"
-	c "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/types"
+	logaggc "github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/dialer"
+	"github.com/drycc/drycc/pkg/exec"
+	c "github.com/drycc/go-check"
 )
 
 type HostUpdateSuite struct {
@@ -42,7 +42,7 @@ func (s *HostUpdateSuite) TestUpdateLogs(t *c.C) {
 		&host.Job{
 			Config: host.ContainerConfig{Args: []string{"/bin/partial-logger"}},
 			Metadata: map[string]string{
-				"flynn-controller.app": app.ID,
+				"drycc-controller.app": app.ID,
 			},
 		},
 	)
@@ -54,12 +54,12 @@ func (s *HostUpdateSuite) TestUpdateLogs(t *c.C) {
 	_, err = x.discoverd.Instances("partial-logger", 10*time.Second)
 	t.Assert(err, c.IsNil)
 
-	// update flynn-host using the same flags
-	debug(t, "updating flynn-host")
+	// update drycc-host using the same flags
+	debug(t, "updating drycc-host")
 	status, err := hostClient.GetStatus()
 	t.Assert(err, c.IsNil)
 	_, err = hostClient.UpdateWithShutdownDelay(
-		"/usr/local/bin/flynn-host",
+		"/usr/local/bin/drycc-host",
 		30*time.Second,
 		append([]string{"daemon"}, status.Flags...)...,
 	)
@@ -86,7 +86,7 @@ func (s *HostUpdateSuite) TestUpdateLogs(t *c.C) {
 		}
 	}()
 
-	// give the new flynn-host daemon time to connect to the job before
+	// give the new drycc-host daemon time to connect to the job before
 	// signalling it to finish logging
 	time.Sleep(5 * time.Second)
 

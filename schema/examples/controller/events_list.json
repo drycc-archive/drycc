@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/events_list#",
+  "id": "https://drycc.cc/schema/examples/controller/events_list#",
   "title": "List events",
   "description": "",
   "definitions": {

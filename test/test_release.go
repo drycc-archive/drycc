@@ -9,12 +9,12 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/random"
-	tc "github.com/flynn/flynn/test/cluster"
-	"github.com/flynn/flynn/updater/types"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/random"
+	tc "github.com/drycc/drycc/test/cluster"
+	"github.com/drycc/drycc/updater/types"
+	c "github.com/drycc/go-check"
 )
 
 type ReleaseSuite struct {
@@ -32,12 +32,12 @@ func (s *ReleaseSuite) addReleaseHosts(t *c.C) *tc.BootResult {
 
 var releaseScript = template.Must(template.New("release-script").Parse(`
 export DISCOVERD="{{ .Discoverd }}"
-export TUF_TARGETS_PASSPHRASE="flynn-test"
-export TUF_SNAPSHOT_PASSPHRASE="flynn-test"
-export TUF_TIMESTAMP_PASSPHRASE="flynn-test"
+export TUF_TARGETS_PASSPHRASE="drycc-test"
+export TUF_SNAPSHOT_PASSPHRASE="drycc-test"
+export TUF_TIMESTAMP_PASSPHRASE="drycc-test"
 export GOPATH=~/go
 
-ROOT="${GOPATH}/src/github.com/flynn/flynn"
+ROOT="${GOPATH}/src/github.com/drycc/drycc"
 cd "${ROOT}"
 
 # send all output to stderr so only images.json is output to stdout
@@ -45,12 +45,12 @@ cd "${ROOT}"
   # serve the test TUF repository over HTTP
   dir="$(mktemp --directory)"
   ln -s "${ROOT}/test/release/repository" "${dir}/tuf"
-  ln -s "${ROOT}/script/install-flynn" "${dir}/install-flynn"
+  ln -s "${ROOT}/script/install-drycc" "${dir}/install-drycc"
   sudo start-stop-daemon \
     --start \
     --background \
     --chdir "${dir}" \
-    --exec "${ROOT}/build/bin/flynn-test-file-server"
+    --exec "${ROOT}/build/bin/drycc-test-file-server"
 
   # update the builder manifest to use the test TUF repository and create new
   # image manifests for each released image by updating entrypoints
@@ -63,15 +63,15 @@ cd "${ROOT}"
   mv /tmp/manifest.json builder/manifest.json
 
   # build new images and binaries
-  FLYNN_VERSION="v20161108.0.test"
-  script/build-flynn --host "{{ .HostID }}" --version "${FLYNN_VERSION}"
+  DRYCC_VERSION="v20161108.0.test"
+  script/build-drycc --host "{{ .HostID }}" --version "${DRYCC_VERSION}"
 
   # release components
   script/export-components --host "{{ .HostID }}" "${ROOT}/test/release"
-  script/release-channel --tuf-dir "${ROOT}/test/release" --no-sync --no-changelog "stable" "${FLYNN_VERSION}"
+  script/release-channel --tuf-dir "${ROOT}/test/release" --no-sync --no-changelog "stable" "${DRYCC_VERSION}"
 
   # create a slug for testing slug based app updates
-  build/bin/flynn-host run \
+  build/bin/drycc-host run \
     --volume /tmp \
     build/image/slugbuilder.json \
     /usr/bin/env \
@@ -88,17 +88,17 @@ cat "${ROOT}/build/manifests/images.json"
 var installScript = template.Must(template.New("install-script").Parse(`
 # download to a tmp file so the script fails on download error rather than
 # executing nothing and succeeding
-curl -sL --fail http://{{ .Blobstore }}/install-flynn > /tmp/install-flynn
-bash -e /tmp/install-flynn -r "http://{{ .Blobstore }}"
+curl -sL --fail http://{{ .Blobstore }}/install-drycc > /tmp/install-drycc
+bash -e /tmp/install-drycc -r "http://{{ .Blobstore }}"
 `))
 
 var updateScript = template.Must(template.New("update-script").Parse(`
 timeout --signal=QUIT --kill-after=10 10m bash -ex <<-SCRIPT
-cd ~/go/src/github.com/flynn/flynn
+cd ~/go/src/github.com/drycc/drycc
 build/bin/tuf --dir test/release root-keys | build/bin/tuf-client init --store /tmp/tuf.db http://{{ .Blobstore }}/tuf
-echo stable | sudo tee /etc/flynn/channel.txt
+echo stable | sudo tee /etc/drycc/channel.txt
 export DISCOVERD="{{ .Discoverd }}"
-build/bin/flynn-host update --repository http://{{ .Blobstore }}/tuf --tuf-db /tmp/tuf.db
+build/bin/drycc-host update --repository http://{{ .Blobstore }}/tuf --tuf-db /tmp/tuf.db
 SCRIPT
 `))
 
@@ -123,7 +123,7 @@ func (s *ReleaseSuite) TestReleaseImages(t *c.C) {
 	var images map[string]*ct.Artifact
 	t.Assert(json.Unmarshal(imagesJSON.Bytes(), &images), c.IsNil)
 
-	// install Flynn from the blobstore on the vanilla host
+	// install Drycc from the blobstore on the vanilla host
 	blobstoreAddr := buildHost.IP + ":8080"
 	installHost := releaseCluster.Instances[3]
 	script.Reset()
@@ -132,9 +132,9 @@ func (s *ReleaseSuite) TestReleaseImages(t *c.C) {
 	out := io.MultiWriter(logWriter, &installOutput)
 	t.Assert(installHost.Run("sudo bash -ex", &tc.Streams{Stdin: &script, Stdout: out, Stderr: out}), c.IsNil)
 
-	// check the flynn-host version is correct
+	// check the drycc-host version is correct
 	var hostVersion bytes.Buffer
-	t.Assert(installHost.Run("flynn-host version", &tc.Streams{Stdout: &hostVersion}), c.IsNil)
+	t.Assert(installHost.Run("drycc-host version", &tc.Streams{Stdout: &hostVersion}), c.IsNil)
 	t.Assert(strings.TrimSpace(hostVersion.String()), c.Equals, "v20161108.0.test")
 
 	// check rebuilt images were downloaded
@@ -151,13 +151,13 @@ func (s *ReleaseSuite) TestReleaseImages(t *c.C) {
 		}
 	}
 
-	// installing on an instance with Flynn running should fail
+	// installing on an instance with Drycc running should fail
 	script.Reset()
 	installScript.Execute(&script, map[string]string{"Blobstore": blobstoreAddr})
 	installOutput.Reset()
 	err := buildHost.Run("sudo bash -ex", &tc.Streams{Stdin: &script, Stdout: out, Stderr: out})
-	if err == nil || !strings.Contains(installOutput.String(), "ERROR: Flynn is already installed.") {
-		t.Fatal("expected Flynn install to fail but it didn't")
+	if err == nil || !strings.Contains(installOutput.String(), "ERROR: Drycc is already installed.") {
+		t.Fatal("expected Drycc install to fail but it didn't")
 	}
 
 	// create a controller client for the release cluster
@@ -258,7 +258,7 @@ func (s *ReleaseSuite) TestReleaseImages(t *c.C) {
 	assertImage(imageArtifact.URI, "slugrunner")
 
 	// check Redis app was deployed correctly
-	release, err = client.GetAppRelease(resource.Env["FLYNN_REDIS"])
+	release, err = client.GetAppRelease(resource.Env["DRYCC_REDIS"])
 	t.Assert(err, c.IsNil)
 	imageArtifact, err = client.GetArtifact(release.ArtifactIDs[0])
 	t.Assert(err, c.IsNil)

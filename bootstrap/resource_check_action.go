@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/httphelper"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/httphelper"
 )
 
 type ResourceCheckAction struct {
@@ -35,7 +35,7 @@ func (a *ResourceCheckAction) Run(s *State) error {
 		}
 	}
 	if len(conflicts) > 0 {
-		conflictMsg := "conflicts detected!\n\nThe following hosts have conflicting services listening on ports Flynn is configured to use:\n"
+		conflictMsg := "conflicts detected!\n\nThe following hosts have conflicting services listening on ports Drycc is configured to use:\n"
 		for host, ports := range conflicts {
 			hostIP, _, err := net.SplitHostPort(host.Addr())
 			if err != nil {
@@ -46,7 +46,7 @@ func (a *ResourceCheckAction) Run(s *State) error {
 				conflictMsg += fmt.Sprintf("%s:%d ", port.Proto, port.Port)
 			}
 		}
-		conflictMsg += "\n\nAfter you correct the above errors re-run bootstrap to continue setting up Flynn."
+		conflictMsg += "\n\nAfter you correct the above errors re-run bootstrap to continue setting up Drycc."
 		return fmt.Errorf(conflictMsg)
 	}
 	return nil

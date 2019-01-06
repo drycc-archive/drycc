@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to release the Flynn stable channel and build VM images.
+# A script to release the Drycc stable channel and build VM images.
 
 set -eo pipefail
 
@@ -14,19 +14,19 @@ usage: $0 [options] VERSION
 
 OPTIONS:
   -h            Show this message
-  -b BUCKET     The S3 bucket to sync with [default: flynn]
-  -d DOMAIN     The CloudFront domain [default: dl.flynn.io]
+  -b BUCKET     The S3 bucket to sync with [default: drycc]
+  -d DOMAIN     The CloudFront domain [default: dl.drycc.cc]
   -r DIR        Resume the release using DIR
-  -t DIR        Path to the local TUF repository [default: /etc/flynn/tuf]
+  -t DIR        Path to the local TUF repository [default: /etc/drycc/tuf]
 
 Requires AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to be set
 USAGE
 }
 
 main() {
-  local bucket="flynn"
-  local domain="dl.flynn.io"
-  local tuf_dir="/etc/flynn/tuf"
+  local bucket="drycc"
+  local domain="dl.drycc.cc"
+  local tuf_dir="/etc/drycc/tuf"
   local dir
 
   while getopts "hb:d:r:t:" opt; do

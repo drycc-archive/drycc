@@ -25,7 +25,7 @@ if (UserAgent.isWindows()) {
 	};
 }
 
-var certFilename = 'flynn-ca.cer';
+var certFilename = 'drycc-ca.cer';
 
 var FirefoxSteps = React.createClass({
 	render: function () {

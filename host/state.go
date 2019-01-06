@@ -15,8 +15,8 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
 )
 
 // ErrJobExists is returned when attempting to add a job to the state with an
@@ -149,8 +149,8 @@ func (s *State) Restore(backend Backend, buffers host.LogBuffers) (func(), error
 				// generate a new job id, this is a new job
 				newJob := job.Dup()
 				newJob.ID = cluster.GenerateJobID(s.id, "")
-				if _, ok := newJob.Config.Env["FLYNN_JOB_ID"]; ok {
-					newJob.Config.Env["FLYNN_JOB_ID"] = newJob.ID
+				if _, ok := newJob.Config.Env["DRYCC_JOB_ID"]; ok {
+					newJob.Config.Env["DRYCC_JOB_ID"] = newJob.ID
 				}
 				log.Printf("resurrecting %s as %s", job.ID, newJob.ID)
 				s.AddJob(newJob)
@@ -271,7 +271,7 @@ func (s *State) pruneDownJobs(tx *bolt.Tx, downJobs *list.List) error {
 }
 
 func (s *State) trackDownJob(job *host.ActiveJob, tx *bolt.Tx) error {
-	app := job.Job.Config.Env["FLYNN_APP_ID"]
+	app := job.Job.Config.Env["DRYCC_APP_ID"]
 	l, ok := s.downJobsLRU[app]
 	if !ok {
 		l = list.New()

@@ -6,12 +6,12 @@ import (
 	"net"
 	"time"
 
-	"github.com/flynn/flynn/logaggregator/client"
-	logagg "github.com/flynn/flynn/logaggregator/types"
-	"github.com/flynn/flynn/logaggregator/utils"
-	"github.com/flynn/flynn/pkg/syslog/rfc5424"
-	"github.com/flynn/flynn/pkg/syslog/rfc6587"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/logaggregator/client"
+	logagg "github.com/drycc/drycc/logaggregator/types"
+	"github.com/drycc/drycc/logaggregator/utils"
+	"github.com/drycc/drycc/pkg/syslog/rfc5424"
+	"github.com/drycc/drycc/pkg/syslog/rfc6587"
+	. "github.com/drycc/go-check"
 )
 
 type ServerTestSuite struct{}
@@ -109,6 +109,6 @@ func newSeqMessage(hostname string, seq, timeDiff int) *rfc5424.Message {
 		},
 		[]byte("asdf"),
 	)
-	m.StructuredData = []byte(fmt.Sprintf(`[flynn seq="%d"]`, seq))
+	m.StructuredData = []byte(fmt.Sprintf(`[drycc seq="%d"]`, seq))
 	return m
 }

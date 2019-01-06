@@ -3,11 +3,11 @@ package main
 import (
 	"time"
 
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 type MigrateSuite struct{}
@@ -71,7 +71,7 @@ func (MigrateSuite) TestMigrateCriticalApps(c *C) {
 
 	// create the critical apps with system app meta
 	criticalApps := []string{"discoverd", "flannel", "postgres", "controller"}
-	meta := map[string]string{"flynn-system-app": "true"}
+	meta := map[string]string{"drycc-system-app": "true"}
 	for _, name := range criticalApps {
 		c.Assert(db.Exec(`INSERT INTO apps (app_id, name, meta) VALUES ($1, $2, $3)`, random.UUID(), name, meta), IsNil)
 	}
@@ -81,8 +81,8 @@ func (MigrateSuite) TestMigrateCriticalApps(c *C) {
 	for _, name := range criticalApps {
 		var meta map[string]string
 		c.Assert(db.QueryRow("SELECT meta FROM apps WHERE name = $1", name).Scan(&meta), IsNil)
-		c.Assert(meta["flynn-system-app"], Equals, "true")
-		c.Assert(meta["flynn-system-critical"], Equals, "true")
+		c.Assert(meta["drycc-system-app"], Equals, "true")
+		c.Assert(meta["drycc-system-critical"], Equals, "true")
 	}
 }
 
@@ -281,7 +281,7 @@ func (MigrateSuite) TestMigrateProcessArgs(c *C) {
 	}
 
 	// create some system apps
-	systemMeta := map[string]string{"flynn-system-app": "true"}
+	systemMeta := map[string]string{"drycc-system-app": "true"}
 	controllerID := random.UUID()
 	controllerProcs := map[string]*oldProcType{
 		"scheduler": {Cmd: []string{"scheduler"}},
@@ -324,8 +324,8 @@ func (MigrateSuite) TestMigrateProcessArgs(c *C) {
 		oldProcs   map[string]*oldProcType
 		entrypoint string
 	}{
-		{controllerID, controllerProcs, "/bin/start-flynn-controller"},
-		{routerID, routerProcs, "/bin/flynn-router"},
+		{controllerID, controllerProcs, "/bin/start-drycc-controller"},
+		{routerID, routerProcs, "/bin/drycc-router"},
 		{slugID, slugProcs, "/runner/init"},
 	} {
 		var procs map[string]*newProcType
@@ -349,7 +349,7 @@ func (MigrateSuite) TestMigrateRedisService(c *C) {
 
 	// add a Redis app
 	appName := "redis-" + random.UUID()
-	appMeta := map[string]string{"flynn-system-app": "true"}
+	appMeta := map[string]string{"drycc-system-app": "true"}
 	releaseID := random.UUID()
 	procs := map[string]*procType{
 		"redis": {Service: "redis"},

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A script to export Flynn components to a TUF repository.
+# A script to export Drycc components to a TUF repository.
 #
 # PREREQUISITES:
 #
@@ -18,7 +18,7 @@ usage() {
   cat <<USAGE >&2
 usage: $0 [options] TUF_DIR
 
-Export Flynn binaries, manifests & images to a TUF repository.
+Export Drycc binaries, manifests & images to a TUF repository.
 
 OPTIONS:
   -h, --help      Show this message
@@ -65,11 +65,11 @@ main() {
     fi
   done
 
-  info "running flynn-builder export"
-  export DISCOVERD="${DISCOVERD:-"1.localflynn.com:1111"}"
-  "${ROOT}/build/bin/flynn-host" run \
+  info "running drycc-builder export"
+  export DISCOVERD="${DISCOVERD:-"1.localdrycc.com:1111"}"
+  "${ROOT}/build/bin/drycc-host" run \
     --host    "${host}" \
-    --bind    "${ROOT}:${ROOT},${tuf_dir}:${tuf_dir},/var/lib/flynn/layer-cache:/var/lib/flynn/layer-cache" \
+    --bind    "${ROOT}:${ROOT},${tuf_dir}:${tuf_dir},/var/lib/drycc/layer-cache:/var/lib/drycc/layer-cache" \
     --limits  "memory=2G,temp_disk=1G" \
     --workdir "${ROOT}" \
     "${ROOT}/build/image/builder.json" \
@@ -77,16 +77,16 @@ main() {
     TUF_TARGETS_PASSPHRASE="${TUF_TARGETS_PASSPHRASE}" \
     TUF_SNAPSHOT_PASSPHRASE="${TUF_SNAPSHOT_PASSPHRASE}" \
     TUF_TIMESTAMP_PASSPHRASE="${TUF_TIMESTAMP_PASSPHRASE}" \
-    /bin/flynn-builder export "${tuf_dir}"
+    /bin/drycc-builder export "${tuf_dir}"
 
   sudo chown -R "$(id --user):$(id --group)" "${tuf_dir}"
 
   info "compiling install-script"
-  local flynn_host_sha="$(jq --raw-output '.signed.targets["/flynn-host.gz"].hashes["sha512"]' "${tuf_dir}/repository/targets.json")"
-  if [[ -z "${flynn_host_sha}" ]]; then
-    fail "unable to determine flynn-host sha"
+  local drycc_host_sha="$(jq --raw-output '.signed.targets["/drycc-host.gz"].hashes["sha512"]' "${tuf_dir}/repository/targets.json")"
+  if [[ -z "${drycc_host_sha}" ]]; then
+    fail "unable to determine drycc-host sha"
   fi
-  sed "s|{{FLYNN-HOST-CHECKSUM}}|${flynn_host_sha}|g" "${ROOT}/script/install-flynn.tmpl" > "${ROOT}/script/install-flynn"
+  sed "s|{{DRYCC-HOST-CHECKSUM}}|${drycc_host_sha}|g" "${ROOT}/script/install-drycc.tmpl" > "${ROOT}/script/install-drycc"
 }
 
 main $@

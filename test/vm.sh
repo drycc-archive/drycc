@@ -54,7 +54,7 @@ main() {
     -drive  "file=${disk},index=0,media=disk" \
     -device "e1000,netdev=net0,mac=${mac}" \
     -netdev "tap,id=net0,ifname=tap0,script=no,downscript=no" \
-    -virtfs "fsdriver=local,path=/opt/flynn-test/backups,security_model=passthrough,readonly,mount_tag=backupsfs" \
+    -virtfs "fsdriver=local,path=/opt/drycc-test/backups,security_model=passthrough,readonly,mount_tag=backupsfs" \
     -nographic
 }
 

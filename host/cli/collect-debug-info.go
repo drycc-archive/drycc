@@ -12,18 +12,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/go-docopt"
 	"github.com/inconshreveable/log15"
 )
 
-var flynnHostLogs = map[string]string{
-	// the following two entries are legacy paths from when flynn-host used
+var dryccHostLogs = map[string]string{
+	// the following two entries are legacy paths from when drycc-host used
 	// to log to stdout (which would be redirected to these files)
-	"upstart-flynn-host.log": "/var/log/upstart/flynn-host.log",
-	"tmp-flynn-host.log":     "/tmp/flynn-host.log",
+	"upstart-drycc-host.log": "/var/log/upstart/drycc-host.log",
+	"tmp-drycc-host.log":     "/tmp/drycc-host.log",
 }
 
 var debugCmds = [][]string{
@@ -41,12 +41,12 @@ var debugCmds = [][]string{
 
 func init() {
 	Register("collect-debug-info", runCollectDebugInfo, `
-usage: flynn-host collect-debug-info [options]
+usage: drycc-host collect-debug-info [options]
 
 Options:
   --tarball          Create a tarball instead of uploading to a gist
   --include-env      Include sensitive environment variables
-  --log-dir=DIR      Path to the log directory [default: /var/log/flynn]
+  --log-dir=DIR      Path to the log directory [default: /var/log/drycc]
   --filename=PATH    Path to write tarball, only valid if --tarball is specified
 
 Collect debug information into an anonymous gist or tarball`)
@@ -62,17 +62,17 @@ func runCollectDebugInfo(args *docopt.Args) error {
 	log.Info("this may take a while depending on the size of your logs")
 
 	gist := &Gist{
-		Description: "Flynn debug information",
+		Description: "Drycc debug information",
 		Public:      false,
 		Files:       make(map[string]File),
 	}
 
-	log.Info("getting flynn-host logs")
+	log.Info("getting drycc-host logs")
 	logDir := args.String["--log-dir"]
-	flynnHostLogs["flynn-host.log"] = filepath.Join(logDir, "flynn-host.log")
-	for name, filepath := range flynnHostLogs {
+	dryccHostLogs["drycc-host.log"] = filepath.Join(logDir, "drycc-host.log")
+	for name, filepath := range dryccHostLogs {
 		if err := gist.AddLocalFile(name, filepath); err != nil && !os.IsNotExist(err) {
-			log.Error(fmt.Sprintf("error getting flynn-host log %q", filepath), "err", err)
+			log.Error(fmt.Sprintf("error getting drycc-host log %q", filepath), "err", err)
 		}
 	}
 
@@ -111,11 +111,11 @@ func runCollectDebugInfo(args *docopt.Args) error {
 	if args.Bool["--tarball"] || gist.Size > GistMaxSize {
 		path := args.String["--filename"]
 		if path == "" {
-			tmpDir, err := ioutil.TempDir("", "flynn-host-debug")
+			tmpDir, err := ioutil.TempDir("", "drycc-host-debug")
 			if err != nil {
 				return err
 			}
-			path = filepath.Join(tmpDir, "flynn-host-debug.tar.gz")
+			path = filepath.Join(tmpDir, "drycc-host-debug.tar.gz")
 		}
 		err := gist.CreateTarball(path)
 		if err != nil {
@@ -158,13 +158,13 @@ func captureJobs(gist *Gist, env bool) error {
 
 	for _, job := range jobs {
 		var name string
-		if system, ok := job.Job.Metadata["flynn-system-app"]; !ok || system != "true" {
+		if system, ok := job.Job.Metadata["drycc-system-app"]; !ok || system != "true" {
 			continue // Skip non-system applications
 		}
-		if app, ok := job.Job.Metadata["flynn-controller.app_name"]; ok {
+		if app, ok := job.Job.Metadata["drycc-controller.app_name"]; ok {
 			name += app + "-"
 		}
-		if typ, ok := job.Job.Metadata["flynn-controller.type"]; ok {
+		if typ, ok := job.Job.Metadata["drycc-controller.type"]; ok {
 			name += typ + "-"
 		}
 		name += job.Job.ID + ".log"

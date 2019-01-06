@@ -3,8 +3,8 @@ package main
 import (
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	. "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) TestFormationStreaming(c *C) {

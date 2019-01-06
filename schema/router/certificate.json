@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/router/certificate#",
+  "id": "https://drycc.cc/schema/router/certificate#",
   "title": "Route",
   "description": "",
   "type": "object",

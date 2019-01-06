@@ -8,16 +8,16 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/docker/docker/pkg/term"
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("pg", runPg, `
-usage: flynn pg psql [--] [<argument>...]
-       flynn pg dump [-q] [-f <file>]
-       flynn pg restore [-q] [-j <jobs>] [-f <file>]
+usage: drycc pg psql [--] [<argument>...]
+       drycc pg dump [-q] [-f <file>]
+       drycc pg restore [-q] [-j <jobs>] [-f <file>]
 
 Options:
 	-f, --file=<file>  name of dump file
@@ -25,19 +25,19 @@ Options:
 	-j, --jobs=<jobs>  number of pg_restore jobs to use [default: 1]
 
 Commands:
-	psql     Open a console to a Flynn postgres database. Any valid arguments to psql may be provided.
+	psql     Open a console to a Drycc postgres database. Any valid arguments to psql may be provided.
 	dump     Dump a postgres database. If file is not specified, will dump to stdout.
 	restore  Restore a database dump. If file is not specified, will restore from stdin.
 
 Examples:
 
-    $ flynn pg psql
+    $ drycc pg psql
 
-    $ flynn pg psql -- -c "CREATE EXTENSION hstore"
+    $ drycc pg psql -- -c "CREATE EXTENSION hstore"
 
-    $ flynn pg dump -f db.dump
+    $ drycc pg dump -f db.dump
 
-    $ flynn pg restore -j 8 -f db.dump
+    $ drycc pg restore -j 8 -f db.dump
 `)
 }
 
@@ -66,9 +66,9 @@ func getAppPgRunConfig(client controller.Client) (*runConfig, error) {
 }
 
 func getPgRunConfig(client controller.Client, app string, appRelease *ct.Release) (*runConfig, error) {
-	pgApp := appRelease.Env["FLYNN_POSTGRES"]
+	pgApp := appRelease.Env["DRYCC_POSTGRES"]
 	if pgApp == "" {
-		return nil, fmt.Errorf("No postgres database found. Provision one with `flynn resource add postgres`")
+		return nil, fmt.Errorf("No postgres database found. Provision one with `drycc resource add postgres`")
 	}
 
 	pgRelease, err := client.GetAppRelease(pgApp)

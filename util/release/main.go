@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/go-docopt"
 )
 
 func main() {
-	usage := `flynn-release generates Flynn releases.
+	usage := `drycc-release generates Drycc releases.
 
 Usage:
-  flynn-release status <commit>
-  flynn-release vagrant <url> <checksum> <version> <provider>
+  drycc-release status <commit>
+  drycc-release vagrant <url> <checksum> <version> <provider>
 `
 	args, _ := docopt.Parse(usage, nil, true, "", false)
 

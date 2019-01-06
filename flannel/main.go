@@ -16,18 +16,18 @@ import (
 	"syscall"
 	"time"
 
-	disc "github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/flannel/backend"
-	"github.com/flynn/flynn/flannel/backend/alloc"
-	"github.com/flynn/flynn/flannel/backend/hostgw"
-	"github.com/flynn/flynn/flannel/backend/vxlan"
-	"github.com/flynn/flynn/flannel/discoverd"
-	"github.com/flynn/flynn/flannel/pkg/ip"
-	"github.com/flynn/flynn/flannel/pkg/task"
-	"github.com/flynn/flynn/flannel/subnet"
-	"github.com/flynn/flynn/pkg/keepalive"
-	"github.com/flynn/flynn/pkg/status"
-	"github.com/flynn/flynn/pkg/version"
+	disc "github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/flannel/backend"
+	"github.com/drycc/drycc/flannel/backend/alloc"
+	"github.com/drycc/drycc/flannel/backend/hostgw"
+	"github.com/drycc/drycc/flannel/backend/vxlan"
+	"github.com/drycc/drycc/flannel/discoverd"
+	"github.com/drycc/drycc/flannel/pkg/ip"
+	"github.com/drycc/drycc/flannel/pkg/task"
+	"github.com/drycc/drycc/flannel/subnet"
+	"github.com/drycc/drycc/pkg/keepalive"
+	"github.com/drycc/drycc/pkg/status"
+	"github.com/drycc/drycc/pkg/version"
 	log "github.com/golang/glog"
 )
 
@@ -114,7 +114,7 @@ func notifyWebhook(sn *backend.SubnetDef) error {
 		JobID  string `json:"job_id"`
 		Subnet string `json:"subnet"`
 		MTU    int    `json:"mtu"`
-	}{os.Getenv("FLYNN_JOB_ID"), net.String(), sn.MTU}
+	}{os.Getenv("DRYCC_JOB_ID"), net.String(), sn.MTU}
 	payload, _ := json.Marshal(data)
 	res, err := http.Post(opts.notifyURL, "application/json", bytes.NewReader(payload))
 	if err != nil {

@@ -8,14 +8,14 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("log", runLog, `
-usage: flynn-host log [--init] [-f|--follow] [--lines=<number>] [--split-stderr] ID
+usage: drycc-host log [--init] [-f|--follow] [--lines=<number>] [--split-stderr] ID
 
 Get the logs of a job`)
 }

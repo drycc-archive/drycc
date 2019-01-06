@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/app_log_stream#",
+  "id": "https://drycc.cc/schema/examples/controller/app_log_stream#",
   "title": "Stream app log",
   "description": "Opens an SSE stream of log entries.",
   "definitions": {

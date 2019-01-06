@@ -4,9 +4,9 @@ import (
 	"sort"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/controller/utils"
-	"github.com/flynn/flynn/pkg/typeconv"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/controller/utils"
+	"github.com/drycc/drycc/pkg/typeconv"
 )
 
 // JobState is a job's in-memory state

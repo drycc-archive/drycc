@@ -4,7 +4,7 @@ import (
 	"log"
 	"syscall"
 
-	"github.com/flynn/flynn/pkg/rpcplus/fdrpc"
+	"github.com/drycc/drycc/pkg/rpcplus/fdrpc"
 )
 
 func main() {

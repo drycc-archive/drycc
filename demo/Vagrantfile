@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$cluster_domain = ENV["CLUSTER_DOMAIN"] || "demo.localflynn.com"
+$cluster_domain = ENV["CLUSTER_DOMAIN"] || "demo.localdrycc.com"
 $flags_gui = ENV["FLAG_GUI"] || "false"
 $flag_update = ENV["FLAG_UPDATE"] || "false"
 $flag_bootstrap = ENV["FLAG_BOOTSTRAP"] || "true"
@@ -18,8 +18,8 @@ end
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "flynn-base"
-  config.vm.box_url = "https://dl.flynn.io/vagrant/flynn-base.json"
+  config.vm.box = "drycc-base"
+  config.vm.box_url = "https://dl.drycc.cc/vagrant/drycc-base.json"
   config.vm.box_version = "> 0"
 
   # RFC 5737 TEST-NET-1 used to avoid DNS rebind protection
@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   if Vagrant.has_plugin?("vagrant-vbguest")
-    # vagrant-vbguest can cause the VM to not start: https://github.com/flynn/flynn/issues/2874
+    # vagrant-vbguest can cause the VM to not start: https://github.com/drycc/drycc/issues/2874
     config.vbguest.auto_update = false
   end
 
@@ -58,15 +58,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provisioners
   if $flag_update == "true"
     config.vm.provision "shell", inline: <<-SCRIPT
-      flynn-host download
+      drycc-host download
     SCRIPT
   end
   if $flag_bootstrap == "true"
     config.vm.provision "shell", privileged: false, inline: <<-SCRIPT
-      sudo systemctl enable flynn-host.service
-      sudo systemctl start flynn-host.service
+      sudo systemctl enable drycc-host.service
+      sudo systemctl start drycc-host.service
       export CLUSTER_DOMAIN="#{$cluster_domain}"
-      flynn-host bootstrap 2>&1
+      drycc-host bootstrap 2>&1
     SCRIPT
   end
 end

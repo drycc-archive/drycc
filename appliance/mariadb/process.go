@@ -21,12 +21,12 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/flynn/flynn/appliance/mariadb/mdbxlog"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/flynn/pkg/sirenia/xlog"
+	"github.com/drycc/drycc/appliance/mariadb/mdbxlog"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/drycc/pkg/sirenia/xlog"
 	"github.com/go-sql-driver/mysql"
 	"github.com/inconshreveable/log15"
 )
@@ -294,7 +294,7 @@ func (p *Process) Backup() (io.ReadCloser, error) {
 		"--defaults-file="+p.ConfigPath(),
 		"--host=127.0.0.1",
 		"--port="+p.Port,
-		"--user=flynn",
+		"--user=drycc",
 		"--password="+p.Password,
 		"--socket=",
 		"--stream=xbstream",
@@ -486,7 +486,7 @@ func (p *Process) assumeStandby(upstream, downstream *discoverd.Instance) error 
 
 		host, port, _ := net.SplitHostPort(upstream.Addr)
 		logger.Info("changing master", "host", host, "port", port)
-		if _, err := db.Exec(fmt.Sprintf("CHANGE MASTER TO MASTER_HOST='%s', MASTER_PORT=%s, MASTER_USER='flynn', MASTER_PASSWORD='%s', MASTER_CONNECT_RETRY=10, MASTER_USE_GTID=current_pos;", host, port, p.Password)); err != nil {
+		if _, err := db.Exec(fmt.Sprintf("CHANGE MASTER TO MASTER_HOST='%s', MASTER_PORT=%s, MASTER_USER='drycc', MASTER_PASSWORD='%s', MASTER_CONNECT_RETRY=10, MASTER_USE_GTID=current_pos;", host, port, p.Password)); err != nil {
 			logger.Error("error changing master", "host", host, "port", port, "err", err)
 			return err
 		}
@@ -535,11 +535,11 @@ func (p *Process) initPrimaryDB() error {
 	}
 	defer db.Close()
 
-	if _, err := db.Exec(fmt.Sprintf(`CREATE USER 'flynn'@'%%' IDENTIFIED BY '%s'`, p.Password)); err != nil && MySQLErrorNumber(err) != 1396 {
+	if _, err := db.Exec(fmt.Sprintf(`CREATE USER 'drycc'@'%%' IDENTIFIED BY '%s'`, p.Password)); err != nil && MySQLErrorNumber(err) != 1396 {
 		logger.Error("error creating database user", "err", err)
 		return err
 	}
-	if _, err := db.Exec(`GRANT ALL ON *.* TO 'flynn'@'%' WITH GRANT OPTION`); err != nil {
+	if _, err := db.Exec(`GRANT ALL ON *.* TO 'drycc'@'%' WITH GRANT OPTION`); err != nil {
 		logger.Error("error granting privileges", "err", err)
 		return err
 	}
@@ -762,7 +762,7 @@ func (p *Process) userExists() (bool, error) {
 	defer db.Close()
 
 	var res sql.NullInt64
-	if err := db.QueryRow("SELECT 1 FROM mysql.user WHERE User='flynn'").Scan(&res); err != nil {
+	if err := db.QueryRow("SELECT 1 FROM mysql.user WHERE User='drycc'").Scan(&res); err != nil {
 		return false, err
 	}
 	return res.Valid, nil
@@ -818,7 +818,7 @@ func (p *Process) waitForSync(downstream *discoverd.Instance, enableWrites bool)
 			// Read downstream slave status.
 			slaveXLog, err := p.nodeXLogPosition(&DSN{
 				Host:     downstream.Addr,
-				User:     "flynn",
+				User:     "drycc",
 				Password: p.Password,
 				Timeout:  p.OpTimeout,
 			})
@@ -886,11 +886,11 @@ func (p *Process) waitForSync(downstream *discoverd.Instance, enableWrites bool)
 	}()
 }
 
-// DSN returns the data source name for connecting to the local process as the "flynn" user.
+// DSN returns the data source name for connecting to the local process as the "drycc" user.
 func (p *Process) DSN() *DSN {
 	return &DSN{
 		Host:     "127.0.0.1:" + p.Port,
-		User:     "flynn",
+		User:     "drycc",
 		Password: p.Password,
 		Timeout:  p.OpTimeout,
 	}

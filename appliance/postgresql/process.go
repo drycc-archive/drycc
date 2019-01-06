@@ -15,12 +15,12 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/flynn/flynn/appliance/postgresql/pgxlog"
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/shutdown"
-	"github.com/flynn/flynn/pkg/sirenia/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
-	"github.com/flynn/flynn/pkg/sirenia/xlog"
+	"github.com/drycc/drycc/appliance/postgresql/pgxlog"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/shutdown"
+	"github.com/drycc/drycc/pkg/sirenia/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
+	"github.com/drycc/drycc/pkg/sirenia/xlog"
 	"github.com/inconshreveable/log15"
 	"github.com/jackc/pgx"
 )
@@ -264,7 +264,7 @@ func (p *Process) userExists() (bool, error) {
 		return false, errors.New("postgres is not running")
 	}
 	var res pgx.NullInt32
-	err := p.db.QueryRow("SELECT 1 FROM pg_roles WHERE rolname='flynn'").Scan(&res)
+	err := p.db.QueryRow("SELECT 1 FROM pg_roles WHERE rolname='drycc'").Scan(&res)
 	return res.Valid, err
 }
 
@@ -410,9 +410,9 @@ func (p *Process) assumePrimary(downstream *discoverd.Instance) (err error) {
 		BEGIN
 		   IF NOT EXISTS (
 			  SELECT * FROM pg_catalog.pg_user
-			  WHERE	usename = 'flynn')
+			  WHERE	usename = 'drycc')
 		   THEN
-			  CREATE USER flynn WITH SUPERUSER CREATEDB CREATEROLE REPLICATION PASSWORD '%s';
+			  CREATE USER drycc WITH SUPERUSER CREATEDB CREATEROLE REPLICATION PASSWORD '%s';
 		   END IF;
 		END
 		$body$;
@@ -460,7 +460,7 @@ func (p *Process) assumeStandby(upstream, downstream *discoverd.Instance) error 
 			p.binPath("pg_basebackup"),
 			"--pgdata", p.dataDir,
 			"--dbname", fmt.Sprintf(
-				"host=%s port=%s user=flynn password=%s application_name=%s",
+				"host=%s port=%s user=drycc password=%s application_name=%s",
 				upstream.Host(), upstream.Port(), p.password, upstream.Meta[IDKey],
 			),
 			"--wal-method=stream",
@@ -847,7 +847,7 @@ func (p *Process) writeRecoveryConf(upstream *discoverd.Instance) error {
 	data := recoveryData{
 		TriggerFile: p.triggerPath(),
 		PrimaryInfo: fmt.Sprintf(
-			"host=%s port=%s user=flynn password=%s application_name=%s",
+			"host=%s port=%s user=drycc password=%s application_name=%s",
 			upstream.Host(), upstream.Port(), p.password, p.id,
 		),
 	}
@@ -963,5 +963,5 @@ var hbaConf = []byte(`
 host    all             postgres        127.0.0.1/32            trust
 host    all             all             127.0.0.1/32            md5
 host    all             all             all                     md5
-host    replication     flynn           all                     md5
+host    replication     drycc           all                     md5
 `[1:])

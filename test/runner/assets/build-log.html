@@ -3,13 +3,13 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/style.css">
-    <title>Flynn CI Build | {{ .ID }}</title>
+    <title>Drycc CI Build | {{ .ID }}</title>
   </head>
 
   <body>
     <div class="container-fluid">
       <h1>
-        Flynn CI Build {{ .ID }}
+        Drycc CI Build {{ .ID }}
 
         <span class="label {{ .StateLabelClass }}">
           {{ .State }}
@@ -28,7 +28,7 @@
         <tbody>
           <tr>
             <td><strong>Commit</strong></td>
-            <td><a href="https://github.com/flynn/flynn/commit/{{ .Commit }}">{{ .Commit }}</a></td>
+            <td><a href="https://github.com/drycc/drycc/commit/{{ .Commit }}">{{ .Commit }}</a></td>
           </tr>
           <tr>
             <td><strong>Branch</strong></td>

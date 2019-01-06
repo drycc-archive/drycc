@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/flynn/flynn/controller/client"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/controller/client"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	register("resource", runResource, `
-usage: flynn resource
-       flynn resource add <provider>
-       flynn resource remove <provider> [<resource>]
+usage: drycc resource
+       drycc resource add <provider>
+       drycc resource remove <provider> [<resource>]
 
 Manage resources for the app.
 

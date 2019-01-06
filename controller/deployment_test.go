@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"time"
 
-	ct "github.com/flynn/flynn/controller/types"
-	hh "github.com/flynn/flynn/pkg/httphelper"
-	. "github.com/flynn/go-check"
+	ct "github.com/drycc/drycc/controller/types"
+	hh "github.com/drycc/drycc/pkg/httphelper"
+	. "github.com/drycc/go-check"
 )
 
 func (s *S) TestCreateDeployment(c *C) {

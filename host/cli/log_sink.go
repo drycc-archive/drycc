@@ -5,20 +5,20 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("log-sink", runLogSink, `
-usage: flynn-host log-sink list <host>
+usage: drycc-host log-sink list <host>
 
 Commands:
     list    Display a list of sinks configured for a host
 
 Examples:
 
-    $ flynn-host log-sink list host1
+    $ drycc-host log-sink list host1
 `)
 }
 

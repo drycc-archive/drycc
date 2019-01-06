@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/app_release_set#",
+  "id": "https://drycc.cc/schema/examples/controller/app_release_set#",
   "title": "Set app release",
   "description": "",
   "allOf": [

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/controller/volume#",
+  "id": "https://drycc.cc/schema/controller/volume#",
   "title": "Volume",
   "description": "A volume is a durable filesystem that can be attached to jobs.",
   "sortIndex": 20,

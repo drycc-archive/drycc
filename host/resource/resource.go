@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/docker/go-units"
-	"github.com/flynn/flynn/pkg/typeconv"
+	"github.com/drycc/drycc/pkg/typeconv"
 )
 
 const DefaultTempDiskSize int64 = 100 * units.MiB

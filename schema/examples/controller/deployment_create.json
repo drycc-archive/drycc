@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/deployment_create#",
+  "id": "https://drycc.cc/schema/examples/controller/deployment_create#",
   "title": "Create deployment",
   "description": "",
   "allOf": [

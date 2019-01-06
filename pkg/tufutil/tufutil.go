@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	tuf "github.com/flynn/go-tuf/client"
+	tuf "github.com/drycc/go-tuf/client"
 )
 
 var DefaultHTTPRetries = &tuf.HTTPRemoteRetries{
@@ -45,7 +45,7 @@ func DownloadString(client *tuf.Client, path string) (string, error) {
 }
 
 func NewTempFile() (*TempFile, error) {
-	file, err := ioutil.TempFile("", "flynn-tuf")
+	file, err := ioutil.TempFile("", "drycc-tuf")
 	if err != nil {
 		return nil, err
 	}

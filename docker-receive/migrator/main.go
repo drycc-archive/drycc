@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/exec"
 
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
 )
 
 func main() {
@@ -31,7 +31,7 @@ func migrate() error {
 		return err
 	}
 
-	log.Printf("converting %d active Docker images to Flynn images", len(artifacts))
+	log.Printf("converting %d active Docker images to Drycc images", len(artifacts))
 	for i, artifact := range artifacts {
 		log.Printf("converting Docker image %s (%d/%d)", artifact.ID, i+1, len(artifacts))
 		newID, err := convert(artifact.URI)

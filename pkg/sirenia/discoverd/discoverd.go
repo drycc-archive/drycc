@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/sirenia/state"
+	"github.com/drycc/drycc/discoverd/client"
+	"github.com/drycc/drycc/pkg/sirenia/state"
 	"github.com/inconshreveable/log15"
 )
 

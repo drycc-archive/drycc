@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/random"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/random"
 	"github.com/minio/minio-go"
 )
 

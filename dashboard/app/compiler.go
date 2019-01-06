@@ -20,7 +20,7 @@ func main() {
 				Path:      "src",
 			},
 			{
-				GitRepo:   "git://github.com/flynn/flynn-dashboard-web-icons.git",
+				GitRepo:   "git://github.com/drycc/drycc-dashboard-web-icons.git",
 				GitBranch: "master",
 				GitRef:    "19649ac60d7da571595d54c6368fe1601bb0b79b",
 				Path:      "assets",

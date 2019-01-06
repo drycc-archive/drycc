@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"testing"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 // Hook gocheck up to the "go test" runner

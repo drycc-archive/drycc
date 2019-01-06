@@ -8,9 +8,9 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/flynn/flynn/pkg/random"
-	"github.com/flynn/flynn/pkg/testutils"
-	. "github.com/flynn/go-check"
+	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/testutils"
+	. "github.com/drycc/go-check"
 	gzfs "github.com/mistifyio/go-zfs"
 )
 

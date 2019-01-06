@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/host/volume"
-	"github.com/flynn/flynn/pkg/cluster"
-	c "github.com/flynn/go-check"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/host/volume"
+	"github.com/drycc/drycc/pkg/cluster"
+	c "github.com/drycc/go-check"
 )
 
 type VolumeSuite struct {

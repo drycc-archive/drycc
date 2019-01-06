@@ -1,0 +1,18 @@
+package main
+
+import (
+	"log"
+
+	"github.com/drycc/drycc/test/cluster2"
+)
+
+func main() {
+	_, err := cluster2.Boot(&cluster2.BootConfig{
+		Size:         3,
+		ImagesPath:   "images.json",
+		ManifestPath: "bootstrap/bin/manifest.json",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}

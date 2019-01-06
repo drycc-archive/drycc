@@ -9,18 +9,18 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/term"
-	ct "github.com/flynn/flynn/controller/types"
-	"github.com/flynn/flynn/host/resource"
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/cliutil"
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/flynn/pkg/exec"
-	"github.com/flynn/go-docopt"
+	ct "github.com/drycc/drycc/controller/types"
+	"github.com/drycc/drycc/host/resource"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/cliutil"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/drycc/pkg/exec"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("run", runRun, `
-usage: flynn-host run [options] [--] <artifact> <command> [<argument>...]
+usage: drycc-host run [options] [--] <artifact> <command> [<argument>...]
 
 Run an interactive job.
 
@@ -35,7 +35,7 @@ Options:
 	--extra-caps=<caps>    extra Linux capabilities (comma separated)
 
 Example:
-	$ flynn-host run <(jq '.mongodb' images.json) mongo --version
+	$ drycc-host run <(jq '.mongodb' images.json) mongo --version
 	MongoDB shell version: 3.2.9
 `)
 }

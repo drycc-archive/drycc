@@ -11,5 +11,5 @@ curl -fsLo "/usr/local/bin/jq" "https://github.com/stedolan/jq/releases/download
 chmod +x "/usr/local/bin/jq"
 
 export HOME="/root"
-git config --global "user.email" "test@flynn.io"
-git config --global "user.name"  "Flynn Test"
+git config --global "user.email" "test@drycc.cc"
+git config --global "user.name"  "Drycc Test"

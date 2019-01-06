@@ -7,13 +7,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/flynn/flynn/pkg/postgres"
-	"github.com/flynn/flynn/pkg/testutils/postgres"
-	"github.com/flynn/flynn/pkg/tlscert"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/pkg/postgres"
+	"github.com/drycc/drycc/pkg/testutils/postgres"
+	"github.com/drycc/drycc/pkg/tlscert"
+	"github.com/drycc/drycc/router/types"
 	"github.com/jackc/pgx"
 
-	. "github.com/flynn/go-check"
+	. "github.com/drycc/go-check"
 )
 
 func setupTestDB(c *C, dbname string) *postgres.DB {

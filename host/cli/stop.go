@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/flynn/flynn/pkg/cluster"
-	"github.com/flynn/go-docopt"
+	"github.com/drycc/drycc/pkg/cluster"
+	"github.com/drycc/go-docopt"
 )
 
 func init() {
 	Register("stop", runStop, `
-usage: flynn-host stop ID...
+usage: drycc-host stop ID...
 
 Stop running jobs`)
 }

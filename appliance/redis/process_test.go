@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flynn/flynn/appliance/redis"
+	"github.com/drycc/drycc/appliance/redis"
 )
 
 // Ensure process can start and stop successfully.
@@ -110,7 +110,7 @@ type Process struct {
 // NewProcess creates a new Process on a random port.
 func NewProcess() *Process {
 	// Create temporary directory for data.
-	path, err := ioutil.TempDir("", "flynn-redis-")
+	path, err := ioutil.TempDir("", "drycc-redis-")
 	if err != nil {
 		panic(err)
 	}
@@ -135,7 +135,7 @@ func NewProcess() *Process {
 	p.BinDir = filepath.Dir(binPath)
 	p.DataDir = path
 	p.Port = strconv.Itoa(port)
-	p.Password = "flynn"
+	p.Password = "drycc"
 	return p
 }
 

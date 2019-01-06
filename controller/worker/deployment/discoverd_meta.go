@@ -1,6 +1,6 @@
 package deployment
 
-import dd "github.com/flynn/flynn/discoverd/deployment"
+import dd "github.com/drycc/drycc/discoverd/deployment"
 
 // deployDiscoverMeta does a one-by-one deployment but uses discoverd.Deployment
 // to wait for appropriate service metadata before stopping old jobs.

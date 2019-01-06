@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://flynn.io/schema/examples/controller/app_log#",
+  "id": "https://drycc.cc/schema/examples/controller/app_log#",
   "title": "Get app log",
   "description": "Returns JSON for each log entry per line.",
   "definitions": {

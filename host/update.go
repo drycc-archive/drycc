@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/flynn/flynn/host/types"
-	"github.com/flynn/flynn/pkg/shutdown"
+	"github.com/drycc/drycc/host/types"
+	"github.com/drycc/drycc/pkg/shutdown"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 	ControlMsgOK = []byte{1}
 )
 
-// Update performs a zero-downtime update of the flynn-host daemon, replacing
+// Update performs a zero-downtime update of the drycc-host daemon, replacing
 // the current daemon with an instance of the given command.
 //
 // The HTTP API listener is passed from the parent to the child, but due to the
@@ -166,9 +166,9 @@ func (h *Host) exec(cmd *host.Command, listener *os.File) (*Child, error) {
 		os.NewFile(uintptr(sockPair[1]), "child"),
 	}
 	setEnv(c, map[string]string{
-		"FLYNN_HTTP_FD":     "3",
-		"FLYNN_CONTROL_FD":  "4",
-		"FLYNN_HOST_STATUS": string(status),
+		"DRYCC_HTTP_FD":     "3",
+		"DRYCC_CONTROL_FD":  "4",
+		"DRYCC_HOST_STATUS": string(status),
 	})
 	if err := c.Start(); err != nil {
 		return nil, fmt.Errorf("error exec'ing child: %s", err)

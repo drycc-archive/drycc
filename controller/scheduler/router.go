@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flynn/flynn/pkg/stream"
-	routerc "github.com/flynn/flynn/router/client"
-	"github.com/flynn/flynn/router/types"
+	"github.com/drycc/drycc/pkg/stream"
+	routerc "github.com/drycc/drycc/router/client"
+	"github.com/drycc/drycc/router/types"
 	"github.com/inconshreveable/log15"
 )
 

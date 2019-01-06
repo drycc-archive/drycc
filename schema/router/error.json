@@ -1,9 +1,9 @@
 {
-  "id": "https://flynn.io/schema/router/error#",
+  "id": "https://drycc.cc/schema/router/error#",
   "allOf": [
     {
       "sortIndex": 2
     },
-    { "$ref": "https://flynn.io/schema/error#" }
+    { "$ref": "https://drycc.cc/schema/error#" }
   ]
 }
