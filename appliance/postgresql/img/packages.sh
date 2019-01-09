@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source /etc/lsb-release
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
@@ -9,7 +10,7 @@ update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8
 dpkg-reconfigure locales
 apt-get -y install curl sudo
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/postgresql.list
+echo deb http://apt.postgresql.org/pub/repos/apt/ "${DISTRIB_CODENAME}"-pgdg main >> /etc/apt/sources.list.d/postgresql.list
 add-apt-repository ppa:timescale/timescaledb-ppa
 apt-get update
 apt-get install -y -q \

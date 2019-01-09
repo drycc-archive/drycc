@@ -128,7 +128,7 @@ main() {
     "${builder_image}" \
     /usr/bin/env \
     GOPATH="${GOPATH}" \
-    /bin/drycc-builder build ${args[@]}
+    /bin/flynn-builder build ${args[@]}
 
   # extract binaries into build/bin
   extract_bin "host"              "/usr/local/bin/drycc-host"

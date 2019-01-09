@@ -14,15 +14,15 @@ func main() {
 	m := matrix.New(&matrix.Config{
 		Paths: []*matrix.AssetRoot{
 			{
-				GitRepo:   "git://github.com/jvatic/marbles-js.git",
+				GitRepo:   "git://github.com/drycc/marbles-js.git",
 				GitBranch: "master",
-				GitRef:    "0a32d09dc73f87482fb12ce963c9385fabb0d036",
+				GitRef:    "6057b0600550667e37e0e320e8bddc6563292139",
 				Path:      "src",
 			},
 			{
 				GitRepo:   "git://github.com/drycc/drycc-dashboard-web-icons.git",
 				GitBranch: "master",
-				GitRef:    "19649ac60d7da571595d54c6368fe1601bb0b79b",
+				GitRef:    "77ad1624bf7ea9a0cff4f74bdca0bfaefee792e9",
 				Path:      "assets",
 			},
 			{

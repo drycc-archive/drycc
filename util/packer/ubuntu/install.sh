@@ -128,7 +128,7 @@ add_apt_sources() {
   # tup
   apt-key adv --keyserver keyserver.ubuntu.com \
     --recv 27947298A222DFA46E207200B34FBCAA90EA7F4E
-  echo deb http://ppa.launchpad.net/titanous/tup/ubuntu trusty main \
+  echo deb http://ppa.launchpad.net/titanous/tup/ubuntu "${DISTRIB_CODENAME}" main \
     > /etc/apt/sources.list.d/tup.list
 
   apt-get update

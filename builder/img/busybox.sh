@@ -2,6 +2,7 @@
 
 TMP="$(mktemp --directory)"
 
+apt-get update && apt-get install --yes libdigest-sha-perl && apt-get clean
 URL="http://archive.ubuntu.com/ubuntu/pool/main/b/busybox/busybox-static_1.27.2-2ubuntu4_amd64.deb"
 SHA="2d07c13235a3215991530f573b555900df06ae888c5f0299ae87d58f67caf5cd"
 curl -fSLo "${TMP}/busybox.deb" "${URL}"

@@ -33,14 +33,12 @@ stop_cron() {
 }
 
 setup_apt_sources() {
-  cat << EOF > /etc/apt/sources.list
-  deb http://archive.ubuntu.com/ubuntu ${DISTRIB_CODENAME} main universe
-  deb-src http://archive.ubuntu.com/ubuntu ${DISTRIB_CODENAME} main universe
-  deb http://archive.ubuntu.com/ubuntu ${DISTRIB_CODENAME}-updates main universe
-  deb-src http://archive.ubuntu.com/ubuntu ${DISTRIB_CODENAME}-updates main universe
-  deb http://security.ubuntu.com/ubuntu ${DISTRIB_CODENAME}-security main universe
-  deb-src http://security.ubuntu.com/ubuntu ${DISTRIB_CODENAME}-security main universe
-EOF
+  echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}" main universe >/etc/apt/sources.list
+  echo deb-src http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}" main universe >>/etc/apt/sources.list
+  echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-updates main universe >>/etc/apt/sources.list
+  echo deb-src http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-updates main universe >>/etc/apt/sources.list
+  echo deb http://security.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-security main universe >>/etc/apt/sources.list
+  echo deb-src http://security.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-security main universe >>/etc/apt/sources.list
 
   # ensure cloud-init doesn't overwrite our apt sources
   if [[ -f /etc/cloud/cloud.cfg ]]; then

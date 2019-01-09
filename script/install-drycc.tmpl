@@ -44,7 +44,7 @@ main() {
     fail "this script must be executed as the root user"
   fi
 
-  if ! is_ubuntu_xenial && ! is_ubuntu_trusty; then
+  if ! is_ubuntu_xenial; then
     fail "this script is only compatible with Ubuntu 16.04 or 14.04"
   fi
 
@@ -154,19 +154,6 @@ main() {
   if is_ubuntu_xenial; then
     run apt-get update
     packages+=("zfsutils-linux")
-  elif is_ubuntu_trusty; then
-    info "adding zfs-native APT PPA"
-    run apt-key adv --keyserver keyserver.ubuntu.com --recv E871F18B51E0147C77796AC81196BA81F6B0FC61
-    mkdir -p "/etc/apt/sources.list.d"
-    echo deb http://ppa.launchpad.net/zfs-native/stable/ubuntu trusty main > /etc/apt/sources.list.d/zfs.list
-    run apt-get update
-
-    # install linux-headers explicitly before ubuntu-zfs to avoid skipping
-    # building kernel modules due to absent kernel headers.
-    info "installing linux-headers"
-    run apt-get install -y "linux-headers-$(uname -r)"
-
-    packages+=("ubuntu-zfs")
   fi
 
   if $install_ntp; then
@@ -214,8 +201,6 @@ main() {
 
   if is_ubuntu_xenial; then
     install_systemd_unit
-  elif is_ubuntu_trusty; then
-    install_upstart_job
   fi
 
   info "installation complete!"
@@ -223,10 +208,6 @@ main() {
 
 is_root() {
   [[ $(id -u) -eq 0 ]]
-}
-
-is_ubuntu_trusty() {
-  grep -qF "Ubuntu 14.04" /etc/os-release &>/dev/null
 }
 
 is_ubuntu_xenial() {
@@ -302,11 +283,6 @@ do_remove() {
   if is_ubuntu_xenial; then
     systemctl stop drycc-host
     systemctl disable drycc-host
-  elif is_ubuntu_trusty; then
-    local status="$(status drycc-host)"
-    if [[ "${status:0:16}" = "drycc-host start" ]]; then
-      run stop drycc-host
-    fi
   fi
 
   info "killing old containers"

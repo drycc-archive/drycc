@@ -1,18 +1,19 @@
 #!/bin/bash
 
 # Derived from https://github.com/heroku/stack-images/blob/master/bin/cedar-14.sh
+source /etc/lsb-release
 
-echo 'deb http://archive.ubuntu.com/ubuntu trusty main restricted' >/etc/apt/sources.list
-echo 'deb http://archive.ubuntu.com/ubuntu trusty-updates main restricted' >>/etc/apt/sources.list
-echo 'deb http://archive.ubuntu.com/ubuntu trusty universe' >>/etc/apt/sources.list
-echo 'deb http://archive.ubuntu.com/ubuntu trusty-updates universe' >>/etc/apt/sources.list
-echo 'deb http://archive.ubuntu.com/ubuntu trusty-security main restricted' >>/etc/apt/sources.list
-echo 'deb http://archive.ubuntu.com/ubuntu trusty-security universe' >>/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}" main restricted >/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-updates main restricted >>/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}" universe >>/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-updates universe >>/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-security main restricted >>/etc/apt/sources.list
+echo deb http://archive.ubuntu.com/ubuntu "${DISTRIB_CODENAME}"-security universe >>/etc/apt/sources.list
 
 apt-get update
 apt-get dist-upgrade -y
 
-apt-get install -y --force-yes \
+apt-get install -y \
   autoconf \
   bind9-host \
   bison \
@@ -25,7 +26,6 @@ apt-get install -y --force-yes \
   git \
   imagemagick \
   iputils-tracepath \
-  language-pack-en \
   libbz2-dev \
   libcurl4-openssl-dev \
   libevent-dev \
@@ -41,11 +41,11 @@ apt-get install -y --force-yes \
   libxml2-dev \
   libxslt-dev \
   netcat-openbsd \
-  openjdk-7-jdk \
-  openjdk-7-jre-headless \
+  openjdk-8-jdk \
+  openjdk-8-jre-headless \
   openssh-client \
   openssh-server \
-  postgresql-server-dev-9.3 \
+  postgresql-server-dev-all \
   python \
   python-dev \
   ruby \
@@ -62,12 +62,9 @@ apt-get install -y --force-yes \
 # Install locales
 apt-cache search language-pack \
   | cut -d ' ' -f 1 \
-  | grep -v '^language\-pack\-\(gnome\|kde\)\-' \
+  | grep -v '^language\-pack\-\(touch\|gnome\|kde\)\-' \
   | grep -v '\-base$' \
-  | xargs apt-get install -y --force-yes --no-install-recommends
-
-# Workaround for CVE-2016–3714 until new ImageMagick packages come out.
-echo '<policymap> <policy domain="coder" rights="none" pattern="EPHEMERAL" /> <policy domain="coder" rights="none" pattern="URL" /> <policy domain="coder" rights="none" pattern="HTTPS" /> <policy domain="coder" rights="none" pattern="MVG" /> <policy domain="coder" rights="none" pattern="MSL" /> <policy domain="coder" rights="none" pattern="TEXT" /> <policy domain="coder" rights="none" pattern="SHOW" /> <policy domain="coder" rights="none" pattern="WIN" /> <policy domain="coder" rights="none" pattern="PLT" /> </policymap>' > /etc/ImageMagick/policy.xml
+  | xargs apt-get install -y --no-install-recommends
 
 rm -rf /var/cache/apt/archives/*.deb
 rm -rf /root/*

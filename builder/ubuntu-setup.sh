@@ -3,7 +3,7 @@
 # A script to setup an Ubuntu cloud image to be container image friendly.
 #
 # Taken from Docker:
-# https://github.com/tianon/docker-brew-ubuntu-core/blob/cf9d7a2ee20c8a4706a05d1d7f1a1e25ae32ed39/trusty/Dockerfile
+# https://github.com/tianon/docker-brew-ubuntu-core/blob/cf9d7a2ee20c8a4706a05d1d7f1a1e25ae32ed39/{codename}/Dockerfile
 
 echo '#!/bin/sh' > /usr/sbin/policy-rc.d
 echo 'exit 101' >> /usr/sbin/policy-rc.d
@@ -26,7 +26,7 @@ echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /
 echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggests
 
 # install common Drycc image tools
-apt-get install --yes squashfs-tools curl
+apt-get install --yes libdigest-sha-perl squashfs-tools curl
 
 # delete all the apt list files since they're big and get stale quickly
 rm -rf /var/lib/apt/lists/*
