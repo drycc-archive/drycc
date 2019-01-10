@@ -3,7 +3,7 @@
 PROVIDER ?= virtualbox
 
 # Domain to use when starting drycc
-CLUSTER_DOMAIN ?= demo.localdrycc.com
+CLUSTER_DOMAIN ?= demo.local.drycc.cc
 CLUSTER ?= demo-${PROVIDER}
 
 # Location to install drycc CLI bin

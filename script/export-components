@@ -66,7 +66,7 @@ main() {
   done
 
   info "running drycc-builder export"
-  export DISCOVERD="${DISCOVERD:-"1.localdrycc.com:1111"}"
+  export DISCOVERD="${DISCOVERD:-"1.local.drycc.cc:1111"}"
   "${ROOT}/build/bin/drycc-host" run \
     --host    "${host}" \
     --bind    "${ROOT}:${ROOT},${tuf_dir}:${tuf_dir},/var/lib/drycc/layer-cache:/var/lib/drycc/layer-cache" \

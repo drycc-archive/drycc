@@ -142,7 +142,7 @@ main() {
   done
 
   info "bootstrapping Drycc"
-  export CLUSTER_DOMAIN="${CLUSTER_DOMAIN:-"${size}.localdrycc.com"}"
+  export CLUSTER_DOMAIN="${CLUSTER_DOMAIN:-"${size}.local.drycc.cc"}"
   export DISCOVERD="$(join "," ${ips[@]/%/:1111})"
   local flags=(
     "--min-hosts=${size}"

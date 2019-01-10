@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$cluster_domain = ENV["CLUSTER_DOMAIN"] || "demo.localdrycc.com"
+$cluster_domain = ENV["CLUSTER_DOMAIN"] || "demo.local.drycc.cc"
 $flags_gui = ENV["FLAG_GUI"] || "false"
 $flag_update = ENV["FLAG_UPDATE"] || "false"
 $flag_bootstrap = ENV["FLAG_BOOTSTRAP"] || "true"

@@ -74,13 +74,13 @@ Examples:
 
 	$ drycc info
 	=== example
-	Git URL:  https://git.dev.localdrycc.com/example.git
-	Web URL:  http://example.dev.localdrycc.com
+	Git URL:  https://git.dev.local.drycc.cc/example.git
+	Web URL:  http://example.dev.local.drycc.cc
 
 	$ drycc -a example info
 	=== example
-	Git URL:  https://git.dev.localdrycc.com/example.git
-	Web URL:  http://example.dev.localdrycc.com
+	Git URL:  https://git.dev.local.drycc.cc/example.git
+	Web URL:  http://example.dev.local.drycc.cc
 `)
 }
 

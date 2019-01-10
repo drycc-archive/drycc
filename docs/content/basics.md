@@ -10,9 +10,9 @@ This guide assumes you already have a running Drycc cluster and have configured
 the `drycc` command-line tool. If this is not the case, follow the [Installation
 Guide](/docs/installation) first to get things set up.
 
-It also assumes you are using the `demo.localdrycc.com` default domain (which is
+It also assumes you are using the `demo.local.drycc.cc` default domain (which is
 the case if you installed the Vagrant demo environment). If you are using your
-own domain, substitute `demo.localdrycc.com` with whatever you set
+own domain, substitute `demo.local.drycc.cc` with whatever you set
 `CLUSTER_DOMAIN` to during the bootstrap process.
 
 ## Deploy
@@ -38,19 +38,19 @@ The above command should have added a `drycc` Git remote:
 
 ```
 $ git remote -v
-drycc   https://git.demo.localdrycc.com/example.git (push)
-drycc   https://git.demo.localdrycc.com/example.git (fetch)
+drycc   https://git.demo.local.drycc.cc/example.git (push)
+drycc   https://git.demo.local.drycc.cc/example.git (fetch)
 origin  https://github.com/drycc/nodejs-drycc-example.git (fetch)
 origin  https://github.com/drycc/nodejs-drycc-example.git (push)
 ```
 
-It should also have added a default route of `example.demo.localdrycc.com` pointing
+It should also have added a default route of `example.demo.local.drycc.cc` pointing
 at the `example-web` service:
 
 ```
 $ drycc route
 ROUTE                             SERVICE      ID                                         STICKY  LEADER  PATH
-http:example.demo.localdrycc.com  example-web  http/2e37467e-08fc-47e5-853b-4f0574cb6871  false   false   /
+http:example.demo.local.drycc.cc  example-web  http/2e37467e-08fc-47e5-853b-4f0574cb6871  false   false   /
 ```
 
 The app depends on Postgres, so add a database:
@@ -94,7 +94,7 @@ Total 728 (delta 215), reused 728 (delta 215)
 -----> Waiting for initial web job to start...
 =====> Initial web job started
 =====> Application deployed
-To https://git.1.localdrycc.com/example.git
+To https://git.1.local.drycc.cc/example.git
  * [new branch]      master -> master
 ```
 
@@ -102,7 +102,7 @@ Now the application is deployed, you can make HTTP requests to it using the
 default route for the application:
 
 ```
-$ curl http://example.demo.localdrycc.com
+$ curl http://example.demo.local.drycc.cc
 Hello from Drycc on port 8080 from container db0440f7-19b4-4369-b79e-7a48dba415c2
 Hits = 1
 ```
@@ -157,19 +157,19 @@ Repeated HTTP requests should show that the requests are load balanced across
 those processes and talk to the database:
 
 ```
-$ curl http://example.demo.localdrycc.com
+$ curl http://example.demo.local.drycc.cc
 Hello from Drycc on port 8080 from container db0440f7-19b4-4369-b79e-7a48dba415c2
 Hits = 2
 
-$ curl http://example.demo.localdrycc.com
+$ curl http://example.demo.local.drycc.cc
 Hello from Drycc on port 8080 from container 4ef91e4b-d0c3-4e3f-931b-6db3b551dcd9
 Hits = 3
 
-$ curl http://example.demo.localdrycc.com
+$ curl http://example.demo.local.drycc.cc
 Hello from Drycc on port 8080 from container ccd3aff7-80b3-46b4-a95f-006bfceb80c6
 Hits = 4
 
-$ curl http://example.demo.localdrycc.com
+$ curl http://example.demo.local.drycc.cc
 Hello from Drycc on port 8080 from container 4ef91e4b-d0c3-4e3f-931b-6db3b551dcd9
 Hits = 5
 ```
@@ -233,11 +233,11 @@ $ drycc log -n 6
 ## Routes
 
 On creation, the application's `web` process gets a default HTTP route which is a
-subdomain of the default route domain (e.g. `example.demo.localdrycc.com`). If
+subdomain of the default route domain (e.g. `example.demo.local.drycc.cc`). If
 you want to use a different domain, you will need to add another route.
 
 Let's say you have a domain `example.com` which is pointed at your Drycc cluster
-(e.g. it is a `CNAME` for `example.demo.localdrycc.com`).
+(e.g. it is a `CNAME` for `example.demo.local.drycc.cc`).
 
 Add a route for that domain:
 
@@ -252,7 +252,7 @@ You should now have two routes for your application:
 $ drycc route
 ROUTE                             SERVICE      ID                                         STICKY  LEADER  PATH
 http:example.com                  example-web  http/74b05faf-c062-42f2-8ffe-678cfa3c061b  false   false   /
-http:example.demo.localdrycc.com  example-web  http/2e37467e-08fc-47e5-853b-4f0574cb6871  false   false   /
+http:example.demo.local.drycc.cc  example-web  http/2e37467e-08fc-47e5-853b-4f0574cb6871  false   false   /
 ```
 
 HTTP requests to `example.com` should be routed to the web processes:
@@ -264,7 +264,7 @@ Hits = 6
 ```
 
 You could now modify your application to respond differently based on the HTTP Host
-header (which here could be either `example.demo.localdrycc.com` or `example.com`).
+header (which here could be either `example.demo.local.drycc.cc` or `example.com`).
 
 ## Multiple Processes
 

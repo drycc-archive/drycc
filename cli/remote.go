@@ -23,10 +23,10 @@ Options:
 Examples:
 
 	$ drycc -a turkeys-stupefy-perry remote add
-	Created remote drycc with url https://git.dev.localdrycc.com/turkeys-stupefy-perry.git
+	Created remote drycc with url https://git.dev.local.drycc.cc/turkeys-stupefy-perry.git
 
 	$ drycc -a turkeys-stupefy-perry remote add staging
-	Created remote staging with url https://git.dev.localdrycc.com/turkeys-stupefy-perry.git
+	Created remote staging with url https://git.dev.local.drycc.cc/turkeys-stupefy-perry.git
 `)
 }
 

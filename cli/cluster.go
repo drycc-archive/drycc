@@ -94,7 +94,7 @@ Commands:
 
 Examples:
 
-	$ drycc cluster add -p KGCENkp53YF5OvOKkZIry71+czFRkSw2ZdMszZ/0ljs= default dev.localdrycc.com e09dc5301d72be755a3d666f617c4600
+	$ drycc cluster add -p KGCENkp53YF5OvOKkZIry71+czFRkSw2ZdMszZ/0ljs= default dev.local.drycc.cc e09dc5301d72be755a3d666f617c4600
 	Cluster "default" added.
 
 	$ drycc cluster migrate-domain new.example.com

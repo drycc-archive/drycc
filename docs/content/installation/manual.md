@@ -123,10 +123,10 @@ cluster domain.
 **Example**
 
 ```
-demo.localdrycc.com.    A      192.168.84.42
-demo.localdrycc.com.    A      192.168.84.43
-demo.localdrycc.com.    A      192.168.84.44
-*.demo.localdrycc.com.  CNAME  demo.localdrycc.com.
+demo.local.drycc.cc.    A      192.168.84.42
+demo.local.drycc.cc.    A      192.168.84.43
+demo.local.drycc.cc.    A      192.168.84.44
+*.demo.local.drycc.cc.  CNAME  demo.local.drycc.cc.
 ```
 
 Set `CLUSTER_DOMAIN` to the main domain name and start the bootstrap process,
@@ -135,7 +135,7 @@ token if you created one.
 
 ```
 $ sudo \
-    CLUSTER_DOMAIN=demo.localdrycc.com \
+    CLUSTER_DOMAIN=demo.local.drycc.cc \
     drycc-host bootstrap \
     --min-hosts 3 \
     --discovery https://discovery.drycc.cc/clusters/53e8402e-030f-4861-95ba-d5b5a91b5902

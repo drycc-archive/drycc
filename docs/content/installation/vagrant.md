@@ -46,7 +46,7 @@ $ vagrant up
 $ drycc -a dashboard env get LOGIN_TOKEN
 # Copy the login token
 # Open the dashboard in a browser
-$ open http://dashboard.demo.localdrycc.com
+$ open http://dashboard.demo.local.drycc.cc
 ```
 
 Additional make commands:

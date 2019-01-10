@@ -45,9 +45,9 @@ Example:
 
 	$ drycc docker push my-custom-image:v2
 	drycc: getting image config with "docker inspect -f {{ json .Config }} my-custom-image:v2"
-	drycc: tagging Docker image with "docker tag my-custom-image:v2 docker.1.localdrycc.com/my-app:latest"
-	drycc: pushing Docker image with "docker push docker.1.localdrycc.com/my-app:latest"
-	The push refers to a repository [docker.1.localdrycc.com/my-app] (len: 1)
+	drycc: tagging Docker image with "docker tag my-custom-image:v2 docker.1.local.drycc.cc/my-app:latest"
+	drycc: pushing Docker image with "docker push docker.1.local.drycc.cc/my-app:latest"
+	The push refers to a repository [docker.1.local.drycc.cc/my-app] (len: 1)
 	a8eb754d1a89: Pushed
 	...
 	3059b4820522: Pushed

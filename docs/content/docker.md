@@ -81,9 +81,9 @@ Push the Docker image:
 ```
 $ drycc -a nodejs docker push nodejs-drycc-example
 drycc: getting image config with "docker inspect -f {{ json .Config }} nodejs-drycc-example"
-drycc: tagging Docker image with "docker tag nodejs-drycc-example docker.1.localdrycc.com/nodejs:latest"
-drycc: pushing Docker image with "docker push docker.1.localdrycc.com/nodejs:latest"
-The push refers to a repository [docker.1.localdrycc.com/nodejs] (len: 1)
+drycc: tagging Docker image with "docker tag nodejs-drycc-example docker.1.local.drycc.cc/nodejs:latest"
+drycc: pushing Docker image with "docker push docker.1.local.drycc.cc/nodejs:latest"
+The push refers to a repository [docker.1.local.drycc.cc/nodejs] (len: 1)
 82b9b0ffb6da: Pushed
 be8edf33c031: Pushed
 ...
@@ -126,6 +126,6 @@ The app can be reached externally via the automatically registered route
 `http://APPNAME.$CLUSTER_DOMAIN`:
 
 ```
-$ curl http://nodejs.1.localdrycc.com
+$ curl http://nodejs.1.local.drycc.cc
 Hello from Drycc on port 8080 from container 4a7319af-af2c-4fe1-9a9a-2dd4d5bd3765
 ```

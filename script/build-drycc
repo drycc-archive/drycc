@@ -75,7 +75,7 @@ main() {
 
   # if building from clean, download binaries + images
   if ! [[ -e "${builder_image}" ]]; then
-    local sha="0c8443fd905ec6d17e2fe8ccc611a63f85c7eca5ed87d301314273567687ff93090b49924144481b920fa6fa8229894d3ffaa05a9b3e42ba8b6cb37d439a48c7"
+    local sha="e8057f23a0f2d8b915f75737c6bd61814b6e555aece5f6accc2e7d8f3c862f61f6c2d562a97a80c4ddaa0cffaa2752f6baeb4ee482ea836ae88e2d6162b5a4c1"
     local url="https://dl.drycc.cc/tuf/targets/${sha}.drycc-host.gz"
 
     info "downloading drycc-host from ${url}"
@@ -89,7 +89,8 @@ main() {
     "${ROOT}/script/kill-drycc"
 
     info "getting nightly release version"
-    local dl_version="$(curl -fsSL "https://releases.drycc.cc/api/channels" | jq -r '.[] | select(.name == "nightly") | .version')"
+    #local dl_version="$(curl -fsSL "https://releases.drycc.cc/api/channels" | jq -r '.[] | select(.name == "nightly") | .version')"
+    local dl_version="dev"
     if [[ -z "${dl_version}" ]]; then
       fail "unable to determine nightly release version"
     fi
@@ -107,7 +108,7 @@ main() {
   fi
 
   # bootstrap the cluster if not running
-  export DISCOVERD="${DISCOVERD:-"1.localdrycc.com:1111"}"
+  export DISCOVERD="${DISCOVERD:-"1.local.drycc.cc:1111"}"
   if $force_bootstrap || ! curl -fsSLo /dev/null --connect-timeout 1 "${DISCOVERD}/.well-known/status"; then
     info "Drycc cluster not running, bootstrapping"
     "${ROOT}/script/bootstrap-drycc" --steps "discoverd,flannel,wait-hosts"
@@ -128,7 +129,7 @@ main() {
     "${builder_image}" \
     /usr/bin/env \
     GOPATH="${GOPATH}" \
-    /bin/flynn-builder build ${args[@]}
+    /bin/drycc-builder build ${args[@]}
 
   # extract binaries into build/bin
   extract_bin "host"              "/usr/local/bin/drycc-host"
