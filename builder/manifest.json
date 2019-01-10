@@ -1,14 +1,14 @@
 {
   "tuf": {
     "repository": "https://dl.drycc.cc/tuf",
-    "root_keys": [{"keytype":"ed25519","keyval":{"public":"2f4b1468b47ff4b10b300c0aa90376bca823d7495c68762d1ff64135ee8fc87a"}}]
+    "root_keys": [{"keytype":"ed25519","keyval":{"public":"a8118cb72211ef49fbeadce68d4faeef1941c47fa0dc3cd58fa7c25692813962"}}]
   },
   "base_layer": {
     "type":   "squashfs",
     "id":     "d53164df59b808d95ad2426b1ab1302dd6f66487455040e379e3176842336aa4",
-    "url":    "http://dl.drycc.cc/tuf/targets/layers/005390032f9ad67035f1af84773d78f6774114e65248e36bb380966172f62707df72829678cb06046c931b25b0b601a15fa2241ad4bce19fb998229a542181b1.d53164df59b808d95ad2426b1ab1302dd6f66487455040e379e3176842336aa4.squashfs",
-    "size":   43823104,
-    "hashes": {"sha512_256": "2c21d6971a2c32dbf2d82f8012f378050c7fb126e6d966a70142f92f3dc0b144"}
+    "url":    "http://dl.drycc.cc/tuf/targets/layers/3b71169eb45ff6d75a7fe8407b0c245065376b0fc6fba5dd89f07c8b14452911c9b32aa0b30563e0b558f7bfbf703af80238e189b6ca6be09ee7b44d41f05e72.d53164df59b808d95ad2426b1ab1302dd6f66487455040e379e3176842336aa4.squashfs",
+    "size":   55054336,
+    "hashes": {"sha512_256": "2c2fbf10f47825664e098c060e7b3611c5d2bc569286e4805e26f08d7eb6fafb"}
   },
   "images": [
     {
