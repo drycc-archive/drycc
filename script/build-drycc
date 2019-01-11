@@ -89,7 +89,8 @@ main() {
     "${ROOT}/script/kill-drycc"
 
     info "getting nightly release version"
-    local dl_version="$(curl -fsSL "https://releases.drycc.cc/api/channels" | jq -r '.[] | select(.name == "nightly") | .version')"
+    local dl_version_sha="$(curl -fsSL "https://dl.drycc.cc/tuf/targets.json" | jq -r '.signed.targets."/channels/nightly".hashes.sha512')"
+    local dl_version="$(curl -fsSL https://dl.drycc.cc/tuf/targets/channels/${dl_version_sha}.nightly)"
     if [[ -z "${dl_version}" ]]; then
       fail "unable to determine nightly release version"
     fi
