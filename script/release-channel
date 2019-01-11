@@ -156,7 +156,7 @@ generate_changelog() {
   local tmp="$(mktemp --directory)"
   trap "rm -rf ${tmp}" EXIT
   ${ROOT}/build/bin/tuf-client init --store "${tmp}/tuf.db" "${repo_url}" <<< "$(${ROOT}/build/bin/tuf -d "${tuf_dir}" root-keys)"
-  local current="$(tuf-client get --store "${tmp}/tuf.db" "${repo_url}" "/channels/${channel}")"
+  local current="$(${ROOT}/build/bin/tuf-client get --store "${tmp}/tuf.db" "${repo_url}" "/channels/${channel}")"
   if [[ -z "${current}" ]]; then
     warn "could not determine current ${channel} version, using empty changelog"
     echo "n/a" > "${changelog_path}"
