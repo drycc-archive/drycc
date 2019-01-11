@@ -151,7 +151,7 @@ main() {
 #
 #   * 2016-06-27: script: Add --version and --channel flags to install-drycc ([#3003](https://github.com/drycc/drycc/pull/3003))
 generate_changelog() {
-  local repo_url="https://s3.amazonaws.com/${bucket}/tuf"
+  local repo_url="https://${bucket}.s3.amazonaws.com/tuf"
   info "getting current ${channel} version from ${repo_url}"
   local tmp="$(mktemp --directory)"
   trap "rm -rf ${tmp}" EXIT
