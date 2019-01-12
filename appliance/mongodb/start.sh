@@ -5,9 +5,7 @@ case $1 in
     chown -R mongodb:mongodb /data
     chmod 0700 /data
     shift
-    exec sudo \
-      -u mongodb \
-      -E -H \
+    exec gosu mongodb \
       /bin/drycc-mongodb $*
     ;;
   api)

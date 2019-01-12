@@ -75,7 +75,7 @@ main() {
 
   # if building from clean, download binaries + images
   if ! [[ -e "${builder_image}" ]]; then
-    local sha="e8057f23a0f2d8b915f75737c6bd61814b6e555aece5f6accc2e7d8f3c862f61f6c2d562a97a80c4ddaa0cffaa2752f6baeb4ee482ea836ae88e2d6162b5a4c1"
+    local sha="4fae4ca714b70268bb261fdb00bd8cf2d466327131215aabea66fa3ac3427d8674052f0936910151d41f21235a88fe844546b63e648e1c01fcb29fa0a11539f3"
     local url="https://dl.drycc.cc/tuf/targets/${sha}.drycc-host.gz"
 
     info "downloading drycc-host from ${url}"

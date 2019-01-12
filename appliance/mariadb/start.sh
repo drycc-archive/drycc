@@ -5,9 +5,7 @@ case $1 in
     chown -R mysql:mysql /data
     chmod 0700 /data
     shift
-    exec sudo \
-      -u mysql \
-      -E -H \
+    exec gosu mysql \
       /bin/drycc-mariadb $*
     ;;
   api)

@@ -5,9 +5,7 @@ case $1 in
     chown -R postgres:postgres /data
     chmod 0700 /data
     shift
-    exec sudo \
-      -u postgres \
-      -E -H \
+    exec gosu postgres \
       /bin/drycc-postgres $*
     ;;
   api)

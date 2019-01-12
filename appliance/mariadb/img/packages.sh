@@ -12,7 +12,7 @@ apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 \
 echo deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu "${DISTRIB_CODENAME}" main >>/etc/apt/sources.list
 echo deb http://repo.percona.com/apt "${DISTRIB_CODENAME}" main >>/etc/apt/sources.list
 apt-get update
-apt-get install -y sudo
+apt-get install -y gosu
 apt-get install -y --allow-unauthenticated mariadb-server percona-xtrabackup
 apt-get clean
 apt-get autoremove -y
