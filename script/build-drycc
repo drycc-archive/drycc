@@ -70,12 +70,15 @@ main() {
     exit 1
   fi
 
+  local targets="${ROOT}/targets.json"
   local drycc_host="${ROOT}/build/bin/drycc-host"
   local builder_image="${ROOT}/build/image/builder.json"
 
   # if building from clean, download binaries + images
   if ! [[ -e "${builder_image}" ]]; then
-    local sha="4fae4ca714b70268bb261fdb00bd8cf2d466327131215aabea66fa3ac3427d8674052f0936910151d41f21235a88fe844546b63e648e1c01fcb29fa0a11539f3"
+    rm -rf "${targets}"
+    curl -fsSL "https://dl.drycc.cc/tuf/targets.json" -o "${targets}"
+    sha="$(cat "${targets}" | jq -r '.signed.targets."/drycc-host.gz".hashes.sha512')"
     local url="https://dl.drycc.cc/tuf/targets/${sha}.drycc-host.gz"
 
     info "downloading drycc-host from ${url}"
@@ -89,7 +92,7 @@ main() {
     "${ROOT}/script/kill-drycc"
 
     info "getting nightly release version"
-    local dl_version_sha="$(curl -fsSL "https://dl.drycc.cc/tuf/targets.json" | jq -r '.signed.targets."/channels/nightly".hashes.sha512')"
+    local dl_version_sha="$(cat "${targets}" | jq -r '.signed.targets."/channels/nightly".hashes.sha512')"
     local dl_version="$(curl -fsSL https://dl.drycc.cc/tuf/targets/channels/${dl_version_sha}.nightly)"
     if [[ -z "${dl_version}" ]]; then
       fail "unable to determine nightly release version"
