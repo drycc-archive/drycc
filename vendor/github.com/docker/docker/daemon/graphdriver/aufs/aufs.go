@@ -33,7 +33,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/docker/docker/daemon/graphdriver"
 	"github.com/docker/docker/pkg/archive"
@@ -43,7 +43,7 @@ import (
 	mountpk "github.com/docker/docker/pkg/mount"
 	"github.com/docker/docker/pkg/stringid"
 
-	"github.com/opencontainers/runc/libcontainer/label"
+	"github.com/opencontainers/selinux/go-selinux/label"
 )
 
 var (

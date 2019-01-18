@@ -42,8 +42,9 @@ func NewAzure(name string, info map[string]string) (Backend, error) {
 		return nil, fmt.Errorf("blobstore: error creating Azure Storage client %s: %s", name, err)
 	}
 	b.client = client.GetBlobService()
+	cnt := b.client.GetContainerReference(b.container)
 
-	ok, err := b.client.ContainerExists(b.container)
+	ok, err := cnt.Exists()
 	if err != nil {
 		return nil, fmt.Errorf("blobstore: error checking if Azure Storage container %q exists for %s: %s", b.container, name, err)
 	}
@@ -80,9 +81,8 @@ func (b *azureBackend) Put(tx *postgres.DBTx, info FileInfo, r io.Reader, append
 	}
 
 	// Create blob that will be filled with blocks
-	if err := b.client.CreateBlockBlob(b.container, info.ExternalID); err != nil {
-		return err
-	}
+	cnt := b.client.GetContainerReference(b.container)
+	blob := cnt.GetBlobReference(info.ExternalID)
 	var blocks []storage.Block
 
 	// Create blocks
@@ -99,13 +99,11 @@ func (b *azureBackend) Put(tx *postgres.DBTx, info FileInfo, r io.Reader, append
 		md5sum := md5.Sum(data)
 		blockID := base64.StdEncoding.EncodeToString(random.Bytes(16))
 
-		if err := b.client.PutBlockWithLength(
-			b.container,
-			info.ExternalID,
+		if err := blob.PutBlockWithLength(
 			blockID,
 			uint64(n),
 			bytes.NewReader(data),
-			map[string]string{"Content-MD5": base64.StdEncoding.EncodeToString(md5sum[:])},
+			&storage.PutBlockOptions{ContentMD5: base64.StdEncoding.EncodeToString(md5sum[:])},
 		); err != nil {
 			return err
 		}
@@ -117,7 +115,7 @@ func (b *azureBackend) Put(tx *postgres.DBTx, info FileInfo, r io.Reader, append
 	}
 
 	// Save the list of blocks to the blob
-	return b.client.PutBlockList(b.container, info.ExternalID, blocks)
+	return blob.PutBlockList(blocks, &storage.PutBlockListOptions{LeaseID: info.ExternalID})
 }
 
 func (b *azureBackend) Copy(tx *postgres.DBTx, dst, src FileInfo) error {
@@ -130,7 +128,9 @@ func (b *azureBackend) Copy(tx *postgres.DBTx, dst, src FileInfo) error {
 }
 
 func (b *azureBackend) Delete(tx *postgres.DBTx, info FileInfo) error {
-	return b.client.DeleteBlob(b.container, info.ExternalID, nil)
+	cnt := b.client.GetContainerReference(b.container)
+        blob := cnt.GetBlobReference(info.ExternalID)
+	return blob.Delete(nil)
 }
 
 func (b *azureBackend) Open(tx *postgres.DBTx, info FileInfo, txControl bool) (FileStream, error) {
@@ -138,7 +138,17 @@ func (b *azureBackend) Open(tx *postgres.DBTx, info FileInfo, txControl bool) (F
 		// We don't need the database transaction, so clean it up
 		tx.Rollback()
 	}
+	options := storage.BlobSASOptions{
+		SASOptions: storage.SASOptions{
+			Expiry: time.Now().Add(10*time.Minute),
+		},
+		BlobServiceSASPermissions: storage.BlobServiceSASPermissions{
+			Write: false,
+		},
+	}
+        cnt := b.client.GetContainerReference(b.container)
+        blob := cnt.GetBlobReference(info.ExternalID)
 
-	url, err := b.client.GetBlobSASURI(b.container, info.ExternalID, time.Now().Add(10*time.Minute), "r")
+	url, err := blob.GetSASURI(options)
 	return newRedirectFileStream(url), err
 }

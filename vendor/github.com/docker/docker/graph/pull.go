@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/docker/docker/cliconfig"
 	"github.com/docker/docker/pkg/streamformatter"
 	"github.com/docker/docker/registry"

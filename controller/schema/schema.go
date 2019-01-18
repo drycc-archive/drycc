@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/cupcake/jsonschema"
+	"github.com/drycc/jsonschema"
 	ct "github.com/drycc/drycc/controller/types"
 )
 

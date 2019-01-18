@@ -70,13 +70,14 @@ main() {
     exit 1
   fi
 
-  local targets="${ROOT}/targets.json"
+  local targets="${ROOT}/build/targets.json"
   local drycc_host="${ROOT}/build/bin/drycc-host"
   local builder_image="${ROOT}/build/image/builder.json"
 
   # if building from clean, download binaries + images
   if ! [[ -e "${builder_image}" ]]; then
     rm -rf "${targets}"
+    mkdir -p "${ROOT}/build"
     curl -fsSL "https://dl.drycc.cc/tuf/targets.json" -o "${targets}"
     sha="$(cat "${targets}" | jq -r '.signed.targets."/drycc-host.gz".hashes.sha512')"
     local url="https://dl.drycc.cc/tuf/targets/${sha}.drycc-host.gz"
@@ -127,7 +128,7 @@ main() {
   "${drycc_host}" run \
     --host    "${host}" \
     --bind    "${ROOT}:${ROOT},/var/lib/drycc/layer-cache:/var/lib/drycc/layer-cache" \
-    --limits  "temp_disk=1G" \
+    --limits  "memory=4G,temp_disk=2G" \
     --workdir "${ROOT}" \
     "${builder_image}" \
     /usr/bin/env \

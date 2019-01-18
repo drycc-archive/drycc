@@ -16,8 +16,8 @@ import (
 	"github.com/drycc/drycc/host/volume"
 	"github.com/drycc/drycc/pkg/attempt"
 	"github.com/drycc/drycc/pkg/random"
+	"github.com/drycc/drycc/pkg/sparse"
 	zfs "github.com/mistifyio/go-zfs"
-	"github.com/rancher/sparse-tools/sparse"
 	"github.com/inconshreveable/log15"
 )
 

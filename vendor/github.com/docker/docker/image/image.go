@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/docker/distribution/digest"
 	derr "github.com/docker/docker/errors"
 	"github.com/docker/docker/pkg/version"

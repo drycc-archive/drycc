@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cupcake/jsonschema"
+	"github.com/drycc/jsonschema"
 	"github.com/drycc/drycc/controller/client"
 	ct "github.com/drycc/drycc/controller/types"
 	"github.com/drycc/drycc/pkg/cluster"

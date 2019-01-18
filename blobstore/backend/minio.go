@@ -121,7 +121,8 @@ func (b *minioBackend) Put(tx *postgres.DBTx, info FileInfo, r io.Reader, append
 		b.bucket,
 		info.ExternalID,
 		r,
-		info.Type,
+		-1,
+		minio.PutObjectOptions{ContentType: info.Type},
 	)
 
 	return err
@@ -132,12 +133,14 @@ func (b *minioBackend) Copy(tx *postgres.DBTx, dst, src FileInfo) error {
 	if err := tx.Exec("UPDATE files SET external_id = $2 WHERE file_id = $1", dst.ID, dst.ExternalID); err != nil {
 		return err
 	}
-	copyConds := minio.CopyConditions{}
+	src_info := minio.NewSourceInfo(b.bucket, src.ExternalID, nil)
+	dst_info, err := minio.NewDestinationInfo(b.bucket, dst.ExternalID, nil, nil)
+	if err != nil {
+		return err
+	}
 	return b.client.CopyObject(
-		b.bucket,
-		dst.ExternalID,
-		fmt.Sprintf("%s/%s", b.bucket, src.ExternalID),
-		copyConds,
+		dst_info,
+		src_info,
 	)
 }
 

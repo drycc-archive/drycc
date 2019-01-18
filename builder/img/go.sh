@@ -2,15 +2,15 @@
 
 set -eo pipefail
 
-version="1.9.2"
-shasum="de874549d9a8d8d8062be05808509c09a88a248e77ec14eb77453530829ac02b"
+version="1.11"
+shasum="8ffb718cab4371df3495d8f6c0b15c7e6dc28fea"
 dir="/usr/local"
 
 apt-get update
 apt-get install --yes git build-essential unzip
 apt-get clean
 
-curl -fsSLo /tmp/go.tar.gz "https://storage.googleapis.com/golang/go${version}.linux-amd64.tar.gz"
+curl -fsSLo /tmp/go.tar.gz "https://dl.google.com/go/go${version}.linux-amd64.tar.gz"
 echo "${shasum}  /tmp/go.tar.gz" | shasum -c -
 tar xzf /tmp/go.tar.gz -C "${dir}"
 rm /tmp/go.tar.gz

@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/docker/distribution"
 	"github.com/docker/distribution/configuration"
 	ctxu "github.com/docker/distribution/context"

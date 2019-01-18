@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/drycc/drycc/controller/client"
 	ct "github.com/drycc/drycc/controller/types"
 	"github.com/drycc/drycc/docker-receive/utils"

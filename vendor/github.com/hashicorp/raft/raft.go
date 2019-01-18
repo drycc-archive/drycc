@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -191,7 +192,7 @@ func NewRaft(conf *Config, fsm FSM, logs LogStore, stable StableStore, snaps Sna
 	// Get the log
 	var lastLog Log
 	if lastIdx > 0 {
-		if err := logs.GetLog(lastIdx, &lastLog); err != nil {
+		if err = logs.GetLog(lastIdx, &lastLog); err != nil {
 			return nil, fmt.Errorf("failed to get last log: %v", err)
 		}
 	}
@@ -277,7 +278,7 @@ func (r *Raft) setLeader(leader string) {
 	r.leader = leader
 	r.leaderLock.Unlock()
 	if oldLeader != leader {
-		r.observe(LeaderObservation{leader: leader})
+		r.observe(LeaderObservation{Leader: leader})
 	}
 }
 
@@ -468,8 +469,23 @@ func (r *Raft) LastContact() time.Time {
 	return last
 }
 
-// Stats is used to return a map of various internal stats. This should only
-// be used for informative purposes or debugging.
+// Stats is used to return a map of various internal stats. This
+// should only be used for informative purposes or debugging.
+//
+// Keys are: "state", "term", "last_log_index", "last_log_term",
+// "commit_index", "applied_index", "fsm_pending",
+// "last_snapshot_index", "last_snapshot_term", "num_peers" and
+// "last_contact".
+//
+// The value of "state" is a numerical value representing a
+// RaftState const.
+//
+// The value of "last_contact" is either "never" if there
+// has been no contact with a leader, "0" if the node is in the
+// leader state, or the time since last contact with a leader
+// formatted as a string.
+//
+// All other values are uint64s, formatted as strings.
 func (r *Raft) Stats() map[string]string {
 	toString := func(v uint64) string {
 		return strconv.FormatUint(v, 10)
@@ -505,10 +521,13 @@ func (r *Raft) LastIndex() uint64 {
 	return r.getLastIndex()
 }
 
-// AppliedIndex returns the last index applied to the FSM.
-// This is generally lagging behind the last index, especially
-// for indexes that are persisted but have not yet been considered
-// committed by the leader.
+// AppliedIndex returns the last index applied to the FSM. This is generally
+// lagging behind the last index, especially for indexes that are persisted but
+// have not yet been considered committed by the leader. NOTE - this reflects
+// the last index that was sent to the application's FSM over the apply channel
+// but DOES NOT mean that the application's FSM has yet consumed it and applied
+// it to its internal state. Thus, the application's state may lag behind this
+// index.
 func (r *Raft) AppliedIndex() uint64 {
 	return r.getLastApplied()
 }
@@ -569,23 +588,23 @@ func (r *Raft) runFSM() {
 			req.snapshot = snap
 			req.respond(err)
 
-		case commitTuple := <-r.fsmCommitCh:
+		case commitEntry := <-r.fsmCommitCh:
 			// Apply the log if a command
 			var resp interface{}
-			if commitTuple.log.Type == LogCommand {
+			if commitEntry.log.Type == LogCommand {
 				start := time.Now()
-				resp = r.fsm.Apply(commitTuple.log)
+				resp = r.fsm.Apply(commitEntry.log)
 				metrics.MeasureSince([]string{"raft", "fsm", "apply"}, start)
 			}
 
 			// Update the indexes
-			lastIndex = commitTuple.log.Index
-			lastTerm = commitTuple.log.Term
+			lastIndex = commitEntry.log.Index
+			lastTerm = commitEntry.log.Term
 
 			// Invoke the future if given
-			if commitTuple.future != nil {
-				commitTuple.future.response = resp
-				commitTuple.future.respond(nil)
+			if commitEntry.future != nil {
+				commitEntry.future.response = resp
+				commitEntry.future.respond(nil)
 			}
 		case <-r.shutdownCh:
 			return
@@ -1511,11 +1530,13 @@ func (r *Raft) installSnapshot(rpc RPC, req *InstallSnapshotRequest) {
 	}
 	var rpcErr error
 	defer func() {
+		io.Copy(ioutil.Discard, rpc.Reader) // ensure we always consume all the snapshot data from the stream [see issue #212]
 		rpc.Respond(resp, rpcErr)
 	}()
 
 	// Ignore an older term
 	if req.Term < r.getCurrentTerm() {
+		r.logger.Printf("[INFO] raft: Ignoring installSnapshot request with older term of %d vs currentTerm %d", req.Term, r.getCurrentTerm())
 		return
 	}
 

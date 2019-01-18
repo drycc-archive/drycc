@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"os"
 	"mime"
 	"net/http"
 	"path"
@@ -30,11 +32,11 @@ type LoginInfo struct {
 
 func AssetReader(path string) (io.ReadSeeker, time.Time, error) {
 	t := time.Time{}
-	data, err := Asset(path)
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, t, err
 	}
-	if fi, err := AssetInfo(path); err != nil {
+	if fi, err := os.Stat(path); err != nil {
 		t = fi.ModTime()
 	}
 	return bytes.NewReader(data), t, nil
@@ -66,7 +68,6 @@ func APIHandler(conf *Config) http.Handler {
 
 	router.GET(prefixPath("/config"), api.WrapHandler(api.GetConfig))
 
-	router.NotFound = router2.ServeHTTP
 	router2.GET(prefixPath("/*path"), api.WrapHandler(api.ServeAsset))
 
 	return httphelper.ContextInjector("dashboard",
@@ -308,7 +309,7 @@ func (api *API) ServeDashboardJs(ctx context.Context, w http.ResponseWriter, req
 
 func (api *API) cacheDashboardJS() error {
 	var manifest assetmatrix.Manifest
-	manifestBytes, err := Asset(filepath.Join("app", "build", "assets", "manifest.json"))
+	manifestBytes, err := ioutil.ReadFile(filepath.Join("app", "build", "assets", "manifest.json"))
 	if err != nil {
 		return err
 	}

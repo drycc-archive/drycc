@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/docker/docker/pkg/listenbuffer"
 	"github.com/opencontainers/runc/libcontainer/user"
 )

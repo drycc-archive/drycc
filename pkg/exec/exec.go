@@ -14,7 +14,6 @@ import (
 	"github.com/drycc/drycc/pkg/cluster"
 	"github.com/drycc/drycc/pkg/schedutil"
 	"github.com/drycc/drycc/pkg/stream"
-	"github.com/opencontainers/runc/libcontainer/configs"
 )
 
 type Cmd struct {
@@ -45,7 +44,7 @@ type Cmd struct {
 	TermHeight, TermWidth uint16
 
 	LinuxCapabilities []string
-	AllowedDevices    []*configs.Device
+	AllowedDevices    []*host.Device
 	Profiles          []host.JobProfile
 
 	// cluster is used to communicate with the layer 0 cluster

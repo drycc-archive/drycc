@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net"
+	"log"
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -29,8 +28,6 @@ import (
 	"github.com/drycc/drycc/pkg/version"
 	"github.com/drycc/go-docopt"
 	"github.com/inconshreveable/log15"
-	"github.com/opencontainers/runc/libcontainer"
-	_ "github.com/opencontainers/runc/libcontainer/nsenter"
 )
 
 const configFile = "/etc/drycc/host.json"
@@ -73,10 +70,7 @@ func main() {
 	// which triggers the following code to initialise the container
 	// environment (namespaces, network etc.) then exec containerinit
 	if len(os.Args) > 1 && os.Args[1] == "libcontainer-init" {
-		runtime.GOMAXPROCS(1)
-		runtime.LockOSThread()
-		factory, _ := libcontainer.New("")
-		if err := factory.StartInitialization(); err != nil {
+		if err := InitLibcontainerBackend(); err != nil {
 			log.Fatal(err)
 		}
 	}

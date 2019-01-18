@@ -16,7 +16,7 @@ import (
 	cfg "github.com/drycc/drycc/cli/config"
 	"github.com/drycc/drycc/controller/client"
 	ct "github.com/drycc/drycc/controller/types"
-	"github.com/drycc/drycc/host/types"
+        "github.com/drycc/drycc/host/types"
 	"github.com/drycc/drycc/pkg/backup"
 	"github.com/drycc/go-docopt"
 )

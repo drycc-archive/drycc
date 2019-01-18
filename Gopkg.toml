@@ -11,25 +11,39 @@ required = [
   unused-packages = true
 
 [[constraint]]
-  branch = "datetimes"
   name = "github.com/BurntSushi/toml"
+  version = ">= 0.3.0"
 
 [[constraint]]
-  name = "github.com/Sirupsen/logrus"
-  version = "0.8.6"
+  name = "github.com/sirupsen/logrus"
+  version = ">= 1.3.0"
 
 [[constraint]]
   branch = "master"
-  name = "github.com/cupcake/jsonschema"
+  name = "github.com/drycc/jsonschema"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/stevvooe/resumable"
+  source = "github.com/drycc/resumable"
 
 [[constraint]]
   branch = "master"
   name = "github.com/docker/docker"
-  source = "github.com/drycc-archive/docker"
+  source = "github.com/drycc/docker"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/docker/distribution"
+  source = "github.com/drycc/distribution"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/drycc/libnetwork"
 
 [[constraint]]
   name = "github.com/docker/go-units"
-  version = "0.3.0"
+  version = ">= 0.3.0"
 
 [[constraint]]
   branch = "v1"
@@ -55,6 +69,18 @@ required = [
   branch = "master"
   name = "github.com/drycc/tail"
 
+[[constraint]] 
+  name = "github.com/jackc/pgx" 
+  version = ">= 2.0.0, < 3.0.0"
+
+[[constraint]]
+  name = "github.com/hashicorp/raft"
+  version = ">= 0.1.0 , < 1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/opencontainers/runc"
+
 [[constraint]]
   name = "github.com/golang/dep"
   version = "v0.5.0"
@@ -68,10 +94,6 @@ required = [
   version = "1.0.0"
 
 [[constraint]]
-  name = "github.com/opencontainers/runc"
-  version = "1.0.0-rc1"
-
-[[constraint]]
   branch = "master"
   name = "github.com/tent/canonical-json-go"
 
@@ -80,8 +102,17 @@ required = [
   name = "github.com/tiborvass/uniline"
 
 [[constraint]]
+  name = "github.com/cheggaaa/pb"
+  version = ">=1.0.0, < 2.0.0"
+
+[[constraint]]
   branch = "master"
   name = "github.com/vanillahsu/go_reuseport"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  source = "github.com/golang/sys"
 
 [[constraint]]
   branch = "v0"

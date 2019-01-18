@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/docker/distribution/digest"
 	"github.com/docker/docker/autogen/dockerversion"
 	"github.com/docker/docker/daemon/graphdriver"

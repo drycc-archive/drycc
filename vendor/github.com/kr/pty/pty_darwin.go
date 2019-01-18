@@ -7,27 +7,29 @@ import (
 	"unsafe"
 )
 
-// see ioccom.h
-const sys_IOCPARM_MASK = 0x1fff
-
 func open() (pty, tty *os.File, err error) {
-	p, err := os.OpenFile("/dev/ptmx", os.O_RDWR, 0)
+	pFD, err := syscall.Open("/dev/ptmx", syscall.O_RDWR|syscall.O_CLOEXEC, 0)
 	if err != nil {
 		return nil, nil, err
 	}
+	p := os.NewFile(uintptr(pFD), "/dev/ptmx")
+	// In case of error after this point, make sure we close the ptmx fd.
+	defer func() {
+		if err != nil {
+			_ = p.Close() // Best effort.
+		}
+	}()
 
 	sname, err := ptsname(p)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	err = grantpt(p)
-	if err != nil {
+	if err := grantpt(p); err != nil {
 		return nil, nil, err
 	}
 
-	err = unlockpt(p)
-	if err != nil {
+	if err := unlockpt(p); err != nil {
 		return nil, nil, err
 	}
 
@@ -39,9 +41,13 @@ func open() (pty, tty *os.File, err error) {
 }
 
 func ptsname(f *os.File) (string, error) {
-	var n [(syscall.TIOCPTYGNAME >> 16) & sys_IOCPARM_MASK]byte
+	n := make([]byte, _IOC_PARM_LEN(syscall.TIOCPTYGNAME))
 
-	ioctl(f.Fd(), syscall.TIOCPTYGNAME, uintptr(unsafe.Pointer(&n)))
+	err := ioctl(f.Fd(), syscall.TIOCPTYGNAME, uintptr(unsafe.Pointer(&n[0])))
+	if err != nil {
+		return "", err
+	}
+
 	for i, c := range n {
 		if c == 0 {
 			return string(n[:i]), nil
@@ -51,19 +57,9 @@ func ptsname(f *os.File) (string, error) {
 }
 
 func grantpt(f *os.File) error {
-	var u int
-	return ioctl(f.Fd(), syscall.TIOCPTYGRANT, uintptr(unsafe.Pointer(&u)))
+	return ioctl(f.Fd(), syscall.TIOCPTYGRANT, 0)
 }
 
 func unlockpt(f *os.File) error {
-	var u int
-	return ioctl(f.Fd(), syscall.TIOCPTYUNLK, uintptr(unsafe.Pointer(&u)))
-}
-
-func ioctl(fd, cmd, ptr uintptr) error {
-	_, _, e := syscall.Syscall(syscall.SYS_IOCTL, fd, cmd, ptr)
-	if e != 0 {
-		return syscall.ENOTTY
-	}
-	return nil
+	return ioctl(f.Fd(), syscall.TIOCPTYUNLK, 0)
 }
